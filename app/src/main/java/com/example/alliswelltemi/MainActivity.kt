@@ -10,6 +10,7 @@ import com.example.alliswelltemi.ui.screens.TemiMainScreen
 import com.example.alliswelltemi.ui.screens.NavigationScreen
 import com.example.alliswelltemi.ui.screens.AppointmentBookingScreen
 import com.example.alliswelltemi.ui.screens.DoctorsScreen
+import com.example.alliswelltemi.ui.screens.FeedbackScreen
 import com.example.alliswelltemi.ui.theme.TemiTheme
 import com.example.alliswelltemi.viewmodel.NavigationViewModel
 import com.example.alliswelltemi.viewmodel.AppointmentViewModel
@@ -76,6 +77,14 @@ class MainActivity : AppCompatActivity(), OnRobotReadyListener {
                             }
                         )
                     }
+                    "feedback" -> {
+                        FeedbackScreen(
+                            robot = robot,
+                            onBackPress = {
+                                currentScreen.value = "main"
+                            }
+                        )
+                    }
                     else -> {
                         TemiMainScreen(
                             robot = robot,
@@ -121,8 +130,7 @@ class MainActivity : AppCompatActivity(), OnRobotReadyListener {
                 currentScreen.value = "doctors"
             }
             "feedback" -> {
-                // TODO: Open feedback screen or show feedback form
-                // This could be a bottom sheet, dialog, or new screen
+                currentScreen.value = "feedback"
             }
             "emergency" -> {
                 // TODO: Trigger emergency alert system
