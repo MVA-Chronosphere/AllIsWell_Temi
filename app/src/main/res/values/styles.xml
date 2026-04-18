@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Card Style -->
+    <style name="CardStyle">
+        <item name="android:background">@drawable/card_background</item>
+        <item name="android:elevation">2dp</item>
+    </style>
+
+    <!-- Primary Button Style -->
+    <style name="PrimaryButtonStyle">
+        <item name="android:background">@drawable/primary_button_bg</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingStart">24dp</item>
+        <item name="android:paddingEnd">24dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <!-- Feature Card Button Style -->
+    <style name="FeatureCardStyle">
+        <item name="android:background">@drawable/feature_card_bg</item>
+        <item name="android:textColor">@color/text_dark</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">20dp</item>
+    </style>
+
+    <!-- Emergency Card Style -->
+    <style name="EmergencyCardStyle">
+        <item name="android:background">@drawable/emergency_card_bg</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">20dp</item>
+    </style>
+
+    <!-- Header Text Style -->
+    <style name="HeaderTextStyle">
+        <item name="android:textColor">@color/text_dark</item>
+        <item name="android:textSize">28sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Subtitle Text Style -->
+    <style name="SubtitleTextStyle">
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <!-- Hospital Title Style -->
+    <style name="HospitalTitleStyle">
+        <item name="android:textColor">@color/primary_blue</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>
+
