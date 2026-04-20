@@ -14,14 +14,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.alliswelltemi.R
+import com.example.alliswelltemi.data.Doctor
 import com.example.alliswelltemi.data.DoctorData
+import com.example.alliswelltemi.data.TimeSlot
 import com.example.alliswelltemi.viewmodel.AppointmentViewModel
+import com.example.alliswelltemi.viewmodel.DoctorsViewModel
 import com.robotemi.sdk.Robot
 import com.robotemi.sdk.TtsRequest
 import java.time.LocalDate
@@ -35,14 +37,20 @@ import java.time.YearMonth
 fun AppointmentBookingScreen(
     robot: Robot? = null,
     onBackPress: () -> Unit = {},
-    viewModel: AppointmentViewModel = viewModel()
+    viewModel: AppointmentViewModel = viewModel(),
+    doctorsViewModel: DoctorsViewModel = viewModel()
 ) {
     var currentLanguage by remember { mutableStateOf("en") }
     val darkBg = colorResource(id = R.color.dark_bg)
 
     LaunchedEffect(Unit) {
-        viewModel.initializeDepartments(DoctorData.DEPARTMENTS)
+        viewModel.initializeDepartments(doctorsViewModel.departments.value)
         viewModel.loadTimeSlots(DoctorData.getAvailableTimeSlots())
+        
+        // Load initial doctors if a department is available
+        doctorsViewModel.departments.value.firstOrNull()?.let {
+            viewModel.loadDoctorsByDepartment(it, doctorsViewModel.doctors.value)
+        }
     }
 
     Box(
@@ -74,13 +82,20 @@ fun AppointmentBookingScreen(
                     .weight(1f)
                     .verticalScroll(rememberScrollState())
             ) {
-                when (viewModel.currentStep.value) {
-                    1 -> StepSelectDoctor(
-                        viewModel = viewModel,
-                        language = currentLanguage,
-                        robot = robot,
-                        departments = viewModel.availableDepartments.value
+                if (viewModel.isLoading.value) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center),
+                        color = Color(0xFF00D9FF)
                     )
+                } else {
+                    when (viewModel.currentStep.value) {
+                        1 -> StepSelectDoctor(
+                            viewModel = viewModel,
+                            doctorsViewModel = doctorsViewModel,
+                            language = currentLanguage,
+                            robot = robot,
+                            departments = viewModel.availableDepartments.value
+                        )
                     2 -> StepSelectDate(
                         viewModel = viewModel,
                         language = currentLanguage,
@@ -105,15 +120,17 @@ fun AppointmentBookingScreen(
                     )
                 }
             }
+        }
 
-            Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
-            // Navigation Buttons
-            if (viewModel.currentStep.value < 5) {
+        // Navigation Buttons
+        if (viewModel.currentStep.value < 5) {
                 AppointmentNavigationButtons(
                     viewModel = viewModel,
                     currentLanguage = currentLanguage,
-                    canProceed = canProceedToNextStep(viewModel)
+                    canProceed = canProceedToNextStep(viewModel),
+                    robot = robot
                 )
             }
         }
@@ -126,6 +143,7 @@ fun AppointmentBookingScreen(
 @Composable
 fun StepSelectDoctor(
     viewModel: AppointmentViewModel,
+    doctorsViewModel: DoctorsViewModel,
     language: String,
     robot: Robot?,
     departments: List<String>
@@ -163,7 +181,7 @@ fun StepSelectDoctor(
                     modifier = Modifier
                         .clickable {
                             selectedDepartment = dept
-                            viewModel.loadDoctorsByDepartment(dept, DoctorData.DOCTORS)
+                            viewModel.loadDoctorsByDepartment(dept, doctorsViewModel.doctors.value)
                         },
                     shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
                     color = if (selectedDepartment == dept)
@@ -195,7 +213,7 @@ fun StepSelectDoctor(
         Spacer(modifier = Modifier.height(12.dp))
 
         viewModel.doctorsInDepartment.value.forEach { doctor ->
-            DoctorCard(
+            AppointmentDoctorCard(
                 doctor = doctor,
                 language = language,
                 onSelect = {
@@ -217,8 +235,8 @@ fun StepSelectDoctor(
  * Doctor Card Component
  */
 @Composable
-fun DoctorCard(
-    doctor: com.example.alliswelltemi.data.Doctor,
+fun AppointmentDoctorCard(
+    doctor: Doctor,
     language: String,
     onSelect: () -> Unit
 ) {
@@ -316,6 +334,10 @@ fun StepSelectDate(
                     .size(32.dp)
                     .clickable {
                         displayMonth = displayMonth.minusMonths(1)
+                        robot?.speak(TtsRequest.create(
+                            speech = if (language == "en") "Showing ${displayMonth.month}" else "${displayMonth.month} दिखा रहा है",
+                            isShowOnConversationLayer = false
+                        ))
                     }
             )
 
@@ -334,6 +356,10 @@ fun StepSelectDate(
                     .size(32.dp)
                     .clickable {
                         displayMonth = displayMonth.plusMonths(1)
+                        robot?.speak(TtsRequest.create(
+                            speech = if (language == "en") "Showing ${displayMonth.month}" else "${displayMonth.month} दिखा रहा है",
+                            isShowOnConversationLayer = false
+                        ))
                     }
             )
         }
@@ -441,7 +467,7 @@ fun StepSelectTime(
     viewModel: AppointmentViewModel,
     language: String,
     robot: Robot?,
-    timeSlots: List<com.example.alliswelltemi.data.TimeSlot>
+    timeSlots: List<TimeSlot>
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
@@ -492,7 +518,7 @@ fun StepSelectTime(
  */
 @Composable
 fun TimeSlotButton(
-    timeSlot: com.example.alliswelltemi.data.TimeSlot,
+    timeSlot: TimeSlot,
     language: String,
     onSelect: () -> Unit
 ) {
@@ -543,6 +569,13 @@ fun StepPatientDetails(
     language: String,
     robot: Robot?
 ) {
+    LaunchedEffect(Unit) {
+        val speech = if (language == "en")
+            "Please enter your name and phone number."
+        else
+            "कृपया अपना नाम और फोन नंबर दर्ज करें।"
+        robot?.speak(TtsRequest.create(speech = speech, isShowOnConversationLayer = false))
+    }
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = if (language == "en") "Step 4: Your Details" else "चरण 4: आपके विवरण",
@@ -575,7 +608,7 @@ fun StepPatientDetails(
                 onValueChange = { viewModel.setPatientName(it) },
                 modifier = Modifier.fillMaxSize(),
                 singleLine = true,
-                textStyle = androidx.compose.material3.LocalTextStyle.current.copy(color = Color.White),
+                textStyle = LocalTextStyle.current.copy(color = Color.White),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
@@ -610,7 +643,7 @@ fun StepPatientDetails(
                 onValueChange = { viewModel.setPatientPhone(it) },
                 modifier = Modifier.fillMaxSize(),
                 singleLine = true,
-                textStyle = androidx.compose.material3.LocalTextStyle.current.copy(color = Color.White),
+                textStyle = LocalTextStyle.current.copy(color = Color.White),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
@@ -777,7 +810,14 @@ fun StepConfirmation(
                     else
                         "आपको डॉक्टर की कैबिन $cabin में ले जा रहे हैं। कृपया मेरा अनुसरण करें।"
                     robot?.speak(TtsRequest.create(speech = speech, isShowOnConversationLayer = false))
-                    // TODO: Navigate to cabin
+                    
+                    if (cabin.isNotBlank()) {
+                        robot?.goTo(cabin)
+                    } else {
+                        viewModel.selectedDoctor.value?.let { doctor ->
+                            robot?.goTo(doctor.name)
+                        }
+                    }
                 },
                 modifier = Modifier
                     .weight(1f)
@@ -873,7 +913,7 @@ fun AppointmentHeader(
 
         // Title
         Text(
-            text = if (language == "en") "Book Appointment" else "अपॉइंटमेंट बुक करें",
+            text = if (language == "en") "Step $currentStep: Book Appointment" else "चरण $currentStep: अपॉइंटमेंट बुक करें",
             color = Color.White,
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold
@@ -937,7 +977,8 @@ fun AppointmentProgressBar(currentStep: Int) {
 fun AppointmentNavigationButtons(
     viewModel: AppointmentViewModel,
     currentLanguage: String,
-    canProceed: Boolean
+    canProceed: Boolean,
+    robot: Robot?
 ) {
     Row(
         modifier = Modifier
@@ -963,7 +1004,23 @@ fun AppointmentNavigationButtons(
         Button(
             onClick = {
                 if (viewModel.currentStep.value == 4) {
-                    viewModel.confirmDetails()
+                    if (viewModel.confirmDetails()) {
+                        viewModel.submitAppointment { success, message ->
+                            if (!success) {
+                                // Handle error - could use a toast or snackbar
+                                android.util.Log.e("Appointment", message)
+                            } else {
+                                robot?.speak(TtsRequest.create(
+                                    speech = if (currentLanguage == "en") 
+                                        "Appointment confirmed! Your token is ${viewModel.appointmentToken.value}" 
+                                        else "अपॉइंटमेंट की पुष्टि हुई! आपका टोकन ${viewModel.appointmentToken.value} है",
+                                    isShowOnConversationLayer = true
+                                ))
+                            }
+                        }
+                    }
+                } else {
+                    // Other steps move forward normally (handled by selecting items usually)
                 }
             },
             enabled = canProceed,
