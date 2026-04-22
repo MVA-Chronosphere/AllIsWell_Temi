@@ -1,0 +1,1675 @@
+{
+"Sheet1":[
+ {
+  "HOSPITAL TEMI": "QUESTIONS",
+  "Column2": "ANSWER"
+ },
+ {
+  "HOSPITAL TEMI": "USER PERSONA: PATIENT"
+ },
+ {
+  "HOSPITAL TEMI": "GENERAL QUESTONS"
+ },
+ {
+  "HOSPITAL TEMI": "What is the hospital name ?",
+  "Column2": "All Is Well Hospital is a modern multi-speciality healthcare institution located in Burhanpur, Madhya Pradesh. The founder and chairman of All is Well Hospiital is Mr. Anand Prakash Chouksey. The hospital was established in 2019 with the vision of delivering high-quality, ethical, and patient-centered medical care to people in and around the region. The mission of All Is Well Hospital is to provide accessible, affordable, and advanced healthcare services with compassion and integrity. The hospital aims to treat every patient with dignity, ensuring transparent communication, ethical medical practices, and evidence-based treatment protocols. Its vision is to become a leading healthcare provider in the region by continuously upgrading infrastructure, adopting advanced medical technologies, and nurturing a team of skilled specialists dedicated to improving community health outcomes. It offers comprehensive healthcare services ranging from outpatient consultations to advanced critical care management. The hospital combines experienced medical professionals, updated medical technology, and a compassionate care approach to ensure patients receive accurate diagnosis, effective treatment, and continuous monitoring. It is designed to cater to emergency cases, surgical procedures, preventive healthcare, and long-term disease management, making it a trusted healthcare destination for families in Burhanpur and nearby districts. Key specialties include Cardiac Sciences, Neuro Sciences, Anesthesiology & Critical Care, Dental Sciences, Obstetrics & Gynaecology, Ophthalmology, ENT, General Medicine, Orthopedics, Oncology, Gastroenterology, Endocrinology, Psychiatry, Dermatology, Pediatrics & Neonatology, and more. The hospital operates 24×7 for emergency and critical care services. All Is Well Hospital is located near Macro Vision Academy in Burhanpur, Madhya Pradesh, 450331, India. Being situated in a central and recognized educational zone makes it easier for patients and visitors to identify the hospital. Clear signboards and an organized entry system help patients reach the reception and registration areas without confusion. "
+ },
+ {
+  "HOSPITAL TEMI": "Who is the founder or chairman of the hospital?"
+ },
+ {
+  "HOSPITAL TEMI": "When did the  hospital founded ?"
+ },
+ {
+  "HOSPITAL TEMI": "What is the hospital’s mission and values?"
+ },
+ {
+  "HOSPITAL TEMI": "What are the hospital’s specialties (departments)?"
+ },
+ {
+  "HOSPITAL TEMI": "What services does All Is Well Hospital offer?"
+ },
+ {
+  "HOSPITAL TEMI": "Where is the Hospital located ?"
+ },
+ {
+  "HOSPITAL TEMI": "Is All Is Well Hospital open 24×7?"
+ },
+ {
+  "HOSPITAL TEMI": "Do you have insurance facilities?",
+  "Column2": "The hospital provides cashless and reimbursement facilities through a wide range of trusted health insurance providers to ensure convenient and hassle-free treatment for patients. The accepted insurance companies include Star Health Insurance, Care Health Insurance, Paramount Health Services, IFFCO-Tokio General Insurance, Digit Insurance, Aditya Birla Health Insurance, SBI General Insurance, ICICI Lombard, FHPL (Family Health Plan Limited), MDIndia Healthcare Services, Niva Bupa Health Insurance, Future Generali Insurance, Tata AIG Insurance, ESIC, ECHS, and ManipalCigna Health Insurance. The patient cannot claim more than one insurance  policy at the same time. The maximum amount a patient can claim varies according to the requirement and depends on patient,The maximum claim amount depends on your policy’s sum insured. You can claim up to the coverage limit mentioned in your insurance policy, after deducting co-payment, exclusions, or non-covered expenses. Patients covered under these insurance providers can avail medical services with simplified claim processing and financial support, making healthcare more accessible and affordable during their treatment at the hospital.The hospital also accepts Government health scheme such as Ayushman Bharat cards for cashless claims, patients need to present their insurance card, government ID,(aadhar and PAN) and relevant medical documents at the billing desk. Insurance coverage for lab tests and diagnostics depends on your policy. Generally, diagnostic tests done during hospitalization are covered. However, standalone outpatient lab tests may not always be covered unless specified in your policy. The hospital accepts both the insurance policies that is corporate insurance polocies and individual insurance policies. Cashless treatment is usually available for inpatient services and surgeries. However, some departments or treatments may not be eligible under certain policies. Approval from the insurance company is mandatory before availing cashless treatment. Cashless treatment is usually available for inpatient services and surgeries. However, some departments or treatments may not be eligible under certain policies. Approval from the insurance company is mandatory before availing cashless treatment. Pre-existing diseases are usually covered after a specific waiting period, which can range from 1 to 4 years depending on the policy. Immediate coverage is generally not provided unless mentioned in your policy. Most insurance policies do not cover follow-up outpatient visits unless specifically included in the plan. However, post-hospitalization expenses for a limited number of days may be covered. Insurance policies generally cover hospitalization expenses such as room charges, doctor fees, surgery costs, medicines, ICU charges, and diagnostic tests. However, non-medical items and consumables may not be covered. es, room rent is usually covered, but it may have a limit or capping as per your policy. If you choose a higher category room than allowed, you may need to pay the difference. Surgery is covered if it is medically necessary and included under your policy. However, some exclusions, co-payments, or sub-limits may apply. Yes, you may need to pay non-covered items, co-payment amounts, deductibles, room upgrades, or any expenses exceeding your sum insured limit. For reimbursement claims, original bills and reports are usually required. For cashless claims, photocopies may be sufficient as the hospital directly coordinates with the insurer. Yes, emergency admissions are generally covered under cashless treatment. However, the hospital must inform the insurance company within the required time frame for approval. Yes, if your cashless request is denied, you can pay the hospital bill and later apply for reimbursement by submitting all required documents to your insurance company."
+ },
+ {
+  "HOSPITAL TEMI": "What are the Insurance plan accepted ?"
+ },
+ {
+  "HOSPITAL TEMI": "Can i claim more than one insurance at a time ?"
+ },
+ {
+  "HOSPITAL TEMI": "Maximum number of Insurance i can claim at once ?"
+ },
+ {
+  "HOSPITAL TEMI": "What is the Maximum amount i can claim ?"
+ },
+ {
+  "HOSPITAL TEMI": "Do the hospital accepts government health schemes ?"
+ },
+ {
+  "HOSPITAL TEMI": "Is insurance accepted for lab tests and disgnostics ?"
+ },
+ {
+  "HOSPITAL TEMI": "Do the hospital accept Corporate insurance policies ?"
+ },
+ {
+  "HOSPITAL TEMI": "Is cashless treatment available for all departments ?"
+ },
+ {
+  "HOSPITAL TEMI": "Is maternity covered ?"
+ },
+ {
+  "HOSPITAL TEMI": "Is pre-existing disease covered ?"
+ },
+ {
+  "HOSPITAL TEMI": "Does insurance cover follow-up visits ?"
+ },
+ {
+  "HOSPITAL TEMI": "What expenses are covered under my policy ?"
+ },
+ {
+  "HOSPITAL TEMI": "Does insurance cover room rent ?"
+ },
+ {
+  "HOSPITAL TEMI": "Is ICU covered under Insurance ?"
+ },
+ {
+  "HOSPITAL TEMI": "Is Surgery fully covered ?"
+ },
+ {
+  "HOSPITAL TEMI": "Will i have to pay anything extra ?"
+ },
+ {
+  "HOSPITAL TEMI": "What documents are required for insurance claim ?"
+ },
+ {
+  "HOSPITAL TEMI": "Do i need to submit original documents ?"
+ },
+ {
+  "HOSPITAL TEMI": "Is emergency addmission covered under cashless ?"
+ },
+ {
+  "HOSPITAL TEMI": "Can i switch to reimbursement if cashless is denied ?"
+ },
+ {
+  "HOSPITAL TEMI": "What all are the health packages ?",
+  "Column2": "At All Is Well Hospital, we offer a variety of specially designed health check-up packages to meet the preventive and diagnostic healthcare needs of adults, women, children, and patients managing chronic conditions such as diabetes. Currently, we provide five major health packages: Basic Wellness, Comprehensive Wellness, Comprehensive Women Wellness, Diabetic Wellness, and Healthy Child Wellness. Each package includes a carefully selected combination of laboratory tests and diagnostic evaluations at discounted rates to make preventive healthcare affordable and accessible.                                                                                                                                        The Basic Wellness Package is priced at ₹899, discounted from the original price of ₹1550, offering a 42% discount. This package is designed for routine health screening and includes Complete Blood Count (CBC) to evaluate overall blood health, Random Blood Sugar (B. Sugar – R) to check glucose levels, Electrocardiogram (ECG) to assess heart rhythm and cardiac function, SGPT to evaluate liver enzyme levels, Serum Calcium to check bone health and metabolic balance, Serum Creatinine to assess kidney function, and HbA1c to measure average blood sugar levels over the past three months. This package is ideal for individuals who want a basic yet essential overview of their general health status.                                                                                                                                                                                                                                                                                                               The Comprehensive Wellness Package is available at ₹4999, reduced from ₹8540, providing a 41% discount. This package offers a more detailed health assessment and includes Vitamin D testing to evaluate bone and immune health, Vitamin B12 levels to detect deficiencies affecting nerve and blood health, Blood Group identification, Lipid Profile to assess cholesterol and heart disease risk, Serum Calcium for bone metabolism, Physician Consultation for professional medical evaluation of reports, and Dietitian Consultation to provide personalized nutritional advice. This package is suitable for individuals seeking an in-depth preventive health check-up along with expert guidance.                                                                                                                                                                                                                                                                                                                                                         The Comprehensive Women Wellness Package is priced at ₹3499, discounted from ₹7470, offering a 53% discount. This package is specifically tailored to women’s health needs and includes Complete Blood Count (CBC), Blood Sugar tests (Fasting and Postprandial – F\/PP) to monitor glucose control, Lipid Profile to assess cholesterol levels, Renal Function Test (RFT) to evaluate kidney health, Liver Function Test (LFT) to monitor liver performance, HbA1c for long-term blood sugar monitoring, and a Free Thyroid Function Test including FT3, FT4, and TSH to assess thyroid hormone balance. This package is especially beneficial for women who want a detailed metabolic, hormonal, and organ function evaluation.                                                                                                                                                                                                                                                                                       The Diabetic Wellness Package is offered at ₹4499, reduced from ₹7000, giving a 36% discount. This package is specially designed for individuals who are diabetic or at high risk of developing diabetes. It includes Complete Blood Count (CBC), HbA1c for long-term glucose monitoring, Blood Sugar tests (Fasting and Postprandial), Electrocardiogram (ECG) to check heart health, 2D Echocardiography (2D Echo) for detailed heart imaging, Urine Analysis to detect infections or abnormalities, and Microalbumin Creatinine Ratio to assess early kidney damage due to diabetes. This comprehensive package helps in monitoring diabetes-related complications affecting the heart and kidneys.                                                                                                                                                                                                                                                                                                                                                The Healthy Child Wellness Package is available at ₹2599, discounted from ₹4670, offering a 44% discount. This package focuses on monitoring the growth and overall health of children. It includes Complete Blood Count (CBC) to evaluate general health, ESR to detect inflammation or infection, ALP (Alkaline Phosphatase) to assess bone growth and liver function, Serum Calcium for bone strength, Serum Creatinine for kidney function, Serum Phosphorus to monitor bone metabolism, and Liver Function Test (LFT) to evaluate liver health. This package is ideal for routine pediatric health monitoring and early detection of nutritional or metabolic concerns."
+ },
+ {
+  "HOSPITAL TEMI": "What are the charges for health packages ?"
+ },
+ {
+  "HOSPITAL TEMI": "What services does the basic wellness package includes ?"
+ },
+ {
+  "HOSPITAL TEMI": "What is the charge for basic wellness package ?"
+ },
+ {
+  "HOSPITAL TEMI": "What services does the comprehensive wellness package includes ?"
+ },
+ {
+  "HOSPITAL TEMI": "What is the charge for comprehensive wellness package ?"
+ },
+ {
+  "HOSPITAL TEMI": "What services does the comprehensive women wellness package includes ?"
+ },
+ {
+  "HOSPITAL TEMI": "What is the charge for comprehensive women wellness package ?"
+ },
+ {
+  "HOSPITAL TEMI": "What services does the diabetic wellness package includes ?"
+ },
+ {
+  "HOSPITAL TEMI": "What is the charge for diabetic wellness package ?"
+ },
+ {
+  "HOSPITAL TEMI": "What services does the healthy child wellness package includes ?"
+ },
+ {
+  "HOSPITAL TEMI": "What is the charge for healthy child wellness package ?"
+ },
+ {
+  "HOSPITAL TEMI": "What are types of yoga treatment available ? ",
+  "Column2": "At All Is Well Hospital, a range of structured yoga treatments is available to support physical health, mental well-being, and overall lifestyle balance. The hospital offers multiple therapeutic yoga approaches tailored to different health needs. These include Hatha Yoga, Vinyasa Flow, Yin Yoga, Pranayama, Meditation and Mindfulness, and Yoga Therapy, each designed with specific benefits and therapeutic goals.                                                                                            Hatha Yoga focuses on traditional physical postures combined with controlled breathing techniques. This form of yoga helps improve balance, flexibility, muscle strength, and posture alignment. It is especially beneficial for beginners or individuals seeking a steady and foundational practice that enhances body awareness and supports overall physical stability.                                                                                                                                                                               Vinyasa Flow is a dynamic and energetic style of yoga that links movement with breath in a smooth, continuous sequence. It promotes cardiovascular fitness, muscular strength, endurance, and flexibility. Because of its fluid transitions between poses, Vinyasa Flow helps improve coordination and stamina while also encouraging mental focus and stress reduction.                                                                                                                                                                         Yin Yoga is a slow-paced and meditative practice that targets deep connective tissues such as ligaments, fascia, and joints. Poses are held for longer durations, allowing gradual and deep stretching. This approach improves joint mobility, enhances circulation, reduces stiffness, and promotes relaxation. Yin Yoga is particularly helpful for individuals experiencing stress, muscle tightness, or reduced flexibility.                                                                                             Pranayama involves structured breathing exercises designed to regulate and control the flow of life energy through the breath. These breathing techniques enhance lung capacity, improve oxygen circulation, reduce anxiety, and support mental clarity. Pranayama is often recommended for patients dealing with stress-related disorders, respiratory concerns, or those seeking improved concentration and emotional balance.                                                                                        Meditation and Mindfulness sessions focus on cultivating mental awareness, emotional stability, and inner calm. Through guided meditation techniques, patients learn to manage stress, reduce anxiety, improve focus, and enhance psychological well-being. This practice supports mental resilience and complements physical healing processes."
+ },
+ {
+  "HOSPITAL TEMI": "Treatments Available in Nutrition and diet ?",
+  "Column2": "The Treatments Available in Nutrition and Diet focus on improving overall health, preventing diseases, and supporting specific medical conditions through scientifically designed dietary strategies. Personalized Meal Planning involves creating custom nutrition plans tailored to an individual’s health goals, medical history, lifestyle, and dietary preferences. This approach ensures balanced nutrient intake while addressing concerns such as weight control, nutrient deficiencies, food allergies, or specific health conditions. Weight Management provides structured support for healthy weight loss or weight gain through balanced eating plans, portion control, calorie management, and sustainable lifestyle modifications, helping individuals achieve long-term results safely. Diabetes Nutrition offers specialized dietary guidance to manage blood sugar levels effectively by focusing on carbohydrate control, glycemic index awareness, meal timing, and balanced nutrient intake to improve overall metabolic health. Sports Nutrition is designed for active individuals and athletes, offering science-backed dietary strategies to enhance performance, endurance, recovery, and muscle growth through proper macronutrient distribution, hydration, and supplementation when needed. Digestive Health treatment focuses on improving gut health by recommending fiber-rich foods, probiotics, elimination diets when necessary, and balanced nutrition plans to reduce digestive discomfort, bloating, acidity, or other gastrointestinal issues. Lastly, Nutrition Counseling provides one-on-one sessions with a qualified dietitian who offers education, personalized guidance, motivation, and accountability, helping individuals adopt healthier eating habits and maintain long-term wellness. Together, these nutrition and diet treatments aim to promote holistic health, prevent chronic diseases, and support individuals in achieving their specific health and lifestyle goals."
+ },
+ {
+  "HOSPITAL TEMI": "Is walk in consultation allowed ?",
+  "Column2": "All Is Well Hospital provides 24×7 OPD services along with emergency care, and patients can generally walk in for consultations on a first-come, first-served basis at the reception, with priority sometimes given to emergency cases or senior citizens. Specific walk-in policies will depend on doctor availability, but urgent care is always accessible any time due to the 24-hour OPD and emergency setup. The in-house Pharmacy, the labs and radiology department at All Is Well Hospital operates 24×7, providing quality prescribed medicines continuously to patients with valid doctor prescriptions. Appointments can be booked online by providing patient name, contact number, preferred department\/doctor, date, and reason for visit; token numbers are issued upon confirmation and can be rescheduled or cancelled with prior notice. The hospital features inpatient wards with general, semi-private, and private room options, along with ICU, NICU, and PICU facilities equipped with advanced life-support technology. Pharmacy services are available 24\/7 with world-class service. Lab reports are delivered online via the patient Whatsapp number, and can also be collected physically at the report counter. For appointments, patients need to provide full name, age, gender, contact details, preferred doctor\/department, and brief medical history."
+ },
+ {
+  "HOSPITAL TEMI": "What are the pharmacy hours ?"
+ },
+ {
+  "HOSPITAL TEMI": "Is the pharmacy open 24\/7 ?"
+ },
+ {
+  "HOSPITAL TEMI": "Are lab reports delivered online ?"
+ },
+ {
+  "HOSPITAL TEMI": "What are the lab timings ?"
+ },
+ {
+  "HOSPITAL TEMI": "How do I book an appointment?"
+ },
+ {
+  "HOSPITAL TEMI": "Can you book an appointment for me?"
+ },
+ {
+  "HOSPITAL TEMI": "Can I book an appointment online?"
+ },
+ {
+  "HOSPITAL TEMI": "What details are needed to book an appointment?"
+ },
+ {
+  "HOSPITAL TEMI": " What is my appointment token number?"
+ },
+ {
+  "HOSPITAL TEMI": "Can I reschedule or cancel my appointment?"
+ },
+ {
+  "HOSPITAL TEMI": "Do you have inpatient wards?"
+ },
+ {
+  "HOSPITAL TEMI": "Are there special rooms available?"
+ },
+ {
+  "HOSPITAL TEMI": "Does the hospital offer intensive care?"
+ },
+ {
+  "HOSPITAL TEMI": "What is the hospital’s phone number?",
+  "Column2": "You can contact All Is Well Hospital directly by calling on the emergency number +91 76977 44444 or +91 70890 66888. These numbers connect you to the hospital’s front desk and support team, where staff members can assist you with appointment bookings, department inquiries, emergency coordination, and general hospital information. The phone lines are active to ensure patients and visitors receive timely assistance whenever needed. You can reach the hospital via email at frontdesk@alliswellhospital.com. This email address is monitored by the hospital’s administrative team and can be used for general inquiries, appointment requests, health package details, feedback, or non-urgent medical coordination. When sending an email, it is recommended to include your name, contact number, and a brief description of your query to receive a quicker response. The official website of All Is Well Hospital is https:\/\/www.alliswellhospital.com. All Is Well Hospital operates 24 hours a day, 7 days a week, including all holidays. Emergency services remain active at all times to provide immediate medical care. Outpatient consultations and administrative services may have specific department-wise timings, but emergency and essential healthcare services are continuously available to serve patients without interruption."
+ },
+ {
+  "HOSPITAL TEMI": "How can I contact the hospital by email?"
+ },
+ {
+  "HOSPITAL TEMI": "What is the hospital website?"
+ },
+ {
+  "HOSPITAL TEMI": "What is the hospital’s emergency number?"
+ },
+ {
+  "HOSPITAL TEMI": "What are the hospital timings ?"
+ },
+ {
+  "HOSPITAL TEMI": "Can you speak in Hindi?",
+  "Column2": "Yes, I can speak in Hindi. You can ask your questions in Hindi, and I will respond in Hindi to make it easier for you. My goal is to make communication simple and comfortable for you during your visit to the hospital."
+ },
+ {
+  "HOSPITAL TEMI": "Can you repeat?",
+  "Column2": "Of course. I will repeat the information for you clearly and slowly. Please listen carefully, and if you need me to repeat it again or explain any specific part in more detail, feel free to ask. I am here to assist you."
+ },
+ {
+  "HOSPITAL TEMI": "Can you repeat the direction ?",
+  "Column2": "Certainly. I will repeat the directions step by step so you can follow them easily. Please proceed straight from your current location, then turn as instructed. If you would like, I can also guide you by moving with you to the destination. Let me know how you would prefer to proceed."
+ },
+ {
+  "HOSPITAL TEMI": "Can you show the map ?",
+  "Column2": "yes. Yes, I can display the hospital map on my screen for you. The map will show your current location and the route to your destination inside the hospital. You can follow the highlighted path, or I can guide you personally to the location. Please confirm where you would like to go."
+ },
+ {
+  "HOSPITAL TEMI": "can you explain again ?",
+  "Column2": "Yes, let me explain you again in a simple language. I am here to ensure you receive complete and accurate information."
+ },
+ {
+  "HOSPITAL TEMI": "USER PERSONA: VISITOR\/FAMILY"
+ },
+ {
+  "HOSPITAL TEMI": "GENERAL QUESTONS"
+ },
+ {
+  "HOSPITAL TEMI": "What facilities are available at the hospital?",
+  "Column2": "All Is Well Hospital provides comprehensive facilities including advanced diagnostic labs, 24\/7 pharmacy, cafeteria, ATM, drinking water stations, restrooms, elevators, wheelchair assistance, and dedicated waiting areas for visitors . Visiting hours for general wards are typically not defined one family member\/visitor can visit the patient with a pass that is given to the patient. ICU visiting hours are more restricted (commonly 11 AM-12 PM and 6 PM-7 PM) to ensure patient rest and infection control.OPD operates from 10 AM to 2 PM and 4 PM to 6PM on working days, though emergency services remain open 24\/7. Patients can meet doctors during scheduled OPD hours or via prior appointment; walk-ins are accepted but may involve longer waiting times. The pharmacy and laboratory operate 24\/7 for urgent needs, while billing counters typically close by 8 PM. Prior booking is recommended for specialist consultations to minimize waiting, which can range from 15 minutes to over an hour depending on crowd. Consultation fees vary typically from (Rs300 to Rs500) by specialty and doctor seniority; cash, cards, UPI, and insurance are accepted. Emergency services are fully operational 24 hours with dedicated trauma and critical care teams. Appointments can be booked via phone (+91 76977 44444). Diagnostic test costs vary (e.g., X-ray ~₹500-1500); room charges range from ₹2,360\/day (general ward) to ₹12,000\/day (private rooms and ICU). Insurance claims require submission of policy details, pre-authorization forms, and medical documents at the billing desk. Most lab tests are available onsite with routine reports delivered within 4-6 hours and specialized tests within 24-48 hours; urgent reports can be expedited for critical cases. For patient admission, visitors should carry government ID, insurance documents, prior medical records, and a referral if applicable; discharge summaries are provided after final billing and doctor clearance. Room upgrades are subject to availability and additional charges. ICU charges are higher due to advanced monitoring and staffing; general ward charges are more economical. Discharge processing typically takes 1-2 hours after doctor approval. Visitors can meet admitted patients during designated visiting hours with prior intimation to the ward nurse; ICU visits require nurse coordination and adherence to strict protocols. Ambulance services can be requested via the emergency number (+91 76977 44444); both basic and advanced life-support ambulances are available. Private rooms and attendant support can be arranged at admission. For blood tests requiring fasting, patients should abstain from food for 8-12 hours; specific instructions are provided at booking. Doctor availability can be confirmed via reception or the hospital app. Bill receipts are available at the billing counter post-payment; payment can be made at designated billing desks on each floor or via online payment links.\n"
+ },
+ {
+  "HOSPITAL TEMI": "What are visiting hours?"
+ },
+ {
+  "HOSPITAL TEMI": "When can I meet the patient ?"
+ },
+ {
+  "HOSPITAL TEMI": "What are the visiting hours for ICU ?"
+ },
+ {
+  "HOSPITAL TEMI": "What are OPD timings?"
+ },
+ {
+  "HOSPITAL TEMI": "When does the lab close?"
+ },
+ {
+  "HOSPITAL TEMI": "When can I meet the doctor?"
+ },
+ {
+  "HOSPITAL TEMI": "Is the pharmacy open now?"
+ },
+ {
+  "HOSPITAL TEMI": "What time does billing close?"
+ },
+ {
+  "HOSPITAL TEMI": "Do I need prior booking?"
+ },
+ {
+  "HOSPITAL TEMI": "How long is the waiting time?"
+ },
+ {
+  "HOSPITAL TEMI": "Is emergency open 24 hours?"
+ },
+ {
+  "HOSPITAL TEMI": "How long does discharge take?"
+ },
+ {
+  "HOSPITAL TEMI": "How much the radiology and imaging costs ?",
+  "Column2": "At All Is Well Hospital, the Radiology and Imaging Department offers a wide range of advanced diagnostic imaging services. The exact cost of each test depends on the type of scan, body part examined, contrast usage, and clinical requirements. Patients are advised to contact the billing counter for updated pricing.\nThe available radiology and imaging services include:\nX-Ray: A quick and painless imaging test used to examine bones, chest, lungs, fractures, infections, and joint conditions. Charges vary depending on whether it is a single view or multiple views.\nUltrasound: A safe and non-invasive imaging test that uses sound waves to visualize internal organs such as the abdomen, pelvis, kidneys, liver, and pregnancy-related scans. Pricing depends on the type of ultrasound, such as whole abdomen, pelvis, obstetric scan, or targeted organ study.\nMRI Scan: A highly detailed imaging technique using magnetic fields to visualize organs, soft tissues, joints, brain, and spine. MRI costs vary depending on whether it is with contrast or without contrast and which body region is scanned.\nCT Scan: A cross-sectional imaging test used to detect internal injuries, tumors, infections, and complex bone conditions. Charges differ depending on the region scanned and whether contrast dye is used.\nMammography: A specialized breast imaging test used for early detection of breast abnormalities and cancer screening. Pricing depends on screening or diagnostic mammography.\nFluoroscopy: A real-time moving X-ray used during certain diagnostic or therapeutic procedures to observe internal organ function. Charges depend on procedure complexity.\nFor exact radiology pricing, patients should contact the front desk or billing department, as costs are case-specific.                                                                                                                                                                                                       The Pathology Department provides comprehensive laboratory diagnostic services. The cost of pathology tests varies depending on the number of parameters tested and whether they are part of a package.\nAvailable pathology services include:\nComplete Blood Count (CBC): Evaluates overall health and detects anemia, infection, and blood disorders. Cost depends on automated analysis and report detail.\nLiver Function Test (LFT): Assesses liver enzyme levels and protein markers to evaluate liver health.\nKidney Function Test (KFT): Measures creatinine, urea, electrolytes, and kidney performance markers.\nThyroid Profile: Includes tests such as T3, T4, and TSH to diagnose thyroid imbalance.\nUrine Routine & Microscopy: Detects urinary tract infections, kidney issues, and systemic abnormalities.\nBlood Sugar Test: Includes fasting, postprandial, and random blood sugar levels to monitor diabetes.\nPathology charges vary individually or if included in health packages. For updated pricing, patients should consult the laboratory billing section.                                                                                                                                                                 The hospital provides multiple premium private room options for enhanced comfort and privacy:\nSemi-private rooms 104, 105, 1-6, 107, 108 and 109 provide shared accommodation with fewer beds compared to general ward settings. They offer more privacy and comfort. Charges are moderate and higher than general ward rates but lower than fully private rooms.\nDiamond Rooms & Diamond Suites: These rooms provide upgraded amenities and private accommodation. The Diamond Room numbers are from room number 202 to 219.\nPlatinum Rooms & Platinum Suites: Premium luxury rooms including Platinum Room 315, 317, 318, 319 and Platinum Suites. These rooms offer enhanced comfort, privacy, and upgraded facilities.\nGolden Suite, A high-category private suite designed for maximum comfort.\nGeneral ward including room 110,111,117,118 and 119.                                                                                                                                                                                                                                                                                    Guest Rooms are room number 102,103,221 and 222, designed for attendants or patient relatives.\nPrivate room charges vary depending on room category — Diamond, Platinum, Golden Suite — and include nursing care, bed charges, and room amenities. Exact per-day tariffs can be confirmed at the billing counter.."
+ },
+ {
+  "HOSPITAL TEMI": "How much the pathology treatments costs ?"
+ },
+ {
+  "HOSPITAL TEMI": "What is room charge per day?"
+ },
+ {
+  "HOSPITAL TEMI": "What are ICU charges?"
+ },
+ {
+  "HOSPITAL TEMI": "What is general ward charge?"
+ },
+ {
+  "HOSPITAL TEMI": "What are the charges for Private rooms ?"
+ },
+ {
+  "HOSPITAL TEMI": "Which types of different private rooms available ?"
+ },
+ {
+  "HOSPITAL TEMI": "What is consultation fee?"
+ },
+ {
+  "HOSPITAL TEMI": "Is cash accepted ?",
+  "Column2": "Yes, the hospital accepts cash payments for consultations, diagnostic tests, room charges, and other medical services. In addition to cash, digital payment options may also be available for patient convenience. For large bills such as admissions or surgeries, patients can confirm accepted payment methods at the billing counter.\nYes, walk-in consultations are generally allowed, depending on doctor availability. Patients can visit the hospital directly and register at the reception desk for an outpatient consultation. However, for specialist doctors or during peak hours, it is recommended to book an appointment in advance to avoid waiting time.\nTo claim insurance, patients must inform the hospital at the time of admission and provide valid insurance details. For cashless treatment, the hospital billing team coordinates with the insurance company for pre-authorization approval. Required documents usually include a valid insurance card, ID proof, doctor’s prescription, and policy details. In case of reimbursement claims, patients can submit the final hospital bills and discharge summary to their insurance provider after treatment.\nThe hospital provides a wide range of diagnostic tests, including pathology tests such as Complete Blood Count (CBC), Liver Function Test (LFT), Kidney Function Test (KFT), Thyroid Profile, Blood Sugar tests, and Urine analysis. Radiology services include X-ray, Ultrasound, CT Scan, MRI, Mammography, and Fluoroscopy. Health check-up packages are also available for preventive screening.\nThe time required for reports depends on the type of test performed. Routine blood tests and urine tests are usually available on the same day or within 24 hours. Specialized tests may take longer depending on complexity. The laboratory staff will inform you of the expected report delivery time at the time of sample collection.\nYes, urgent or priority reports may be available for certain tests. Patients can request emergency processing at the laboratory or billing counter. However, availability depends on the type of test and medical urgency.\nIf online report access is available, patients may receive a link or login credentials to download reports digitally. Alternatively, reports can be collected from the laboratory counter. It is recommended to confirm online availability at the time of registration.\nFor admission, the patient must first consult a doctor. If the doctor recommends admission, the patient will be guided to the admission desk for room allocation and documentation. The billing department will explain estimated charges and room options before completing the admission process.\nGenerally, admission requires a valid government ID proof, patient details, contact information of a relative or guardian, previous medical records if available, and insurance documents if applicable. The admission desk staff will assist in completing necessary forms.\nThe discharge summary is prepared by the treating doctor at the time of discharge. Once billing formalities are completed, the hospital provides the discharge summary along with prescriptions, investigation reports, and billing details. This document is important for follow-up care and insurance claims.\nYes, room upgrades may be possible depending on availability. Patients or attendants can request an upgrade at the billing or admission desk. The staff will check room availability and inform you about additional charges before confirming the change.\nYes, visitors are allowed during designated visiting hours. However, visitor access may be restricted in ICU or isolation areas for patient safety. Visitors must follow hospital rules regarding hygiene and visitor limits.\nCU visits are generally restricted and allowed only during specific visiting hours. Usually, only one or two close relatives are permitted for a limited time. Visitors must follow hygiene protocols, wear protective gear if required, and avoid bringing outside items. Strict guidelines are maintained to ensure patient safety and infection control.\nTo call an ambulance, you can contact the hospital’s emergency phone number provided at reception. In urgent cases, calling the hospital directly ensures faster coordination with the emergency response team.\nYes, ambulance services are available for emergency transportation of patients. The ambulance is equipped to handle urgent medical situations and can be arranged through the emergency contact number.\nYes, the hospital provides private rooms including premium categories such as Diamond Rooms, Platinum Rooms, Golden Suites, and other private accommodations. These rooms offer enhanced privacy, comfort, and amenities. Room allocation depends on availability.\nYes, hospital support staff and ward assistants are available to help move or transfer patients safely using wheelchairs or stretchers. You can request assistance at the reception or nursing station.\nYes, you can speak directly with the reception desk staff for assistance regarding appointments, billing, admissions, and general inquiries. The reception desk is located near the main entrance.\nFasting may be required for certain tests such as fasting blood sugar or lipid profile. Typically, 8–12 hours of fasting is recommended. However, not all blood tests require fasting. The laboratory staff will inform you about specific instructions before sample collection.\nDoctor availability depends on the consultation schedule and appointments. You can check with the reception desk or call the hospital to confirm whether a specific doctor is available on that day. Advance booking is recommended for specialist consultations."
+ },
+ {
+  "HOSPITAL TEMI": "Is walk-in consultation allowed?"
+ },
+ {
+  "HOSPITAL TEMI": "How do in claim insurance ?"
+ },
+ {
+  "HOSPITAL TEMI": "What tests are available?"
+ },
+ {
+  "HOSPITAL TEMI": "When will reports come?"
+ },
+ {
+  "HOSPITAL TEMI": "Can I get urgent report?"
+ },
+ {
+  "HOSPITAL TEMI": "Can I download reports online?"
+ },
+ {
+  "HOSPITAL TEMI": "How can i get a patient admitted ?"
+ },
+ {
+  "HOSPITAL TEMI": "What documents are needed for admission?"
+ },
+ {
+  "HOSPITAL TEMI": "How do I get discharge summary?"
+ },
+ {
+  "HOSPITAL TEMI": "Can I upgrade the room?"
+ },
+ {
+  "HOSPITAL TEMI": "Can I meet admitted patient?"
+ },
+ {
+  "HOSPITAL TEMI": "What are ICU visiting rules?"
+ },
+ {
+  "HOSPITAL TEMI": "How do I call ambulance?"
+ },
+ {
+  "HOSPITAL TEMI": "Is ambulance available?"
+ },
+ {
+  "HOSPITAL TEMI": "Do you have private rooms?"
+ },
+ {
+  "HOSPITAL TEMI": "Can someone help me carry patient?"
+ },
+ {
+  "HOSPITAL TEMI": "Can I talk to reception?"
+ },
+ {
+  "HOSPITAL TEMI": "Do I need fasting for blood test?"
+ },
+ {
+  "HOSPITAL TEMI": "How many hours fasting hours fasting required ?"
+ },
+ {
+  "HOSPITAL TEMI": "Is [Dr. ] available today?"
+ },
+ {
+  "HOSPITAL TEMI": "USER PERSONA: NURSE"
+ },
+ {
+  "HOSPITAL TEMI": "GENERAL QUESTONS"
+ },
+ {
+  "HOSPITAL TEMI": "Where is Equipment room ?"
+ },
+ {
+  "HOSPITAL TEMI": "Where is HR Office ?"
+ },
+ {
+  "HOSPITAL TEMI": "Where is admin office ?"
+ },
+ {
+  "HOSPITAL TEMI": "Extra Questions"
+ },
+ {
+  "HOSPITAL TEMI": "Name of Hospital",
+  "Column2": "The Name of the Hospital is All is Well Hospital. I'm here to assist you, Welcome to All Is Well Hospital. I'm your digital assistant—ready to help with directions, appointments, or information."
+ },
+ {
+  "HOSPITAL TEMI": "Who is the Director?",
+  "Column2": "Kabir Chouksey and Devanshi Chouksey is the Director of the hospital."
+ },
+ {
+  "HOSPITAL TEMI": "Who is Kabir Chouksey?",
+  "Column2": "Kabir Chouksey is the Director of the hospital."
+ },
+ {
+  "HOSPITAL TEMI": "Who is Devanshi Chouksey?",
+  "Column2": "Devanshi Chouksey is the Director of the hospital."
+ },
+ null,
+ null,
+ null,
+ null,
+ null,
+ null,
+ {
+  "HOSPITAL TEMI": "Dr. Pravin R. Borde",
+  "Column2": "Speciality: Consultant Neuro and Spine Surgery"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Divyesh Lad",
+  "Column2": "Speciality: Consultant General Medicine"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Prashant Khairnar",
+  "Column2": "Speciality: Consultant Urologist & Andrologist, Deputy Medical Superintendent"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Ravnik R. Bansod",
+  "Column2": "Speciality: Fellowship in Conventional & Robotics Assisted Joint Replacement Surgery (FRJRS)"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Lokendra Singh Thakur",
+  "Column2": "Speciality: Consultant Interventional Cardiologist"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Basheeruddin Ansari",
+  "Column2": "Speciality: Consultant Interventional Cardiologist"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Gaurav Singh Pardesi",
+  "Column2": "Speciality: Consultant General & Minimal Access Surgery"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Kimaya Sali Medshikar",
+  "Column2": "Speciality: Consultant Obstetrician & Gynaecologist"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Monish Gupta",
+  "Column2": "Speciality: Consultant Obstetrician, Gynaecologist & Genetics Specialist"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Apurva yadav",
+  "Column2": "Speciality: Consultant Ophthalmologist & Cataract Surgeon"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Shubham Verma",
+  "Column2": "Speciality: Pulmonary Medicine & Critical Care"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Rashi Gupta",
+  "Column2": "Speciality: Consultant Pathologist"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Harshada Bhangale",
+  "Column2": "Speciality: Consultant Pathologist"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Peeyush Suryawanshi",
+  "Column2": "Speciality: Consultant Pediatrician & Neonatologist"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Rakesh Mahawar",
+  "Column2": "Speciality: Radiation Oncology"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Deepak K. Bhojwani",
+  "Column2": "Speciality: Consultant Oncologist"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Bhushan Chopde",
+  "Column2": "Speciality: Consultant Gastroenterology & Hepatology"
+ },
+ {
+  "HOSPITAL TEMI": "Dr.Nikita Andhalkar",
+  "Column2": "Speciality: Dermatologist and Venereologist"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Anita chouksey",
+  "Column2": "Speciality: Sr. Consultant Nephrologist (Shalby Hospital, Indore)"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Rupali Marathe",
+  "Column2": "Speciality: BPT, MPT (Orthopedics)"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Tanishk shroff",
+  "Column2": "Speciality: BDS, DENTAL SURGEON"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Hiteshi Bais",
+  "Column2": "Speciality: Consultant - Anesthesiologist"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Chimu Chinte Chopde",
+  "Column2": "Speciality: Endocrinology"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Kapil Chourasiya",
+  "Column2": "Speciality: Clinical Nutrition & Dietetics"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Arpit Daulal Mahajan",
+  "Column2": "Speciality: Consultant Radiologist"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Abhishek sharma",
+  "Column2": "Speciality: Consultant Cosmetic & Plastic Surgeon, Micro-Vascular Surgery (TMC MUMBAI)"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. yash Mahajan",
+  "Column2": "Speciality: Psychiatry"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Prithviraj Madan Gomsale",
+  "Column2": "Speciality: Consultant Urologist & General Surgeon"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Abhey Joshi",
+  "Column2": "Speciality: Sr. Consultant Nephrologist (Shalby Hospital, Indore)"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Neeraj S. Doijad",
+  "Column2": "Speciality: Radiodiagnosis \/ Radiology"
+ },
+ {
+  "HOSPITAL TEMI": "Dr. Shashank Suresh Karale",
+  "Column2": "Speciality: Emergency Medicine"
+ },
+ {
+  "HOSPITAL TEMI": "What is Hospital's Email?",
+  "Column2": "You can reach the hospital via email at frontdesk@alliswellhospital.com. This email address is monitored by the hospital’s administrative team and can be used for general inquiries, appointment requests, health package details, feedback, or non-urgent medical coordination. When sending an email, it is recommended to include your name, contact number, and a brief description of your query to receive a quicker response."
+ },
+ {
+  "HOSPITAL TEMI": "How many OTs are there?",
+  "Column2": "There are 6+ Modular OTs in All is Well"
+ },
+ {
+  "HOSPITAL TEMI": "How many rooms are there in hospital?",
+  "Column2": "There are around 350 rooms in our hospital."
+ },
+ {
+  "HOSPITAL TEMI": "How many beds are there in hospital?",
+  "Column2": "There are 360+ beds in hospital."
+ },
+ {
+  "HOSPITAL TEMI": "What are the core Values of All is Well?",
+  "Column2": "1)Valuing Time  , 2) Striving for Excellence, 3) Practicing Humility, 4) Fostering Inclusion , 5) Living with Integrity."
+ },
+ {
+  "HOSPITAL TEMI": "Which Hospital is best in All is Well Hospital?",
+  "Column2": "All is Well Hospital is Counted in best hospitals  in Burhanpur."
+ },
+ {
+  "HOSPITAL TEMI": "What is Hospital Opening timing?",
+  "Column2": "Mon - Fri: 8:00 AM - 8:00 PM | Sat - Sun: 9:00 AM - 6:00 PM"
+ },
+ {
+  "HOSPITAL TEMI": "On which days, Hospital is opened?"
+ },
+ {
+  "HOSPITAL TEMI": "Where is All is Well Hospital located?",
+  "Column2": "Near Macro Vision Academy, Burhanpur, Madhya Pradesh, 450331"
+ },
+ {
+  "HOSPITAL TEMI": "How can i contact to hospital?",
+  "Column2": "You can contact on +91 7697744444  or +91 7089099888"
+ },
+ {
+  "HOSPITAL TEMI": "What is the email for all is well hospital?",
+  "Column2": "digitalmarketing@mvaburhanpur.com"
+ },
+ {
+  "HOSPITAL TEMI": "Do I need a referral to see a specialist?",
+  "Column2": "No referral is needed for most departments; you can directly book with the specialist of your choice."
+ },
+ {
+  "HOSPITAL TEMI": "How can I see which doctor treats my condition?",
+  "Column2": "Visit \"Meet Our Specialists\" on the website to filter doctors by department and view their expertise."
+ },
+ {
+  "HOSPITAL TEMI": "Are your doctors experienced?",
+  "Column2": "Yes, our team includes qualified consultants with fellowships and specialized training in their fields."
+ },
+ {
+  "HOSPITAL TEMI": "What health check-up packages do you offer?",
+  "Column2": "We offer Basic Wellness (₹899), Comprehensive Wellness (₹4999), Women's, Diabetic, Pregnancy, and Child packages."
+ },
+ {
+  "HOSPITAL TEMI": "Are the health packages discounted?",
+  "Column2": "Yes, all packages currently offer 25–53% off the original price—check the website for latest offers."
+ },
+ {
+  "HOSPITAL TEMI": "What's included in the Diabetic Wellness package?",
+  "Column2": "It includes HbA1c, sugar tests, ECG, 2D Echo, kidney\/liver tests, eye exam, and consultations with physician & dietitian."
+ },
+ {
+  "HOSPITAL TEMI": "Do you offer dietitian consultations?",
+  "Column2": "Yes, dietitian consultations are included in Comprehensive Wellness and Diabetic Wellness packages."
+ },
+ {
+  "HOSPITAL TEMI": "Are your services affordable?",
+  "Column2": "We provide high-quality, cost-effective care with transparent pricing and discounted wellness packages."
+ },
+ {
+  "HOSPITAL TEMI": "Is parking available at the hospital?",
+  "Column2": "Yes, we offer free parking for patients and visitors near the main entrance."
+ },
+ {
+  "HOSPITAL TEMI": "Do you accept walk-in patients?",
+  "Column2": "Yes, walk-ins are welcome for general consultation; appointments help reduce waiting time."
+ },
+ {
+  "HOSPITAL TEMI": "Can I get a bill estimate before treatment?",
+  "Column2": "Yes, our front desk can provide a tentative cost estimate after a brief consultation with the doctor."
+ },
+ {
+  "HOSPITAL TEMI": "Can I access my past visit history online?",
+  "Column2": "Hospital have all past detail of the patient every patient has a unique ID at the time of first visit from there they can access there past history."
+ },
+ {
+  "HOSPITAL TEMI": "Do you share reports with other doctors?",
+  "Column2": "Yes, with your consent, we can share digital or printed reports with any specialist you refer to."
+ },
+ {
+  "HOSPITAL TEMI": "What should I do in a medical emergency?",
+  "Column2": "Call our emergency number immediately or visit the hospital—our 24\/7 team is ready to help."
+ },
+ {
+  "HOSPITAL TEMI": "Is the hospital wheelchair-accessible?",
+  "Column2": "Yes, the entire facility is ramp-enabled and wheelchair-friendly for patient comfort."
+ },
+ {
+  "HOSPITAL TEMI": "How do I use the WhatsApp chat feature?",
+  "Column2": "Click the WhatsApp icon on the website to start a chat for appointment help or quick queries."
+ },
+ {
+  "HOSPITAL TEMI": "Can I reschedule my appointment online?",
+  "Column2": "Yes, log in to your booking or message us via WhatsApp to change your slot."
+ },
+ {
+  "HOSPITAL TEMI": "Do you provide food for patients and attendants?",
+  "Column2": "Yes, we offer hygienic, dietitian-approved meals; special diets can be arranged on request."
+ },
+ {
+  "HOSPITAL TEMI": "Is your hospital accredited or certified?",
+  "Column2": "Yes, we follow national healthcare standards and maintain certified protocols for safety, hygiene, and treatment."
+ },
+ {
+  "HOSPITAL TEMI": "What makes your hospital different?",
+  "Column2": "We combine experienced specialists, advanced diagnostics, transparent pricing, and patient-first care under one roof."
+ },
+ {
+  "HOSPITAL TEMI": "Do you serve rural or remote patients?",
+  "Column2": "Yes, we welcome patients from all areas and offer tele-consultation support for those traveling from far."
+ },
+ {
+  "HOSPITAL TEMI": "Is your hospital eco-friendly or sustainable?",
+  "Column2": "We follow green practices like waste segregation, energy-efficient systems, and reduced plastic use where possible."
+ },
+ {
+  "HOSPITAL TEMI": "Can I tour the hospital before admission?",
+  "Column2": "Yes, our front desk can arrange a guided visit—just call ahead or request via WhatsApp."
+ },
+ {
+  "HOSPITAL TEMI": "How do I give feedback or file a complaint?",
+  "Column2": "Share your experience via the \"Contact Us\" , WhatsApp, or after the discharge of the patient, the patient care will contact you for the feedback—we value your input."
+ },
+ {
+  "HOSPITAL TEMI": "Are your doctors full-time staff?",
+  "Column2": "Yes, our core specialists are dedicated full-time consultants ensuring consistent, reliable care."
+ },
+ {
+  "HOSPITAL TEMI": "Is patient privacy protected?",
+  "Column2": "All medical records and personal data are confidential and shared only with your consent."
+ },
+ {
+  "HOSPITAL TEMI": "Who is Anand Prakash Chouksey?",
+  "Column2": "Anand Prakash Chouksey is the founder of All is Well Hospital."
+ },
+ {
+  "HOSPITAL TEMI": "Is Hospital NABH certified?",
+  "Column2": "Yes we're NABH certified.You can view it on our website."
+ },
+ {
+  "HOSPITAL TEMI": "Is the hospital ISO 9001 certified?",
+  "Column2": "Yes, the hospital is ISO 9001 certified."
+ },
+ {
+  "HOSPITAL TEMI": "Doctors Count ?",
+  "Column2": "There are more than 30+ doctors available."
+ },
+ {
+  "HOSPITAL TEMI": "Can I book appointment online ?",
+  "Column2": "Yes, You can book appointment online directly through website or by calling on reception."
+ },
+ {
+  "HOSPITAL TEMI": "Is Emergency Services available ?",
+  "Column2": "Yes, Emergency services are available 24\/7 in our hospital."
+ },
+ {
+  "HOSPITAL TEMI": "What is Ambulance number?",
+  "Column2": "Call ambulance: +91 7697744444"
+ },
+ {
+  "HOSPITAL TEMI": "What time does the cafeteria stop serving breakfast\/lunch\/dinner?",
+  "Column2": "Cafeterias serve meals during standard morning, midday, and evening windows. Arrive midway through any meal period to ensure you don't miss the cutoff."
+ },
+ {
+  "HOSPITAL TEMI": "What time do doctors do ward rounds?",
+  "Column2": "Ward rounds commonly happen once or twice a day."
+ },
+ {
+  "HOSPITAL TEMI": "What are the surgery scheduling hours?",
+  "Column2": "Surgeries are generally scheduled during regular weekday daytime hours. For specific timing, please check with reception, as schedules vary based on availability and urgency."
+ },
+ {
+  "HOSPITAL TEMI": "When are health camps or screening drives held?",
+  "Column2": "There are many health camps held by the hospital previously in panchayat & clinics, cardiology camp many more camps like this were held."
+ },
+ {
+  "HOSPITAL TEMI": "Can I bring my own food for the patient?",
+  "Column2": "Yes, you can bring food but give it after the concerned by the specialist only."
+ },
+ {
+  "HOSPITAL TEMI": "Is photography or video recording allowed inside?",
+  "Column2": "For privacy and safety reasons, photography and video recording are generally not permitted inside. Please check with reception for any specific guidelines or exceptions."
+ },
+ {
+  "HOSPITAL TEMI": "Do you offer payment plans or EMI for expensive treatments?",
+  "Column2": "We understand treatment costs can vary, and flexible payment options may be available. Kindly speak with reception to explore plans or EMI details suited to your needs."
+ },
+ {
+  "HOSPITAL TEMI": "Is there a discount for government employees or senior citizens?",
+  "Column2": "No, there is no discount like this right now but the employees who is working under Micro vision academy, All is Well can be treated by the vision card."
+ },
+ {
+  "HOSPITAL TEMI": "What happens if I can't pay the full bill immediately?",
+  "Column2": "If you can't pay the full bill immediately, please speak with reception—they can guide you through available support options or payment arrangements."
+ },
+ {
+  "HOSPITAL TEMI": "What should I do if I suspect a heart attack or stroke?",
+  "Column2": "Alert any staff member immediately or call the emergency no. +91 7697744444."
+ },
+ {
+  "HOSPITAL TEMI": "Do you have a poison control or toxicology unit?",
+  "Column2": "For poisoning concerns, contact reception or emergency services immediately for rapid guidance and care coordination."
+ },
+ {
+  "HOSPITAL TEMI": "What is the protocol if a patient's condition suddenly worsens?",
+  "Column2": "Alert any nearby staff or press the emergency call button—our team is trained to respond quickly to urgent changes. Reception can also assist with immediate escalation."
+ },
+ {
+  "HOSPITAL TEMI": "Do you offer genetic testing or advanced molecular diagnostics?",
+  "Column2": "While we don't conduct genetic or advanced molecular tests on-site, we can refer you to trusted partner labs. They will perform the test and share the report through us for your doctor to review."
+ },
+ {
+  "HOSPITAL TEMI": "Can I get vitamin D, B12, or hormone tests without a prescription?",
+  "Column2": "Most routine tests—including Vitamin D, B12, and hormone panels—can be done without a prescription. The only exception is pregnancy testing, which requires a doctor's prescription."
+ },
+ {
+  "HOSPITAL TEMI": "Do patient rooms have TVs or entertainment options?",
+  "Column2": "Room amenities like TVs vary by category (General, Silver, Diamond, or Platinum). Please check with reception for what's included in your selected room."
+ },
+ {
+  "HOSPITAL TEMI": "Is there a refrigerator or microwave in the room?",
+  "Column2": "These conveniences depend on your room type. Reception can confirm availability based on your booking."
+ },
+ {
+  "HOSPITAL TEMI": "Do you provide laundry services for patients?",
+  "Column2": "For inquiries about laundry services, please check with reception—they can provide the most up-to-date information on availability"
+ },
+ {
+  "HOSPITAL TEMI": "Is free WiFi available in patient rooms and waiting areas?",
+  "Column2": "WiFi availability differs across room types and common areas. For access details, please ask reception at check-in."
+ },
+ {
+  "HOSPITAL TEMI": "Do you offer a mobile app for appointments and reports?",
+  "Column2": "you can book appointments, generate tokens, and access reports via our website or WhatsApp. Reception is also happy to assist with bookings anytime."
+ },
+ {
+  "HOSPITAL TEMI": "Do you issue birth\/death certificates?",
+  "Column2": "Yes, the hospital processes applications for birth and death certificates. For queries or assistance, please contact the MRD (Medical Records Department) or check with reception for direction."
+ },
+ {
+  "HOSPITAL TEMI": "Do you conduct free health camps in nearby villages?",
+  "Column2": "Yes, we regularly conduct free health camps in nearby villages. For schedules or participation details, please inquire at reception."
+ },
+ {
+  "HOSPITAL TEMI": "Can I volunteer or intern at the hospital?",
+  "Column2": "Yes, we welcome volunteers and interns to work under our specialists. Please speak with reception to learn about opportunities and the application process."
+ },
+ {
+  "HOSPITAL TEMI": "Do you offer medical training or certification courses?",
+  "Column2": "Yes, we offer medical training programs with certification upon completion."
+ },
+ null,
+ null,
+ null,
+ null,
+ null,
+ {
+  "HOSPITAL TEMI": "Visiting & Patients meeting"
+ },
+ {
+  "HOSPITAL TEMI": "How many visitors are allowed at a time?",
+  "Column2": "For general wards, one visitor with a patient pass is allowed at a time. ICU visits are restricted to 1–2 close relatives during designated hours (11 AM–12 PM and 6 PM–7 PM)."
+ },
+ {
+  "HOSPITAL TEMI": "Can children visit patients in ICU?",
+  "Column2": "Children under 12 are generally not permitted in ICU to ensure patient safety and infection control. Please consult the nursing station for any exceptions."
+ },
+ {
+  "HOSPITAL TEMI": "What items can I bring for the patient?",
+  "Column2": "You may bring essential personal items, prescribed medicines, and light snacks. Always check with nursing staff before bringing outside food or gifts, especially for ICU patients."
+ },
+ {
+  "HOSPITAL TEMI": "Are flowers or outside food allowed in patient rooms?",
+  "Column2": "Flowers and outside food are not allowed in ICU\/critical care areas. For general wards, please confirm with the nursing team before bringing such items."
+ },
+ {
+  "HOSPITAL TEMI": "Can I stay overnight with the patient?",
+  "Column2": "Yes, one attendant may stay overnight in private rooms or designated guest rooms (102, 103, 221, 222), subject to availability and hospital policy."
+ },
+ {
+  "HOSPITAL TEMI": "Can I video call the patient if I cannot visit physically?",
+  "Column2": "Yes, video calls are permitted with the patient's consent and nursing staff coordination, especially for ICU patients or when physical visits aren't possible."
+ },
+ {
+  "HOSPITAL TEMI": "Can I visit multiple patients in one trip?",
+  "Column2": "Yes, you may visit multiple patients during visiting hours. Please collect separate visitor passes for each patient at the reception desk."
+ },
+ {
+  "HOSPITAL TEMI": "What items are prohibited in patient rooms or ICU?",
+  "Column2": "Prohibited items include outside food (in ICU), flowers, sharp objects, alcohol, tobacco, and large electronics. Please check with staff for a complete, updated list."
+ },
+ {
+  "HOSPITAL TEMI": "Is there a dedicated family lounge or waiting area?",
+  "Column2": "Yes, we have comfortable waiting areas and a dedicated family lounge near the main lobby for visitors to rest while patients receive care."
+ },
+ {
+  "HOSPITAL TEMI": "Appointments & Consultations"
+ },
+ {
+  "HOSPITAL TEMI": "How do I confirm if my appointment is booked?",
+  "Column2": "After booking, you'll receive a token number via SMS\/WhatsApp as confirmation. You can also call +91 76977 44444 or +91 70890 99888 or check with reception to verify your appointment status."
+ },
+ {
+  "HOSPITAL TEMI": "What happens if I miss my appointment slot?",
+  "Column2": "If you miss your slot, please contact reception at +91 76977 44444 or +91 70890 99888 to reschedule. Walk-in consultations may be available based on doctor availability, though waiting times may apply."
+ },
+ {
+  "HOSPITAL TEMI": "Can I get a same-day or urgent appointment?",
+  "Column2": "Yes, same-day walk-in consultations are available for general OPD on a first-come, first-served basis. For urgent medical needs, our 24\/7 emergency services are always accessible."
+ },
+ {
+  "HOSPITAL TEMI": "How do I reschedule or cancel my appointment?",
+  "Column2": "You can reschedule or cancel by calling +91 76977 44444 or +91 70890 99888, messaging via WhatsApp, or logging into your online booking. Please provide prior notice to free the slot for other patients."
+ },
+ {
+  "HOSPITAL TEMI": "Is there a separate counter for senior citizens or pregnant women?",
+  "Column2": "While there's no dedicated counter, senior citizens and pregnant women receive priority assistance at reception. Please inform staff upon arrival for expedited support."
+ },
+ {
+  "HOSPITAL TEMI": "Do I need to carry previous medical reports for consultation?",
+  "Column2": "Yes, carrying previous medical reports, prescriptions, and test results helps your doctor make accurate decisions. Please also bring a valid ID and insurance documents if applicable."
+ },
+ {
+  "HOSPITAL TEMI": "Can I consult a doctor via phone or video call?",
+  "Column2": "Yes, tele-consultation via video\/phone is available for remote patients. Contact +91 76977 44444 or use the WhatsApp feature on our website to schedule a virtual consultation."
+ },
+ {
+  "HOSPITAL TEMI": "How early should I arrive before my appointment time?",
+  "Column2": "We recommend arriving 15–20 minutes before your scheduled time for registration and token collection. For first-time visits, please allow an extra 10 minutes for documentation."
+ },
+ {
+  "HOSPITAL TEMI": "Payments & Billing"
+ },
+ {
+  "HOSPITAL TEMI": "Can I pay using UPI, Google Pay, or PhonePe?",
+  "Column2": "Yes, we accept UPI payments including Google Pay, PhonePe, and Paytm, along with cash, cards, and net banking at all billing counters."
+ },
+ {
+  "HOSPITAL TEMI": "Do you provide an itemized\/detailed bill?",
+  "Column2": "Yes, you can request an itemized bill showing consultation fees, tests, medicines, and room charges at the billing counter during or after payment."
+ },
+ {
+  "HOSPITAL TEMI": "Can I receive my payment receipt via email or WhatsApp?",
+  "Column2": "Yes, payment receipts can be shared via your registered WhatsApp number or email upon request at the billing desk."
+ },
+ {
+  "HOSPITAL TEMI": "What should I do if there is an error in my bill?",
+  "Column2": "Please inform the billing counter staff immediately or call +91 76977 44444; our team will verify and correct any discrepancies promptly."
+ },
+ {
+  "HOSPITAL TEMI": "Do you accept international health insurance?",
+  "Column2": "Currently, we primarily accept Indian health insurance providers and government schemes like Ayushman Bharat; for international policies, please contact our billing desk for case-by-case assistance."
+ },
+ {
+  "HOSPITAL TEMI": "Can I get a tentative cost estimate before treatment starts?",
+  "Column2": "Yes, after a brief consultation, our front desk can provide a tentative cost estimate for procedures, tests, or admissions."
+ },
+ {
+  "HOSPITAL TEMI": "Is there a separate billing counter for insurance patients?",
+  "Column2": "While there's no dedicated counter, our billing team has specialized staff to assist insurance patients with cashless pre-authorization and documentation."
+ },
+ {
+  "HOSPITAL TEMI": "How do I claim a refund if treatment is cancelled?",
+  "Column2": "Refund requests are processed at the billing desk with doctor approval and original payment proof; please contact +91 76977 44444 for guidance on your specific case."
+ },
+ {
+  "HOSPITAL TEMI": "Can I pay my bill in installments or EMI?",
+  "Column2": "For eligible treatments and admissions, EMI options through partner banks may be available; please discuss with our billing desk at the time of admission."
+ },
+ {
+  "HOSPITAL TEMI": "Is there a discount for cash payment or early payment?",
+  "Column2": "Discounted rates are available on our health check-up packages; for other services, please inquire at the billing counter for any ongoing offers or concessions."
+ },
+ {
+  "HOSPITAL TEMI": "How do I get a duplicate bill if I lose the original?",
+  "Column2": "Visit the billing counter with a valid ID and patient details to request a duplicate bill; a nominal processing fee may apply, and the copy will be stamped for official use."
+ },
+ {
+  "HOSPITAL TEMI": "Insurance & Claims"
+ },
+ {
+  "HOSPITAL TEMI": "Do you offer concessions for senior citizens or BPL card holders?",
+  "Column2": "Concessions may be available for eligible patients. For details on applicable benefits, please contact the Insurance Department or check with reception."
+ },
+ {
+  "HOSPITAL TEMI": "Is Ayushman Bharat \/ PM-JAY card accepted here?",
+  "Column2": "Yes, we accept Ayushman Bharat \/ PM-JAY cards. For eligibility, coverage, and claim assistance, please speak with the Insurance Department."
+ },
+ {
+  "HOSPITAL TEMI": "Who can I contact for insurance-related queries at the hospital?",
+  "Column2": "You can contact to Ashish Rawale for all the insurance queries."
+ },
+ {
+  "HOSPITAL TEMI": "What if I need emergency surgery but have no insurance?",
+  "Column2": "Emergency care is provided based on medical need, regardless of insurance status. For financial support options or billing guidance, please contact the Insurance Department after stabilization."
+ },
+ {
+  "HOSPITAL TEMI": "Miscellaneous"
+ },
+ {
+  "HOSPITAL TEMI": "What should I do if I lose a personal item in the hospital?",
+  "Column2": "Please inform the reception desk or call +91 76977 44444 immediately; our staff will help you search and coordinate with security for recovery."
+ },
+ {
+  "HOSPITAL TEMI": "Is there a lost and found desk or contact?",
+  "Column2": "Lost items are managed at the reception\/security desk near the main entrance—please contact them directly or call +91 76977 44444 for assistance."
+ },
+ {
+  "HOSPITAL TEMI": "Can the hospital help me book a taxi, auto, or cab?",
+  "Column2": "Yes, our reception team can assist you in arranging local transport, or you can directly book an auto transport via our online auto booking app."
+ },
+ {
+  "HOSPITAL TEMI": "Can I get a visit summary letter for my employer or school?",
+  "Column2": "Yes, you can request a visit summary or medical certificate at the reception or billing desk after consultation; please carry valid ID for verification."
+ },
+ {
+  "HOSPITAL TEMI": "Where can I buy toiletries, blankets, or essentials for the patient?",
+  "Column2": "Our in-house pharmacy and nearby cafeteria stock basic essentials; for specialized items, please ask reception—they can assist with procurement or local vendor guidance."
+ },
+ {
+  "HOSPITAL TEMI": "Is there a cloakroom or locker facility available?",
+  "Column2": "While dedicated lockers aren't available, reception can help store small valuables temporarily; we recommend keeping important items with you for security."
+ },
+ {
+  "HOSPITAL TEMI": "Do you have facilities for visually or hearing-impaired patients?",
+  "Column2": "Yes, the hospital is wheelchair-accessible with ramps and elevators; please inform reception upon arrival for personalized assistance and communication support."
+ },
+ {
+  "HOSPITAL TEMI": "Can elderly or differently-abled patients get priority service?",
+  "Column2": "Yes, senior citizens and differently-abled patients receive priority assistance at reception and OPD—just inform staff upon arrival for expedited support."
+ },
+ {
+  "HOSPITAL TEMI": "Is there a private lactation or nursing room for mothers?",
+  "Column2": "While a dedicated lactation room isn't specified, private rooms and guest areas can be arranged for nursing mothers upon request at reception."
+ },
+ {
+  "HOSPITAL TEMI": "Where can I park my vehicle for multiple days during admission?",
+  "Column2": "Free parking is available near the main entrance for patients and visitors; for multi-day parking during admission, please register your vehicle at reception for security coordination."
+ },
+ {
+  "HOSPITAL TEMI": "Do I need a doctor's prescription for lab tests?",
+  "Column2": "Yes, a valid doctor's prescription is required for most diagnostic tests to ensure appropriate testing and accurate interpretation of results."
+ },
+ {
+  "HOSPITAL TEMI": "Can I walk in for a blood test without an appointment?",
+  "Column2": "Yes, our 24\/7 laboratory accepts walk-in patients for blood tests; simply register at the lab counter with your prescription or it can be done without prescription."
+ },
+ {
+  "HOSPITAL TEMI": "How do I give a urine or stool sample?",
+  "Column2": "Clean collection containers and instructions are provided at the lab counter; please follow the hygiene guidelines shared by our staff for accurate results."
+ },
+ {
+  "HOSPITAL TEMI": "Is home sample collection service available?",
+  "Column2": "Home sample collection may be available for select tests and areas; please call +91 76977 44444 or WhatsApp us to check eligibility and schedule."
+ },
+ {
+  "HOSPITAL TEMI": "How long are lab reports considered valid?",
+  "Column2": "Report validity depends on the test and clinical context; generally, routine reports are valid for 3–6 months, but your doctor will advise based on your condition."
+ },
+ {
+  "HOSPITAL TEMI": "Do you provide both hard copy and digital soft copy of reports?",
+  "Column2": "Yes, lab reports are delivered digitally via your registered WhatsApp number and can also be collected as printed copies from the report counter."
+ },
+ {
+  "HOSPITAL TEMI": "Can I repeat a test if I doubt the result?",
+  "Column2": "Yes, you may request a repeat test after consulting your doctor; please discuss your concerns with the lab staff or treating physician for guidance."
+ },
+ {
+  "HOSPITAL TEMI": "What if I need a specialized test not available here?",
+  "Column2": "For specialized tests not available onsite, our team can coordinate with accredited external labs; please consult your doctor or the lab desk for assistance."
+ },
+ {
+  "HOSPITAL TEMI": "Can I access my reports through an online patient portal?",
+  "Column2": "Digital reports are shared via WhatsApp or email  please check with reception for the latest updates."
+ },
+ {
+  "HOSPITAL TEMI": "Pharmacy & Medicines"
+ },
+ {
+  "HOSPITAL TEMI": "Is the pharmacy located inside or outside the main building?",
+  "Column2": "Our in-house pharmacy is located inside the main hospital building on the ground floor for easy access."
+ },
+ {
+  "HOSPITAL TEMI": "Do you have all prescribed medicines in stock?",
+  "Column2": "We maintain a comprehensive stock of essential medicines; if a specific item is unavailable, we can arrange procurement within 24 hours."
+ },
+ {
+  "HOSPITAL TEMI": "Are generic\/low-cost medicine options available?",
+  "Column2": "Yes, we offer both branded and affordable generic medicine options as per your doctor's prescription and preference."
+ },
+ {
+  "HOSPITAL TEMI": "Do you offer home delivery for medicines?",
+  "Column2": "No, the In-house pharmacy of our hospital do not offer home deliver for medicines."
+ },
+ {
+  "HOSPITAL TEMI": "Can I buy over-the-counter medicines without a prescription?",
+  "Column2": "Yes, basic OTC medicines like pain relievers or vitamins are available without prescription; prescription medicines require a valid doctor's prescription."
+ },
+ {
+  "HOSPITAL TEMI": "Is the pharmacy open 24\/7 for emergency prescriptions?",
+  "Column2": "Yes, our pharmacy operates 24\/7 to serve emergency and urgent prescription needs at any time."
+ },
+ {
+  "HOSPITAL TEMI": "What is the policy for returning unused or unopened medicines?",
+  "Column2": "For safety and regulatory reasons, we cannot accept returns on dispensed medicines; please confirm your prescription details before purchase."
+ },
+ {
+  "HOSPITAL TEMI": "Do you compound or prepare custom medications?",
+  "Column2": "For questions about compounded or custom-prepared medicines, please speak with our pharmacy team or your treating specialist—they can advise on availability and options."
+ },
+ {
+  "HOSPITAL TEMI": "Do you offer medication counseling or usage instructions?",
+  "Column2": "Yes, we provide medication counseling and clear usage instructions. Our pharmacists are happy to walk you through dosage, timing, and precautions."
+ },
+ {
+  "HOSPITAL TEMI": "Is there a formulary list I can check for available medicines?",
+  "Column2": "Medicine availability can vary. For the most accurate and up-to-date information, please check directly with our pharmacy staff."
+ },
+ {
+  "HOSPITAL TEMI": "Do you stock Ayurvedic or herbal medicines?",
+  "Column2": "Yes, our pharmacy stocks a range of Ayurvedic and herbal products. For specific items or recommendations, kindly ask the pharmacy team."
+ },
+ {
+  "HOSPITAL TEMI": "Emergency & Ambulance"
+ },
+ {
+  "HOSPITAL TEMI": "Does the ambulance have ventilator or life-support equipment?",
+  "Column2": "Yes, we offer both basic and advanced life-support ambulances equipped with ventilators, oxygen, and emergency monitoring; please specify your requirement when calling +91 76977 44444."
+ },
+ {
+  "HOSPITAL TEMI": "Can I track the ambulance location after booking?",
+  "Column2": "Real-time tracking is not currently available; however, our dispatch team will provide estimated arrival time and driver contact details upon confirmation."
+ },
+ {
+  "HOSPITAL TEMI": "Is there a charge for ambulance service, and how much?",
+  "Column2": "Ambulance charges vary based on distance, type (basic\/advanced), and equipment; please contact +91 76977 44444 for a case-specific quote."
+ },
+ {
+  "HOSPITAL TEMI": "Can ambulance pick up from my home or another location?",
+  "Column2": "Yes, our ambulances can pick up patients from home, workplaces, or other locations within Burhanpur and nearby areas—just share the exact address when booking."
+ },
+ {
+  "HOSPITAL TEMI": "What details should I provide when calling for an ambulance?",
+  "Column2": "Please share patient name, age, condition\/symptoms, exact pickup location, contact number, and any special requirements (e.g., ventilator, wheelchair access)."
+ },
+ {
+  "HOSPITAL TEMI": "Can a family member accompany the patient in the ambulance?",
+  "Column2": "Yes, one attendant may accompany the patient in most cases; for advanced life-support ambulances, space may be limited—please confirm with the dispatch team."
+ },
+ {
+  "HOSPITAL TEMI": "Can you arrange ambulance for inter-hospital patient transfer?",
+  "Column2": "Yes, we coordinate safe inter-hospital transfers with appropriate medical support; please call +91 76977 44444 with patient details and destination hospital for arrangement."
+ },
+ {
+  "HOSPITAL TEMI": "Rooms & Patient Comfort"
+ },
+ {
+  "HOSPITAL TEMI": "Can I see the room before confirming admission?",
+  "Column2": "Yes, you can request a brief room view before confirming admission; our admission desk staff will arrange this based on availability and patient priority."
+ },
+ {
+  "HOSPITAL TEMI": "Is an attendant bed or recliner provided in the room?",
+  "Column2": "Yes, private rooms and designated guest rooms (102, 103, 221, 222) include seating or recliner facilities for attendants; please confirm amenities at admission."
+ },
+ {
+  "HOSPITAL TEMI": "Are patient meals included in the room charge?",
+  "Column2": "Basic hygienic meals are included in room charges; special or dietitian-approved diets can be arranged on request, with any additional costs communicated upfront."
+ },
+ {
+  "HOSPITAL TEMI": "Is WiFi available in patient rooms for family?",
+  "Column2": "Complimentary WiFi is available in common areas; for in-room connectivity, please check with reception for current availability and access instructions."
+ },
+ {
+  "HOSPITAL TEMI": "Can I request a room closer to the nursing station?",
+  "Column2": "Yes, you can request a room near the nursing station for added convenience; we'll accommodate based on availability and medical priority."
+ },
+ {
+  "HOSPITAL TEMI": "Do private rooms have attached bathrooms?",
+  "Column2": "Yes, all private room categories (Diamond, Platinum, Golden, Silver, Ruby  Suite) include attached bathrooms with essential amenities for patient comfort and hygiene."
+ },
+ {
+  "HOSPITAL TEMI": "Can I change to a different room category after admission?",
+  "Column2": "Yes, room changes or upgrades are possible subject to availability, please discuss with the admission or billing desk for options and any additional charges."
+ },
+ {
+  "HOSPITAL TEMI": "Are there isolation rooms for infectious disease patients?",
+  "Column2": "Yes, we have designated isolation rooms and strict infection control protocols for infectious disease patients to ensure safety for all, please inform staff upon admission."
+ },
+ {
+  "HOSPITAL TEMI": "Do you provide bed linens, towels, and basic toiletries?",
+  "Column2": "Yes, all rooms are provided with clean bed linens, towels, and basic toiletries; additional items can be requested from nursing staff as needed."
+ },
+ {
+  "HOSPITAL TEMI": "Navigation & Hospital Facilities"
+ },
+ {
+  "HOSPITAL TEMI": "Where is the nearest restroom or washroom?",
+  "Column2": "Restrooms are available on every floor near the elevator lobbies and waiting areas; please follow the signage or ask any staff member for the closest one."
+ },
+ {
+  "HOSPITAL TEMI": "Is there a cafeteria, canteen, or food court inside?",
+  "Column2": "Yes, our cafeteria is located on the ground floor near the main lobby, serving hygienic vegetarian and non-vegetarian meals from 7 AM to 9 PM."
+ },
+ {
+  "HOSPITAL TEMI": "Where can I find safe drinking water?",
+  "Column2": "Safe, filtered drinking water stations are available on all floors near waiting areas and nursing stations."
+ },
+ {
+  "HOSPITAL TEMI": "Is there an ATM or cash withdrawal facility on campus?",
+  "Column2": "Yes, an ATM is located for easy cash withdrawal, additional digital payment options are accepted throughout the hospital."
+ },
+ {
+  "HOSPITAL TEMI": "Where can I get a wheelchair or stretcher assistance?",
+  "Column2": "Wheelchairs and stretchers are available free of charge at the reception desk, simply request assistance and our support staff will help you promptly."
+ },
+ {
+  "HOSPITAL TEMI": "Where can I buy patient care items like masks, gloves, or sanitizers?",
+  "Column2": "Our 24\/7 in-house pharmacy on the ground floor stocks masks, gloves, sanitizers, and other essential patient care items."
+ },
+ {
+  "HOSPITAL TEMI": "Patient Support & Communication"
+ },
+ {
+  "HOSPITAL TEMI": "Is there a patient care coordinator or helpdesk I can contact?",
+  "Column2": "Yes, our Patient Care Desk at reception and the front desk team (+91 76977 44444) are available to assist with coordination, queries, and support throughout your hospital visit."
+ },
+ {
+  "HOSPITAL TEMI": "How do I report a concern about staff behavior or service quality?",
+  "Column2": "You can share feedback or concerns directly with the reception desk, call +91 76977 44444, or use the \"Contact Us\" form on our website; all feedback is reviewed promptly by our patient care team."
+ },
+ {
+  "HOSPITAL TEMI": "Can I seek a second opinion from another specialist in the hospital?",
+  "Column2": "Yes, you may request a second opinion from another in-house specialist; please discuss with your treating doctor or contact reception to coordinate the consultation."
+ },
+ {
+  "HOSPITAL TEMI": "How can I receive regular updates on my patient's condition without being at bedside?",
+  "Column2": "You can request periodic updates via phone or WhatsApp by providing your contact details to the nursing station; for ICU patients, updates are shared during designated visiting hours or as clinically appropriate."
+ },
+ {
+  "HOSPITAL TEMI": "Is there a waiting lounge with seating, charging points, or reading material?",
+  "Column2": "Yes, we have comfortable waiting areas near OPD and main lobby with seating, drinking water, and basic amenities; charging points and reading material availability may vary—please ask reception for current facilities."
+ },
+ null,
+ {
+  "HOSPITAL TEMI": "Mapping Questions"
+ },
+ {
+  "HOSPITAL TEMI": "Where is the pharmacy?",
+  "Column2": "The pharmacy is located on the Ground Floor, directly in front of the reception desk."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the pathology lab?",
+  "Column2": "The pathology department is situated to the left of the reception desk—just follow the signs from there."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the blood collection center?",
+  "Column2": "The blood collection center is located in the hospital Basement."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the X-ray room?",
+  "Column2": "The X-ray room and most scans are on the Ground Floor. For MRI and CT scans, please proceed to the Basement floor."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the MRI scan center?",
+  "Column2": "The MRI scan center is located on the Basement floor."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the CT scan room?",
+  "Column2": "The CT scan room is also on the Basement floor, alongside other advanced imaging services."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the ultrasound department?",
+  "Column2": "Ultrasound services are typically available on the Ground Floor. For exact location, please check with reception or follow directional signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the radiology department?",
+  "Column2": "Most radiology services, including X-ray, are on the Ground Floor; advanced imaging like MRI\/CT is on the Basement. Reception can guide you to the right counter."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the diagnostic center?",
+  "Column2": "Our main diagnostic services are spread across Ground and Basement floors. For a specific test or department, reception can provide quick directions."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the emergency room?",
+  "Column2": "The Emergency Room is clearly signposted from the main hospital entrance. If you're unsure, please ask reception or any staff member—they'll guide you right away."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the ER entrance?"
+ },
+ {
+  "HOSPITAL TEMI": "Where is the emergency ward?"
+ },
+ {
+  "HOSPITAL TEMI": "Where is the ICU?",
+  "Column2": "The ICUs (including KICU, MICU, and NICU) are located on the upper floors. For exact location based on patient need, please check with reception or follow emergency signage."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the cardiology department?",
+  "Column2": "Cardiology services are available on the Ground Floor. Reception can guide you to the right counter or consultation room."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the pediatrics ward?",
+  "Column2": "Pediatric care is provided on the Ground Floor. For ward-specific directions, kindly ask reception or look for pediatric signage."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the maternity ward?",
+  "Column2": "The maternity ward is located on the Ground Floor. Reception can assist with visitation guidelines and room directions."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the labor room?",
+  "Column2": "Labor and delivery services are coordinated through the Operation Theater (OT) area. For immediate assistance, please alert reception or any nursing staff."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the NICU?",
+  "Column2": "The Neonatal ICU (NICU) is located on the 3rd floor. Access is coordinated through medical staff—please check with reception for visitor protocols and directions."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the neurology department?",
+  "Column2": "Neurology services are located on the Ground Floor. For appointment check-in or directions, please ask reception."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the dental department?",
+  "Column2": "Dental care is provided on the Ground Floor. Reception can help you locate the dental clinic and confirm doctor availability."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the surgery department?",
+  "Column2": "Surgical consultations and pre-op care are coordinated on the Ground Floor. For surgeon availability or appointment check-in, please check with reception."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the operation theater?",
+  "Column2": "Our hospital has 6 operation theaters located across different floors. Since surgeries are scheduled based on urgency and specialty, reception can guide you to the correct OT or provide updates on your procedure location."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the cafeteria?",
+  "Column2": "All dining options are located beside the back gate of the hospital. Reception can provide quick directions if needed."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the hospital canteen?"
+ },
+ {
+  "HOSPITAL TEMI": "Where is the coffee shop?"
+ },
+ {
+  "HOSPITAL TEMI": "Where is the vending machine?",
+  "Column2": "We don't have vending machines on campus, but snacks and meals are available at the canteen beside the back gate."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the restaurant?",
+  "Column2": "All dining options are located beside the back gate of the hospital. Reception can provide quick directions if needed."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the restroom?",
+  "Column2": "Restrooms are available on every floor, typically near waiting areas and elevators. If you need directions to the nearest one, please ask reception or any staff member"
+ },
+ {
+  "HOSPITAL TEMI": "Where is the bathroom?"
+ },
+ {
+  "HOSPITAL TEMI": "Where is the nearest toilet?"
+ },
+ {
+  "HOSPITAL TEMI": "Where is the waiting area?",
+  "Column2": "Comfortable seating areas are available on the Ground Floor, near the main entrance and department cabins."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the reception?",
+  "Column2": "The main reception desk is located on the Ground Floor, right at the hospital entrance—your first stop for any assistance."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the help desk?",
+  "Column2": "A dedicated help desk is available on the Ground Floor to guide visitors, answer queries, and provide support."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the registration counter?",
+  "Column2": "Patient registration is handled at the counter on the Ground Floor, adjacent to the main reception area."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the billing counter?",
+  "Column2": "Billing and payment services are available at the dedicated counter on the Ground Floor, near the main reception."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the insurance desk?",
+  "Column2": "The insurance desk is located on the Ground Floor. For claim assistance, documentation, or policy queries, please visit the desk directly or check with reception for exact directions."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the appointment counter?",
+  "Column2": "Appointments can be booked directly at the reception desk on the Ground Floor—or via our website\/WhatsApp for convenience."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the parking lot?",
+  "Column2": "General parking is available both in front of the main entrance and near the back gate. Follow signage or ask security for guidance."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the visitor parking?",
+  "Column2": "Dedicated visitor parking is provided at both the front (main entrance) and back gate areas on the Ground Level."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the ambulance bay?",
+  "Column2": "The ambulance bay is located directly in front of the main entrance for quick emergency access. Staff are always ready to assist upon arrival."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the lift?",
+  "Column2": "Lifts are located near the staircase, just beside the reception desk on the Ground Floor."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the staircase?",
+  "Column2": "Staircases are conveniently situated near the reception desk on the Ground Floor for easy access to all floors."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the wheelchair access?",
+  "Column2": "Wheelchairs are available right at the main entrance—just inform any staff member or security for immediate assistance."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the ramp?",
+  "Column2": "A ramp is available for easy access. Please ask any staff member for guidance or support while using it."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the ATM?",
+  "Column2": "An ATM is available in front of the back entrance, beside Nacl Restaurant."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the locker room?",
+  "Column2": "Locker facilities are available in the Basement. Please check with reception for access instructions."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the children's play area?",
+  "Column2": "A small play area for children is located within the OPD area on the Ground Floor."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the family lounge?",
+  "Column2": "While we don't have a dedicated family lounge, we offer a VIP lounge for added comfort. Please ask reception for access details."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the smoking area?",
+  "Column2": "Smoking is not permitted anywhere on hospital premises—and for good reason: smoking is harmful to your health and can affect healing, breathing, and overall wellness. We encourage a smoke-free environment to support everyone's recovery and well-being."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the admin office?",
+  "Column2": "For administrative inquiries, please check with reception—they'll direct you to the appropriate office or staff member."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the HR department?",
+  "Column2": "HR-related matters are handled internally. For visitor access or queries, kindly coordinate through reception."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the medical records department?",
+  "Column2": "The MRD is located in the Basement. For records requests or assistance, please visit during working hours or check with reception first."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Discharge Counter ?",
+  "Column2": "For discharge, please proceed to the Billing Counter on the Ground Floor. Your doctor will coordinate the medical clearance, and reception can guide you through the final steps."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Pravin R. Borde's cabin?",
+  "Column2": "Doctor Pravin R. Borde's cabin is in OPD, Go straight next to the reception and follow the signs"
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Divyesh Lad's cabin?",
+  "Column2": "Doctor Divyesh Lad's cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Prashant Khairnar's cabin?",
+  "Column2": "Doctor Prashant Khairnar's cabin is on the First floor. "
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Prithviraj Madan Gomsale's cabin?",
+  "Column2": "Doctor Prithviraj Madan Gomsale's cabin is on the First floor. "
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Ravnik R. Bansod's cabin?",
+  "Column2": "Doctor Ravnik R. Bansod's cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Lokendra Singh Thakur's cabin?",
+  "Column2": "Doctor Lokendra Singh Thakur's cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Basheeruddin Ansari's cabin?",
+  "Column2": "Doctor  Basheeruddin Ansari's  cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Gaurav Singh Pardesi's cabin?",
+  "Column2": "Doctor  Gaurav Singh Pardesi's cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Kimaya Sali Medshikar's cabin?",
+  "Column2": "Doctor Kimaya Sali Medshikar's cabin is on the First floor. "
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Monish Gupta's cabin?",
+  "Column2": "Doctor Monish Gupta's cabin is on the First floor. "
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Apurva Yadav's cabin?",
+  "Column2": "Doctor Apurva Yadav's cabin is behind the Pharmacy."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Shubham Verma's cabin?",
+  "Column2": "Doctor  Shubham Verma's cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Rashi Gupta's cabin?",
+  "Column2": "Doctor Rashi gupta's cabin is in the Pathology department, Go left next to the reception and and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Harshada Bhangale's cabin?",
+  "Column2": "Doctor Harshada Bhangale's cabin is in the Pathology department, Go left next to the reception and and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Peeyush Suryawanshi's cabin?",
+  "Column2": "Doctor Peeyush Suryawanshi's cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Rakesh Mahawar's cabin?",
+  "Column2": "Doctor Rakesh Mahawar's cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Deepak K. Bhojwani's cabin?",
+  "Column2": "Doctor Deepak K. Bhojwani's cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Bhushan Chopde's cabin?",
+  "Column2": "Doctor Bhushan Chopde's  cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Nikita Andhalkar's cabin?",
+  "Column2": "Doctor Nikita Andhalkar's cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Anita Chouksey's cabin?",
+  "Column2": "Doctor Anita Chouksey's cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Rupali Marathe's cabin?",
+  "Column2": "Doctor Rupali Marathe's cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Tanishk Shroff's cabin?",
+  "Column2": "Doctor Tanishk Shroff's cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Hiteshi Bais's cabin?",
+  "Column2": "Doctor Hiteshi Bais's cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Chimu Chinte Chopde's cabin?",
+  "Column2": "Doctor Chimu Chinte Chopde's cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Kapil Chourasiya's cabin?",
+  "Column2": "Doctor Kapil Chourasiya's cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Arpit Daulal Mahajan's cabin?",
+  "Column2": "Doctor Arpit Daulal Mahajan's cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Abhishek Sharma's cabin?",
+  "Column2": "Doctor Abhishek Sharma's cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Yash Mahajan's cabin?",
+  "Column2": "Doctor Yash Mahajan's cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Abhey Joshi's cabin?",
+  "Column2": "Doctor Abhey Joshi's cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Neeraj S. Doijad's cabin?",
+  "Column2": "Doctor Neeraj S. Doijad's cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Shashank Suresh Karale's cabin?",
+  "Column2": "Doctor Shashank Suresh Karale's  cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is Dr. Madhur M. Maniyar's cabin?",
+  "Column2": "Doctor Madhur M. Maniyar's cabin is in OPD, Go straight next to the reception and follow the signs."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the doctor's consultation room?",
+  "Column2": "Consultation rooms are assigned by specialty and schedule. For your doctor's exact location, please check with reception—they'll guide you right away."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the nurse station?",
+  "Column2": "Nurse stations are available on every floor, within each ward and department. Look for the nursing desk near your patient's room or ask any staff member."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the staff room?",
+  "Column2": "The staff room is located on the 2nd Floor. This area is for hospital personnel only—visitors please check with reception for assistance."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the ground floor pharmacy?",
+  "Column2": "The pharmacy on the Ground Floor is located directly in front of the billing\/reception desk for quick access."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the first floor OPD?",
+  "Column2": "OPD services span multiple floors. For the exact location of your specialist's OPD, please confirm with reception at check-in."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the second floor ICU?",
+  "Column2": "Specialized ICUs (including KICU) are located on the 2nd Floor. Access is coordinated through medical staff—please check with reception for visitor guidelines."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the blood bank?",
+  "Column2": "The blood bank is located in the Basement. For donations, requests, or emergencies, please contact reception for immediate coordination."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the security desk?",
+  "Column2": "Security personnel are stationed throughout the campus. If you need assistance, ask any staff member—they'll quickly connect you with security."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the taxi stand or cab pickup point?",
+  "Column2": "Cab pickup and drop-off is conveniently located near the main entrance for easy access."
+ },
+ {
+  "HOSPITAL TEMI": "Where is the visitor locker facility?",
+  "Column2": "Visitor lockers are available in the Basement. Please check with reception for access instructions and usage guidelines."
+ }
+],
+"Sheet2":[
+ {
+  "Hindi Questions": "अपॉइंटमेंट कैसे बुक करूं?",
+  "Column2": "वेबसाइट पर \"Book Appointment\" पर क्लिक करें, कॉल करें, या WhatsApp से बुकिंग करें।"
+ },
+ {
+  "Hindi Questions": "क्या मैं वॉक-इन आ सकता हूं?",
+  "Column2": "जी हां, वॉक-इन स्वीकार हैं, लेकिन अपॉइंटमेंट से इंतज़ार कम होता है।"
+ },
+ {
+  "Hindi Questions": "हॉस्पिटल का समय क्या है?",
+  "Column2": "OPD सुबह 9 बजे से शाम 8 बजे तक; इमरजेंसी 24 घंटे खुली है।"
+ },
+ {
+  "Hindi Questions": "क्या रविवार को भी खुले हैं?",
+  "Column2": "जी हां, हम सभी दिन खुले हैं, including Sunday और holidays."
+ },
+ {
+  "Hindi Questions": "इमरजेंसी में क्या करूं?",
+  "Column2": "तुरंत हमें कॉल करें या हॉस्पिटल आएं—हमारी 24\/7 इमरजेंसी टीम तैयार है।"
+ },
+ {
+  "Hindi Questions": "क्या एम्बुलेंस की सुविधा है?",
+  "Column2": "जी हां, इमरजेंसी एम्बुलेंस उपलब्ध है—कॉल करें और मदद पाएं।"
+ },
+ {
+  "Hindi Questions": "हॉस्पिटल कहां है?",
+  "Column2": "हम बुरहानपुर, मध्य प्रदेश में स्थित हैं—वेबसाइट पर पता और मैप देखें।"
+ },
+ {
+  "Hindi Questions": "क्या पार्किंग उपलब्ध है?",
+  "Column2": "जी हां, मरीजों और तीमारदारों के लिए मुफ्त पार्किंग उपलब्ध है।"
+ },
+ {
+  "Hindi Questions": "क्या कैशलेस ट्रीटमेंट है?",
+  "Column2": "जी हां, नेटवर्क इंश्योरेंस वाले patients के लिए cashless treatment उपलब्ध है।"
+ },
+ {
+  "Hindi Questions": "कौन से payment methods हैं?",
+  "Column2": "हम cash, card, UPI और insurance accept करते हैं।"
+ },
+ {
+  "Hindi Questions": "कौन से डॉक्टर उपलब्ध हैं?",
+  "Column2": "Cardiology, Neurology, Gynecology, ENT, Dental, और General Medicine के specialist हैं।"
+ },
+ {
+  "Hindi Questions": "क्या female डॉक्टर हैं?",
+  "Column2": "जी हां, हमारे पास experienced female doctors उपलब्ध हैं"
+ },
+ {
+  "Hindi Questions": "क्या test की सुविधा है?",
+  "Column2": "जी हां, ECG, 2D Echo, blood test, और imaging की in-house सुविधा है।"
+ },
+ {
+  "Hindi Questions": "क्या health package हैं?",
+  "Column2": "जी हां, ₹899 से शुरू होने वाले Basic से लेकर Comprehensive packages उपलब्ध हैं।"
+ },
+ {
+  "Hindi Questions": "क्या ICU की सुविधा है?",
+  "Column2": "जी हां, हमारा fully equipped ICU 24\/7 critical care प्रदान करता है।"
+ },
+ {
+  "Hindi Questions": "ऑल इज़ वेल हॉस्पिटल क्या है?",
+  "Column2": "यह बुरहानपुर में स्थित एक मल्टी-स्पेशलिटी हॉस्पिटल है जो सस्ती और गुणवत्तापूर्ण स्वास्थ्य सेवा देता है।"
+ },
+ {
+  "Hindi Questions": "यह हॉस्पिटल किसके लिए है?",
+  "Column2": "यह हॉस्पिटल बच्चों, बुजुर्गों, महिलाओं और पुरुषों — सभी उम्र और जरूरतों के मरीजों के लिए है।"
+ },
+ {
+  "Hindi Questions": "क्या यहाँ सभी बीमारियों का इलाज होता है?",
+  "Column2": "जी हां, जनरल मेडिसिन से लेकर कार्डियोलॉजी, गायनेकोलॉजी, डेंटल और इमरजेंसी तक की सुविधाएं उपलब्ध हैं।"
+ },
+ {
+  "Hindi Questions": "क्या हॉस्पिटल में डॉक्टर अनुभवी हैं?",
+  "Column2": "जी हां, हमारे डॉक्टर योग्य, प्रशिक्षित और अपने क्षेत्र में अनुभवी विशेषज्ञ हैं।"
+ },
+ {
+  "Hindi Questions": "क्या यहाँ 24 घंटे इमरजेंसी सेवा है?",
+  "Column2": "जी हां, हमारी इमरजेंसी और ICU टीम 24 घंटे तैयार रहती है।"
+ },
+ {
+  "Hindi Questions": "क्या हॉस्पिटल साफ-सुथरा और सुरक्षित है?",
+  "Column2": "जी हां, हम सख्त सफाई, संक्रमण नियंत्रण और सुरक्षा मानकों का पालन करते हैं।"
+ },
+ {
+  "Hindi Questions": "क्या मैं बिना अपॉइंटमेंट आ सकता हूं?",
+  "Column2": "जी हां, वॉक-इन स्वीकार हैं, लेकिन अपॉइंटमेंट से समय बचता है।"
+ },
+ {
+  "Hindi Questions": "क्या यहाँ हिंदी में बात होती है?",
+  "Column2": "जी हां, हमारी स्टाफ हिंदी और स्थानीय भाषा में आराम से बात कर सकती है।"
+ },
+ {
+  "Hindi Questions": "क्या मेरी जानकारी गोपनीय रहेगी?",
+  "Column2": "जी हां, आपकी मेडिकल और निजी जानकारी पूरी तरह सुरक्षित और गोपनीय रहती है।"
+ },
+ {
+  "Hindi Questions": "क्या हॉस्पिटल में व्हीलचेयर सुविधा है?",
+  "Column2": "जी हां, हमारी इमारत व्हीलचेयर-फ्रेंडली है और सहायता उपलब्ध है।"
+ },
+ {
+  "Hindi Questions": "क्या मैं फीडबैक दे सकता हूं?",
+  "Column2": "जी हां, आप WhatsApp, वेबसाइट फॉर्म या रिसेप्शन पर अपना अनुभव साझा कर सकते हैं।"
+ },
+ {
+  "Hindi Questions": "ऑल इज़ वेल' हॉस्पिटल' के संस्थापक कौन हैं?",
+  "Column2": "ऑल इज़ वेल हॉस्पिटल' के संस्थापक श्री आनंद प्रकाश चौकसे हैं।"
+ },
+ {
+  "Hindi Questions": " "
+ }
+]
+}

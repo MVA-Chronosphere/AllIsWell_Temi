@@ -36,7 +36,19 @@ class DoctorsViewModel(application: Application) : AndroidViewModel(application)
     private val tag = "DoctorsViewModel"
 
     init {
-        fetchDoctors()
+        // Only fetch if data is not already loaded or if cache is stale
+        if (_doctors.value.isEmpty()) {
+            if (isDataFromCache()) {
+                loadFromCache()
+                // Optionally refresh in background if cache is valid but older than some threshold
+                if (cache.getCacheAge() > 600000L) { // 10 minutes
+                   Log.d(tag, "Cache is valid but > 10 mins old, refreshing in background")
+                   fetchDoctors()
+                }
+            } else {
+                fetchDoctors()
+            }
+        }
     }
 
     /**

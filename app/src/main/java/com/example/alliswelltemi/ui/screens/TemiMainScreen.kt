@@ -21,9 +21,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.intl.Locale
 import com.example.alliswelltemi.R
 import com.robotemi.sdk.Robot
 import com.robotemi.sdk.TtsRequest
+import java.text.SimpleDateFormat
+import java.util.Date
 
 /**
  * Main Hospital Assistant Screen for Temi Robot (13.3-inch display)
@@ -34,10 +37,23 @@ import com.robotemi.sdk.TtsRequest
 fun TemiMainScreen(
     modifier: Modifier = Modifier,
     robot: Robot? = null,
+    isThinking: Boolean = false,
+    isConversationActive: Boolean = false,
     onNavigate: (String) -> Unit = {}
 ) {
     var currentLanguage by remember { mutableStateOf("en") }
     val darkBg = colorResource(id = R.color.dark_bg)
+    
+    val dateFormatter = remember { SimpleDateFormat("MMM dd, yyyy", java.util.Locale.getDefault()) }
+    val timeFormatter = remember { SimpleDateFormat("hh:mm a", java.util.Locale.getDefault()) }
+    var currentTime by remember { mutableStateOf(Date()) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            currentTime = Date()
+            kotlinx.coroutines.delay(1000)
+        }
+    }
 
     Box(
         modifier = modifier
@@ -105,12 +121,12 @@ fun TemiMainScreen(
                         modifier = Modifier.padding(end = 8.dp)
                     ) {
                         Text(
-                            text = java.text.SimpleDateFormat("MMM dd, yyyy", java.util.Locale.getDefault()).format(java.util.Date()),
+                            text = dateFormatter.format(currentTime),
                             color = Color.White.copy(alpha = 0.7f),
                             fontSize = 12.sp
                         )
                         Text(
-                            text = java.text.SimpleDateFormat("hh:mm a", java.util.Locale.getDefault()).format(java.util.Date()),
+                            text = timeFormatter.format(currentTime),
                             color = Color.White,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium
@@ -139,98 +155,70 @@ fun TemiMainScreen(
             Spacer(modifier = Modifier.height(50.dp))
 
             // 2. HERO SECTION (Greeting Title + Subtitle + Avatar)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = if (currentLanguage == "en") "Namaste!" else "नमस्ते!",
-                        color = Color.White,
-                        fontSize = 56.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = if (currentLanguage == "en")
-                            "How can I help you today?"
-                        else
-                            "आज मैं आपकी कैसे मदद कर सकता हूँ?",
-                        color = Color.LightGray.copy(alpha = 0.8f),
-                        fontSize = 24.sp,
-                        lineHeight = 34.sp
-                    )
-                }
+            // When answering questions, hide greeting text and show animated eyes
+            if (!isThinking && !isConversationActive) {
+                // NORMAL STATE: Show greeting text
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = if (currentLanguage == "en") "Namaste!" else "नमस्ते!",
+                            color = Color.White,
+                            fontSize = 56.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = if (currentLanguage == "en")
+                                "How can I help you today?"
+                            else
+                                "आज मैं आपकी कैसे मदद कर सकता हूँ?",
+                            color = Color.LightGray.copy(alpha = 0.8f),
+                            fontSize = 24.sp,
+                            lineHeight = 34.sp
+                        )
+                    }
 
-                // Robot Avatar (Smiling Temi face)
+                    // Robot Avatar - Normal Smiling Eyes
+                    TemiAvatarSmiling()
+                }
+            } else {
+                // ANSWERING STATE: Show animated listening eyes, hide greeting text
                 Box(
                     modifier = Modifier
-                        .size(240.dp)
-                        .padding(start = 32.dp),
+                        .fillMaxWidth()
+                        .weight(1f),
                     contentAlignment = Alignment.Center
                 ) {
-                    // Blue glow effect
-                    Box(
-                        modifier = Modifier
-                            .size(200.dp)
-                            .background(
-                                Brush.radialGradient(
-                                    colors = listOf(Color(0xFF00D9FF).copy(alpha = 0.2f), Color.Transparent)
-                                )
-                            )
-                    )
-                    
-                    // Head shape
-                    Surface(
-                        modifier = Modifier.size(160.dp, 120.dp),
-                        color = Color.Black,
-                        shape = RoundedCornerShape(36.dp),
-                        border = BorderStroke(2.dp, Color(0xFF00D9FF).copy(alpha = 0.4f))
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Row {
-                                // Smiling Eye Left
-                                Box(
-                                    modifier = Modifier
-                                        .size(32.dp, 16.dp)
-                                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                                        .background(Color(0xFF00D9FF))
-                                )
-                                Spacer(modifier = Modifier.width(24.dp))
-                                // Smiling Eye Right
-                                Box(
-                                    modifier = Modifier
-                                        .size(32.dp, 16.dp)
-                                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                                        .background(Color(0xFF00D9FF))
-                                )
-                            }
-                        }
-                    }
+                    // Show animated Temi eyes while answering
+                    TemiAvatarListening(isListening = isThinking || isConversationActive)
                 }
             }
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            // 3. MAIN MENU TITLE
-            Text(
-                text = if (currentLanguage == "en") "Main Menu" else "मुख्य मेनू",
-                color = Color.Gray,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Medium
-            )
+            // 3. MAIN MENU TITLE - Hide menu when answering
+            if (!isThinking && !isConversationActive) {
+                Text(
+                    text = if (currentLanguage == "en") "Main Menu" else "मुख्य मेनू",
+                    color = Color.Gray,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium
+                )
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-            // 4. MENU GRID (2 columns x 2 rows)
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
-                // First Row: Find & Navigate | Doctors & Departments
-                Row(
+                // 4. MENU GRID (2 columns x 2 rows)
+                Column(
                     modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    // First Row: Find & Navigate | Doctors & Departments
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
                     MenuCard(
@@ -330,6 +318,7 @@ fun TemiMainScreen(
                     )
                 }
             }
+            }  // Close the if (!isThinking && !isConversationActive) block
 
             Spacer(modifier = Modifier.weight(1f))
 
@@ -355,10 +344,14 @@ fun TemiMainScreen(
                         )
                         Spacer(modifier = Modifier.width(20.dp))
                         Text(
-                            text = if (currentLanguage == "en")
-                                stringResource(id = R.string.voice_hint)
-                            else
-                                stringResource(id = R.string.voice_hint_hi),
+                            text = if (isThinking) {
+                                if (currentLanguage == "en") "Thinking..." else "सोच रहा हूँ..."
+                            } else {
+                                if (currentLanguage == "en")
+                                    stringResource(id = R.string.voice_hint)
+                                else
+                                    stringResource(id = R.string.voice_hint_hi)
+                            },
                             color = Color.White.copy(alpha = 0.9f),
                             fontSize = 16.sp
                         )
@@ -369,23 +362,37 @@ fun TemiMainScreen(
                         modifier = Modifier
                             .size(56.dp)
                             .clickable {
-                                robot?.askQuestion(
-                                    if (currentLanguage == "en")
-                                        "How can I help you?"
-                                    else
-                                        "मैं आपकी कैसे मदद कर सकता हूँ?"
-                                )
+                                // NEVER call askQuestion during active GPT conversation
+                                if (!isThinking && !isConversationActive) {
+                                    android.util.Log.d("TemiMainScreen", "Mic button clicked, calling askQuestion")
+                                    robot?.askQuestion(
+                                        if (currentLanguage == "en")
+                                            "How can I help you?"
+                                        else
+                                            "मैं आपकी कैसे मदद कर सकता हूँ?"
+                                    )
+                                } else {
+                                    android.util.Log.d("GPT_FIX", "BLOCKED askQuestion in TemiMainScreen: conversation active or thinking")
+                                }
                             },
                         shape = CircleShape,
-                        color = Color.White
+                        color = if (isThinking || isConversationActive) Color.Gray else Color.White
                     ) {
                         Box(contentAlignment = Alignment.Center) {
-                            Icon(
-                                imageVector = Icons.Default.Mic,
-                                contentDescription = "Voice Input",
-                                tint = darkBg,
-                                modifier = Modifier.size(30.dp)
-                            )
+                            if (isThinking || isConversationActive) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(24.dp),
+                                    color = Color.White,
+                                    strokeWidth = 2.dp
+                                )
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Default.Mic,
+                                    contentDescription = "Voice Input",
+                                    tint = darkBg,
+                                    modifier = Modifier.size(30.dp)
+                                )
+                            }
                         }
                     }
                 }
@@ -456,3 +463,146 @@ fun MenuCard(
         }
     }
 }
+
+/**
+ * Temi Avatar with Smiling Eyes (Normal State)
+ */
+@Composable
+fun TemiAvatarSmiling() {
+    Box(
+        modifier = Modifier
+            .size(240.dp)
+            .padding(start = 32.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        // Blue glow effect
+        Box(
+            modifier = Modifier
+                .size(200.dp)
+                .background(
+                    Brush.radialGradient(
+                        colors = listOf(Color(0xFF00D9FF).copy(alpha = 0.2f), Color.Transparent)
+                    )
+                )
+        )
+
+        // Head shape
+        Surface(
+            modifier = Modifier.size(160.dp, 120.dp),
+            color = Color.Black,
+            shape = RoundedCornerShape(36.dp),
+            border = BorderStroke(2.dp, Color(0xFF00D9FF).copy(alpha = 0.4f))
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Row {
+                    // Smiling Eye Left
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp, 16.dp)
+                            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                            .background(Color(0xFF00D9FF))
+                    )
+                    Spacer(modifier = Modifier.width(24.dp))
+                    // Smiling Eye Right
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp, 16.dp)
+                            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                            .background(Color(0xFF00D9FF))
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Temi Avatar with Listening/Animated Eyes (Answering State)
+ */
+@Composable
+fun TemiAvatarListening(isListening: Boolean = true) {
+    var eyeScale by remember { mutableStateOf(1f) }
+
+    // Blinking and pulsing animation
+    LaunchedEffect(isListening) {
+        if (isListening) {
+            while (true) {
+                // Blink animation
+                kotlinx.coroutines.delay(100)
+                eyeScale = 0.7f
+                kotlinx.coroutines.delay(150)
+                eyeScale = 1f
+
+                // Keep eyes on for a bit
+                kotlinx.coroutines.delay(1500)
+            }
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .size(240.dp)
+            .padding(start = 32.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        // Blue glow effect - more intense when listening
+        Box(
+            modifier = Modifier
+                .size(200.dp)
+                .background(
+                    Brush.radialGradient(
+                        colors = listOf(
+                            Color(0xFF00D9FF).copy(alpha = if (isListening) 0.4f else 0.2f),
+                            Color.Transparent
+                        )
+                    )
+                )
+        )
+
+        // Head shape
+        Surface(
+            modifier = Modifier.size(160.dp, 120.dp),
+            color = Color.Black,
+            shape = RoundedCornerShape(36.dp),
+            border = BorderStroke(2.dp, Color(0xFF00D9FF).copy(alpha = 0.6f))
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+                    // Listening Eye Left - Full circle, animated
+                    Box(
+                        modifier = Modifier
+                            .size((32 * eyeScale).dp, (32 * eyeScale).dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFF00D9FF))
+                    )
+
+                    // Listening Eye Right - Full circle, animated
+                    Box(
+                        modifier = Modifier
+                            .size((32 * eyeScale).dp, (32 * eyeScale).dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFF00D9FF))
+                    )
+                }
+            }
+        }
+
+        // Listening indicator text below
+        if (isListening) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Listening...",
+                    color = Color(0xFF00D9FF),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        }
+    }
+}
+

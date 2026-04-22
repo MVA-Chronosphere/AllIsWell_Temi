@@ -63,20 +63,19 @@ object DoctorRAGService {
         val name = if (doctor.name.startsWith("Dr.", ignoreCase = true)) doctor.name else "Dr. ${doctor.name}"
         return when (queryType.lowercase()) {
             "location", "cabin", "where" -> {
-                "$name is in cabin ${doctor.cabin}."
+                "Found doctor: $name. They are currently seeing patients in cabin ${doctor.cabin} here at All Is Well hospital."
             }
             "department", "specialty" -> {
-                "$name is a specialist in ${doctor.department}."
+                "Found doctor: $name. They are one of our top experts in ${doctor.department} here at All Is Well."
             }
             "experience", "years", "bio" -> {
-                "$name has ${doctor.yearsOfExperience} years of experience. ${doctor.aboutBio}"
+                "Found doctor: $name. They are a highly awarded specialist at our hospital with a focus on ${doctor.specialization}. ${doctor.aboutBio.split(". ").take(1).joinToString("")}"
             }
             "full", "info", "details" -> {
-                "$name is in the ${doctor.department} department with ${doctor.yearsOfExperience} years of experience. " +
-                "Cabin: ${doctor.cabin}. ${doctor.aboutBio}"
+                "Found doctor: $name. A distinguished member of our ${doctor.department} team at All Is Well, they are recognized for their expertise in ${doctor.specialization}. You can find them in cabin ${doctor.cabin}."
             }
             else -> {
-                "$name is a specialist in ${doctor.department}. ${doctor.aboutBio}"
+                "Found doctor: $name. They are currently practicing at All Is Well hospital as an expert in ${doctor.department}."
             }
         }
     }
@@ -86,9 +85,9 @@ object DoctorRAGService {
      */
     fun getResponseForDepartment(dept: String, doctorCount: Int): String {
         return when {
-            doctorCount == 0 -> "No doctors found in the $dept department."
-            doctorCount == 1 -> "Opening the $dept department. We have 1 specialist."
-            else -> "Opening the $dept department. We have $doctorCount specialists available."
+            doctorCount == 0 -> "I'm sorry, we don't have any doctors listed in the $dept department at the moment."
+            doctorCount == 1 -> "I'm opening the $dept department for you. We have one wonderful specialist ready to help."
+            else -> "Certainly! Here is our $dept department. We have $doctorCount expert specialists available to assist you."
         }
     }
 
@@ -113,19 +112,19 @@ object DoctorRAGService {
     fun generateFallbackResponse(searchResults: List<Doctor>, originalQuery: String): String {
         return when {
             searchResults.isEmpty() -> {
-                "I'm sorry, I couldn't find a doctor or department matching \"$originalQuery\". " +
-                "You can say 'find doctor' to see our full list."
+                "I'm sorry, I couldn't find a match for \"$originalQuery\". " +
+                "Would you like to see our full list of doctors? Just say 'find doctor'."
             }
             searchResults.size == 1 -> {
                 val doc = searchResults.first()
                 val name = if (doc.name.startsWith("Dr.", ignoreCase = true)) doc.name else "Dr. ${doc.name}"
-                "I found $name in the ${doc.department} department. ${doc.aboutBio}"
+                "Found doctor: $name. They are a dedicated specialist in ${doc.department}. ${doc.aboutBio}"
             }
             else -> {
                 val names = searchResults.take(3).joinToString(", ") { doc ->
                     if (doc.name.startsWith("Dr.", ignoreCase = true)) doc.name else "Dr. ${doc.name}"
                 }
-                "I found several matches: $names. Please be more specific."
+                "I've found a few matches for you: $names. Could you please tell me which one you're interested in?"
             }
         }
     }
@@ -134,50 +133,55 @@ object DoctorRAGService {
      * Get contextual greeting based on doctors available
      */
     fun generateContextualGreeting(doctors: List<Doctor>): String {
-        if (doctors.isEmpty()) return "Welcome to All Is Well Hospital. I'm Temi, your medical assistant."
+        if (doctors.isEmpty()) return "Welcome to All Is Well Hospital! I'm Temi, and I'm here to help you find the right care."
 
         val deptCount = doctors.map { it.department }.distinct().size
         val doctorCount = doctors.size
 
         return when {
-            doctorCount == 0 -> "Welcome to All Is Well Hospital. I'm Temi. No doctors are currently available."
-            doctorCount == 1 -> "Welcome to All Is Well Hospital. I'm Temi. We have 1 specialist available today."
-            deptCount == 1 -> "Welcome to All Is Well Hospital. I'm Temi. We have $doctorCount specialists in ${doctors.first().department} ready to help you."
-            else -> "Welcome to All Is Well Hospital. I'm Temi. We have $doctorCount specialists across $deptCount departments available to assist you."
+            doctorCount == 0 -> "Welcome to All Is Well Hospital! I'm Temi. I'm here to assist you in any way I can."
+            doctorCount == 1 -> "Welcome! I'm Temi. We have a dedicated specialist available today to provide you with excellent care."
+            deptCount == 1 -> "Welcome to All Is Well Hospital! I'm Temi. We have $doctorCount wonderful specialists in our ${doctors.first().department} department ready to help you."
+            else -> "Hello and welcome to All Is Well Hospital! I'm Temi. We're proud to have $doctorCount expert specialists across $deptCount departments here to care for you today."
         }
     }
 
     /**
-     * Generate rich response with multiple info points
+     * Generate rich, warm, and helpful response with multiple info points
+     * Focused on All Is Well hospital context, specialties, and awards.
+     * Kept concise (< 30s speech).
      */
     fun generateDetailedResponse(doctor: Doctor): String {
         val displayName = if (doctor.name.startsWith("Dr.", ignoreCase = true)) doctor.name else "Dr. ${doctor.name}"
         return buildString {
-            append("Here is some information about $displayName. ")
-            if (doctor.department.isNotBlank()) {
-                append("They are part of the ${doctor.department} department. ")
-            }
+            append("Found doctor: $displayName. ")
+            append("They are currently practicing here at All Is Well hospital. ")
+            
             if (doctor.specialization.isNotBlank()) {
-                append("Their specialization is in ${doctor.specialization}. ")
+                append("They are an award-winning expert specializing in ${doctor.specialization}. ")
+            } else if (doctor.department.isNotBlank()) {
+                append("They are a leading specialist in our ${doctor.department} department. ")
             }
-            if (doctor.yearsOfExperience > 0) {
-                append("They have ${doctor.yearsOfExperience} years of experience. ")
-            }
-            if (doctor.cabin.isNotBlank()) {
-                append("You can find them at cabin location ${doctor.cabin}. ")
-            }
+            
             if (doctor.aboutBio.isNotBlank()) {
-                // Ensure bio is cleaned of characters that might trip up TTS
+                // Prioritize summary/awards if present in bio, keep it concise
                 val cleanBio = doctor.aboutBio
                     .replace(Regex("(?i)M\\.D\\."), "MD")
                     .replace(Regex("(?i)M\\.B\\.B\\.S\\."), "MBBS")
                     .replace(Regex("(?i)B\\.D\\.S\\."), "BDS")
                     .replace(Regex("(?i)M\\.S\\."), "MS")
+                    .split(". ")
+                    .take(2) // Take only first 2 sentences to keep it under 30s
+                    .joinToString(". ")
                 
-                append("Regarding their background. $cleanBio ")
+                append("They are highly recognized for their contributions: $cleanBio. ")
             }
-            if (doctor.email.isNotBlank()) append("The email address is ${doctor.email}. ")
-            if (doctor.phone.isNotBlank()) append("The phone number is ${doctor.phone}. ")
+
+            if (doctor.cabin.isNotBlank()) {
+                append("You can find them at cabin ${doctor.cabin}. ")
+            }
+            
+            append("We are proud to have them on our team.")
         }.trim()
     }
 }

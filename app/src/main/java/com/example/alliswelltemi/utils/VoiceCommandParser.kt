@@ -223,18 +223,21 @@ object VoiceCommandParser {
     }
 
     /**
-     * Extract doctor name from query with fuzzy matching
+     * Extract doctor name from query with fuzzy matching and noise filtering
      */
     private fun extractDoctorName(normalized: String, doctors: List<Doctor>): String? {
-        // First try exact matching
+        // Remove common noise words that might appear in ASR results
+        val cleaned = removeNoiseWords(normalized)
+
+        // First try exact matching on cleaned query
         doctors.find { doctor ->
             val fullName = doctor.name.lowercase().replace("dr.", "").replace("dr ", "").trim()
             val lastNameParts = fullName.split(" ").filter { it.isNotEmpty() }
 
-            normalized.contains(fullName) ||
-            fullName.contains(normalized) ||
-            lastNameParts.any { part -> 
-                (normalized.contains(part) || part.contains(normalized)) && part.length > 2 
+            cleaned.contains(fullName) ||
+            fullName.contains(cleaned) ||
+            lastNameParts.any { part ->
+                (cleaned.contains(part) || part.contains(cleaned)) && part.length > 2
             }
         }?.let { return it.name }
 
@@ -244,13 +247,33 @@ object VoiceCommandParser {
             val nameParts = fullName.split(" ").filter { it.isNotEmpty() }
             
             nameParts.forEach { part ->
-                if (part.length > 2 && levenshteinDistance(part, extractQueryName(normalized)) <= 2) {
+                if (part.length > 2 && levenshteinDistance(part, extractQueryName(cleaned)) <= 2) {
                     return doctor.name
                 }
             }
         }
 
         return null
+    }
+
+    /**
+     * Remove common ASR noise words from query
+     */
+    private fun removeNoiseWords(query: String): String {
+        val noiseWords = listOf(
+            "japanese", "indian", "american", "british", // nationalities
+            "male", "female", "doctor", "dr", // titles that don't help matching
+            "specialist", "surgeon", "physician", // general titles
+            "senior", "junior", "sr", "jr", // qualifiers
+            "the", "a", "an" // articles
+        )
+
+        var result = query
+        noiseWords.forEach { noise ->
+            result = result.replace(Regex("\\b$noise\\b"), " ")
+        }
+
+        return result.replace(Regex("\\s+"), " ").trim()
     }
 
     /**

@@ -43,13 +43,17 @@ fun AppointmentBookingScreen(
     var currentLanguage by remember { mutableStateOf("en") }
     val darkBg = colorResource(id = R.color.dark_bg)
 
-    LaunchedEffect(Unit) {
-        viewModel.initializeDepartments(doctorsViewModel.departments.value)
-        viewModel.loadTimeSlots(DoctorData.getAvailableTimeSlots())
-        
-        // Load initial doctors if a department is available
-        doctorsViewModel.departments.value.firstOrNull()?.let {
-            viewModel.loadDoctorsByDepartment(it, doctorsViewModel.doctors.value)
+    LaunchedEffect(doctorsViewModel.doctors.value) {
+        if (doctorsViewModel.departments.value.isNotEmpty()) {
+            viewModel.initializeDepartments(doctorsViewModel.departments.value)
+            viewModel.loadTimeSlots(DoctorData.getAvailableTimeSlots())
+            
+            // Auto-load first department if nothing selected
+            if (viewModel.doctorsInDepartment.value.isEmpty()) {
+                doctorsViewModel.departments.value.firstOrNull()?.let {
+                    viewModel.loadDoctorsByDepartment(it, doctorsViewModel.doctors.value)
+                }
+            }
         }
     }
 
@@ -601,21 +605,33 @@ fun StepPatientDetails(
                 .fillMaxWidth()
                 .height(48.dp),
             shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
-            color = Color.White.copy(alpha = 0.08f)
+            color = Color.White.copy(alpha = 0.08f),
+            border = if (viewModel.nameError.value != null) 
+                androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFDC2626)) 
+                else null
         ) {
             TextField(
                 value = viewModel.patientName.value,
                 onValueChange = { viewModel.setPatientName(it) },
                 modifier = Modifier.fillMaxSize(),
                 singleLine = true,
-                textStyle = LocalTextStyle.current.copy(color = Color.White),
+                textStyle = LocalTextStyle.current.copy(color = Color.White, fontSize = 14.sp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color(0xFF00D9FF),
-                    unfocusedIndicatorColor = Color.White.copy(alpha = 0.2f),
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
                     cursorColor = Color.White
                 )
+            )
+        }
+
+        if (viewModel.nameError.value != null) {
+            Text(
+                text = viewModel.nameError.value!!,
+                color = Color(0xFFDC2626),
+                fontSize = 11.sp,
+                modifier = Modifier.padding(top = 4.dp, start = 4.dp)
             )
         }
 
@@ -636,35 +652,40 @@ fun StepPatientDetails(
                 .fillMaxWidth()
                 .height(48.dp),
             shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
-            color = Color.White.copy(alpha = 0.08f)
+            color = Color.White.copy(alpha = 0.08f),
+            border = if (viewModel.phoneError.value != null) 
+                androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFDC2626)) 
+                else null
         ) {
             TextField(
                 value = viewModel.patientPhone.value,
-                onValueChange = { viewModel.setPatientPhone(it) },
+                onValueChange = { 
+                    if (it.length <= 10 && it.all { char -> char.isDigit() }) {
+                        viewModel.setPatientPhone(it)
+                    }
+                },
                 modifier = Modifier.fillMaxSize(),
                 singleLine = true,
-                textStyle = LocalTextStyle.current.copy(color = Color.White),
+                textStyle = LocalTextStyle.current.copy(color = Color.White, fontSize = 14.sp),
+                keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                    keyboardType = androidx.compose.ui.text.input.KeyboardType.Number
+                ),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color(0xFF00D9FF),
-                    unfocusedIndicatorColor = Color.White.copy(alpha = 0.2f),
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
                     cursorColor = Color.White
                 )
             )
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
-
-        // Validation message
-        if (viewModel.patientName.value.isNotEmpty() && viewModel.patientPhone.value.isEmpty()) {
+        if (viewModel.phoneError.value != null) {
             Text(
-                text = if (language == "en")
-                    "Please enter your phone number"
-                else
-                    "कृपया अपना फोन नंबर दर्ज करें",
+                text = viewModel.phoneError.value!!,
                 color = Color(0xFFDC2626),
-                fontSize = 12.sp
+                fontSize = 11.sp,
+                modifier = Modifier.padding(top = 4.dp, start = 4.dp)
             )
         }
     }

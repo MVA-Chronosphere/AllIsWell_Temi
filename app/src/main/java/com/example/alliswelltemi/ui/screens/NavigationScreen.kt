@@ -45,6 +45,8 @@ fun NavigationScreen(
     modifier: Modifier = Modifier,
     robot: Robot? = null,
     viewModel: NavigationViewModel = remember { NavigationViewModel() },
+    isThinking: Boolean = false,
+    isConversationActive: Boolean = false,
     onBackPress: () -> Unit = {},
     onNavigationComplete: (Location) -> Unit = {}
 ) {
@@ -124,8 +126,13 @@ fun NavigationScreen(
                     onSearchTextChanged = { viewModel.onSearchTextChanged(it) },
                     onClearSearch = { viewModel.clearSearch() },
                     onVoiceClick = {
-                        viewModel.setListening(true)
-                        robot?.askQuestion("Where would you like to go?")
+                        // NEVER call askQuestion during active GPT conversation
+                        if (!isConversationActive) {
+                            viewModel.setListening(true)
+                            robot?.askQuestion("Where would you like to go?")
+                        } else {
+                            android.util.Log.d("GPT_FIX", "BLOCKED askQuestion in NavigationScreen: conversation active")
+                        }
                     },
                     isListening = isListening
                 )
@@ -153,8 +160,11 @@ fun NavigationScreen(
         }
 
         // Navigation overlay animation
-        if (isLoading) {
-            NavigationOverlayAnimated(selectedLocation)
+        if (isLoading || isThinking) {
+            NavigationOverlayAnimated(
+                selectedLocation = selectedLocation,
+                isThinking = isThinking
+            )
         }
     }
 }
@@ -683,7 +693,10 @@ private fun LocationListItemAnimated(
  * Navigation overlay animation with animated path/route visualization
  */
 @Composable
-private fun NavigationOverlayAnimated(selectedLocation: Location?) {
+private fun NavigationOverlayAnimated(
+    selectedLocation: Location? = null,
+    isThinking: Boolean = false
+) {
     val infiniteTransition = rememberInfiniteTransition(label = "nav_overlay")
 
     // Pulsing dot animation
@@ -786,7 +799,11 @@ private fun NavigationOverlayAnimated(selectedLocation: Location?) {
 
             // Location name
             Text(
-                text = "Taking you to ${selectedLocation?.name ?: "destination"}",
+                text = when {
+                    isThinking -> "Thinking..."
+                    selectedLocation != null -> "Taking you to ${selectedLocation.name}"
+                    else -> "Processing..."
+                },
                 color = Color.White,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
@@ -796,7 +813,7 @@ private fun NavigationOverlayAnimated(selectedLocation: Location?) {
 
             // Animated progress text
             Text(
-                text = "Robot is moving...",
+                text = if (isThinking) "Consulting hospital database" else "Robot is moving...",
                 color = Color.White.copy(alpha = 0.7f),
                 fontSize = 16.sp
             )

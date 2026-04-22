@@ -43,6 +43,13 @@ class AppointmentViewModel : ViewModel() {
     private val _patientPhone = mutableStateOf("")
     val patientPhone: State<String> = _patientPhone
 
+    // Error states for validation feedback
+    private val _nameError = mutableStateOf<String?>(null)
+    val nameError: State<String?> = _nameError
+
+    private val _phoneError = mutableStateOf<String?>(null)
+    val phoneError: State<String?> = _phoneError
+
     // Generated appointment token
     private val _appointmentToken = mutableStateOf("")
     val appointmentToken: State<String> = _appointmentToken
@@ -133,30 +140,46 @@ class AppointmentViewModel : ViewModel() {
     fun confirmDetails(): Boolean {
         val name = _patientName.value.trim()
         val phone = _patientPhone.value.trim()
+        var isValid = true
 
-        if (name.isEmpty() || phone.isEmpty()) {
-            android.util.Log.w("AppointmentViewModel", "Validation failed: Name or phone is empty")
-            return false
+        // Reset errors
+        _nameError.value = null
+        _phoneError.value = null
+
+        if (name.isEmpty()) {
+            _nameError.value = "Name is required"
+            isValid = false
+        } else if (name.length < 2) {
+            _nameError.value = "Name is too short"
+            isValid = false
         }
 
-        if (phone.length < 10) {
-            android.util.Log.w("AppointmentViewModel", "Validation failed: Phone number too short")
-            return false
+        // Basic mobile validation (starts with 6-9 and is 10 digits)
+        val phoneRegex = Regex("^[6-9]\\d{9}$")
+        if (phone.isEmpty()) {
+            _phoneError.value = "Phone number is required"
+            isValid = false
+        } else if (!phoneRegex.matches(phone)) {
+            _phoneError.value = "Enter a valid 10-digit mobile number"
+            isValid = false
         }
 
-        android.util.Log.d("AppointmentViewModel", "Details confirmed for $name, moving to step 5")
-        _currentStep.value = 5
-        generateAppointmentToken()
-        return true
+        if (isValid) {
+            android.util.Log.d("AppointmentViewModel", "Details confirmed for $name, moving to step 5")
+            generateAppointmentToken()
+            _currentStep.value = 5
+        }
+        return isValid
     }
 
     /**
-     * Generate unique appointment token
+     * Generate unique and readable appointment token
+     * Format: APT-YYMMDD-XXXX (Date + 4 random characters)
      */
     private fun generateAppointmentToken() {
-        val timestamp = System.currentTimeMillis()
-        val uuid = UUID.randomUUID().toString().take(6).uppercase()
-        _appointmentToken.value = "APT-$uuid-$timestamp".take(20)
+        val datePart = java.time.format.DateTimeFormatter.ofPattern("yyMMdd").format(LocalDate.now())
+        val randomPart = UUID.randomUUID().toString().take(4).uppercase()
+        _appointmentToken.value = "APT-$datePart-$randomPart"
         android.util.Log.d("AppointmentViewModel", "Generated token: ${_appointmentToken.value}")
     }
 
