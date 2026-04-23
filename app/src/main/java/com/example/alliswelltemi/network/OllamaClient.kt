@@ -18,10 +18,10 @@ object OllamaClient {
     // IMPORTANT: For Temi robot on local network, use the Ollama server IP
     // Default: http://localhost:11434/ (change to your actual server IP)
     // For emulator/testing: http://10.0.2.2:11434/
-    private const val BASE_URL = "http://10.1.90.89:11434/"
+    private const val BASE_URL = "http://10.1.90.21:11434/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
+        level = HttpLoggingInterceptor.Level.HEADERS
     }
 
     private val httpClient = OkHttpClient.Builder()
@@ -59,28 +59,20 @@ object OllamaClient {
                 val response = api.generateStream(request.copy(stream = true))
                 val responseBody = response.body()
 
-                responseBody?.let { body ->
+                responseBody?.use { body ->
                     val source = body.source()
-                    val buffer = okio.Buffer()
-
                     while (!source.exhausted()) {
-                        val read = source.read(buffer, 8192)
-                        if (read > 0) {
-                            val chunk = buffer.readUtf8()
-                            // Parse NDJSON chunks
-                            chunk.lines().forEach { line ->
-                                if (line.isNotBlank()) {
-                                    try {
-                                        val streamResponse = com.google.gson.Gson().fromJson(line, OllamaStreamResponse::class.java)
-                                        emit(streamResponse.response)
-                                        if (streamResponse.done) {
-                                            return@flow
-                                        }
-                                    } catch (e: Exception) {
-                                        // Skip malformed JSON lines
-                                        android.util.Log.w("OllamaClient", "Skipping malformed chunk: $line")
-                                    }
+                        val line = source.readUtf8Line()
+                        if (!line.isNullOrBlank()) {
+                            try {
+                                val streamResponse = com.google.gson.Gson().fromJson(line, OllamaStreamResponse::class.java)
+                                emit(streamResponse.response)
+                                if (streamResponse.done) {
+                                    break
                                 }
+                            } catch (e: Exception) {
+                                // Skip malformed JSON lines
+                                android.util.Log.w("OllamaClient", "Skipping malformed chunk: $line")
                             }
                         }
                     }

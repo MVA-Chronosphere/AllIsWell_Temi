@@ -126,12 +126,13 @@ fun NavigationScreen(
                     onSearchTextChanged = { viewModel.onSearchTextChanged(it) },
                     onClearSearch = { viewModel.clearSearch() },
                     onVoiceClick = {
-                        // NEVER call askQuestion during active GPT conversation
+                        // MANUAL PIPELINE: Click only updates UI state
+                        // ASR listener will handle all voice processing
                         if (!isConversationActive) {
                             viewModel.setListening(true)
-                            robot?.askQuestion("Where would you like to go?")
+                            android.util.Log.d("VOICE_PIPELINE", "Voice button clicked in NavigationScreen - ASR will trigger")
                         } else {
-                            android.util.Log.d("GPT_FIX", "BLOCKED askQuestion in NavigationScreen: conversation active")
+                            android.util.Log.d("VOICE_PIPELINE", "Voice click blocked - conversation active")
                         }
                     },
                     isListening = isListening

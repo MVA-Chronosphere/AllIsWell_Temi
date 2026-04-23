@@ -362,17 +362,12 @@ fun TemiMainScreen(
                         modifier = Modifier
                             .size(56.dp)
                             .clickable {
-                                // NEVER call askQuestion during active GPT conversation
+                                // MANUAL PIPELINE: Click only updates UI state
+                                // ASR listener will handle all voice processing
                                 if (!isThinking && !isConversationActive) {
-                                    android.util.Log.d("TemiMainScreen", "Mic button clicked, calling askQuestion")
-                                    robot?.askQuestion(
-                                        if (currentLanguage == "en")
-                                            "How can I help you?"
-                                        else
-                                            "मैं आपकी कैसे मदद कर सकता हूँ?"
-                                    )
+                                    android.util.Log.d("VOICE_PIPELINE", "Mic clicked - ASR will trigger voice input")
                                 } else {
-                                    android.util.Log.d("GPT_FIX", "BLOCKED askQuestion in TemiMainScreen: conversation active or thinking")
+                                    android.util.Log.d("VOICE_PIPELINE", "Mic click blocked - conversation active or thinking")
                                 }
                             },
                         shape = CircleShape,

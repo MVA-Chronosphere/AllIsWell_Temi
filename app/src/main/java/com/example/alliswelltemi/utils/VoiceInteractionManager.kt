@@ -41,6 +41,12 @@ class VoiceInteractionManager(
     private var speechRecognizer: SpeechRecognizer? = null
     private var isListening = false
 
+    // Conversation context - maintains chat history
+    private val conversationContext = ConversationContext(
+        maxHistoryItems = 5,    // Remember last 5 Q&A pairs
+        maxContextLength = 2000 // Max context length
+    )
+
     // State callbacks
     private var onStateChanged: ((VoiceState) -> Unit)? = null
     private var onVoiceResultReady: ((VoiceResult) -> Unit)? = null
@@ -213,6 +219,7 @@ class VoiceInteractionManager(
     /**
      * Send spoken text to Ollama LLM and get response
      * Runs on IO dispatcher to avoid blocking main thread
+     * Saves conversation turn for context in next question
      */
     private fun processSpeechWithOllama(spokenText: String) {
         updateState(VoiceState.PROCESSING)
@@ -221,8 +228,18 @@ class VoiceInteractionManager(
 
         coroutineScope.launch {
             try {
-                // Step 1: Build hospital context prompt
-                val hospitalContextPrompt = buildHospitalContextPrompt(spokenText)
+                // Step 1: Build hospital context prompt (includes previous conversation)
+                val doctors = withContext(Dispatchers.Main) {
+                    // Try to get doctors from a shared source or pass them in
+                    // For now, using empty list or we should update this class to accept doctors
+                    emptyList<com.example.alliswelltemi.data.Doctor>()
+                }
+                
+                val hospitalContextPrompt = RagContextBuilder.buildOllamaPrompt(
+                    query = spokenText,
+                    doctors = doctors,
+                    historyContext = conversationContext.getContextString()
+                )
                 Log.d(TAG, "Built hospital context prompt (${hospitalContextPrompt.length} chars)")
 
                 updateState(VoiceState.THINKING)
@@ -253,10 +270,14 @@ class VoiceInteractionManager(
                 val cleanedResponse = cleanResponseForSpeech(ollamaResponse.response)
                 Log.d(TAG, "Cleaned response for TTS (${cleanedResponse.length} chars)")
 
+                // Step 4: Save to conversation context for next turn
+                conversationContext.addTurn(spokenText, cleanedResponse)
+                Log.d(TAG, "Saved turn to conversation context (${conversationContext.getTurnCount()} total)")
+
                 updateState(VoiceState.SPEAKING)
                 speakResponse(cleanedResponse)
 
-                // Step 4: Notify result ready
+                // Step 5: Notify result ready
                 val result = VoiceResult(
                     spokenText = spokenText,
                     llmResponse = cleanedResponse,
@@ -274,6 +295,9 @@ class VoiceInteractionManager(
                 val fallbackResponse = generateFallbackResponse(spokenText)
                 Log.d(TAG, "Using fallback response: $fallbackResponse")
 
+                // Save fallback response to context too
+                conversationContext.addTurn(spokenText, fallbackResponse)
+
                 speakResponse(fallbackResponse)
                 onError?.invoke("Failed to process: ${e.message}")
             }
@@ -282,10 +306,14 @@ class VoiceInteractionManager(
 
     /**
      * Build hospital-specific context prompt for Ollama
-     * Provides relevant information to LLM about hospital operations
+     * Includes previous conversation context to maintain conversation continuity
      */
     private fun buildHospitalContextPrompt(userInput: String): String {
-        return """
+        // Get previous conversation context
+        val conversationContextStr = conversationContext.getContextString()
+
+        // Build system prompt with conversation history
+        val systemPrompt = """
             You are a helpful hospital assistant robot named Temi. You help patients navigate the hospital.
             
             Hospital Services:
@@ -300,11 +328,32 @@ class VoiceInteractionManager(
             - Keep responses brief (1-2 sentences max for speech)
             - Offer to help navigate or book appointments
             - If unsure, suggest visiting the information desk
+            - Reference previous conversations if relevant
+        """.trimIndent()
+
+        // Add conversation history if available
+        val contextWithHistory = if (conversationContextStr.isNotEmpty()) {
+            """
+            $systemPrompt
+            
+            $conversationContextStr
+            
+            Current Question: "$userInput"
+            
+            Respond as Temi hospital assistant. Reference previous context if relevant (2-3 sentences max):
+            """.trimIndent()
+        } else {
+            """
+            $systemPrompt
             
             Patient Query: "$userInput"
             
             Respond as Temi hospital assistant (2-3 sentences max):
-        """.trimIndent()
+            """.trimIndent()
+        }
+
+        Log.d(TAG, "Built prompt with ${conversationContext.getTurnCount()} previous turns")
+        return contextWithHistory
     }
 
     /**
@@ -399,6 +448,34 @@ class VoiceInteractionManager(
             else -> "Unknown error (code: $errorCode)"
         }
     }
+
+    /**
+     * Get conversation context object (for UI integration or debugging)
+     */
+    fun getConversationContext(): ConversationContext = conversationContext
+
+    /**
+     * Clear conversation history (call when returning to main screen or on timeout)
+     */
+    fun clearConversationHistory() {
+        conversationContext.clearHistory()
+        Log.d(TAG, "Conversation history cleared")
+    }
+
+    /**
+     * Get number of turns in current conversation
+     */
+    fun getConversationTurnCount(): Int = conversationContext.getTurnCount()
+
+    /**
+     * Get formatted conversation history for display
+     */
+    fun getFormattedConversationHistory(): String = conversationContext.getFormattedHistory()
+
+    /**
+     * Check if conversation session has expired
+     */
+    fun isConversationSessionExpired(): Boolean = conversationContext.isSessionExpired()
 
     /**
      * Clean up resources

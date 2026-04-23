@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.alliswelltemi.data.Doctor
 import com.example.alliswelltemi.data.DoctorCache
 import com.example.alliswelltemi.data.DoctorData
+import com.example.alliswelltemi.data.HospitalKnowledgeBase
 import com.example.alliswelltemi.network.RetrofitClient
 import kotlinx.coroutines.launch
 import android.util.Log
@@ -61,16 +62,38 @@ class DoctorsViewModel(application: Application) : AndroidViewModel(application)
                 _error.value = null
 
                 // Try to fetch from API
+                Log.d(tag, "Starting to fetch doctors from Strapi API...")
                 val response = RetrofitClient.apiService.getDoctors()
+                Log.d(tag, "API Response received. Raw data count: ${response.data?.size ?: 0}")
+
+                // Log all raw doctors received
+                response.data?.forEachIndexed { index, doctorDoc ->
+                    Log.d(tag, "Raw doctor $index: name=${doctorDoc.name}, specialty=${doctorDoc.specialty}, attributes=${doctorDoc.attributes?.name}")
+                }
+
                 val doctorList = response.data?.mapNotNull { doctorDoc ->
-                    doctorDoc.toDomain()
+                    val doctor = doctorDoc.toDomain()
+                    if (doctor != null) {
+                        Log.d(tag, "Parsed doctor: ${doctor.name} (${doctor.specialization})")
+                    } else {
+                        Log.w(tag, "Failed to parse doctor: ${doctorDoc.name}")
+                    }
+                    doctor
                 } ?: emptyList()
+
+                Log.d(tag, "Total parsed doctors: ${doctorList.size}")
+                doctorList.forEach { doctor ->
+                    Log.d(tag, "  ✓ ${doctor.name} - ${doctor.department} - Cabin ${doctor.cabin}")
+                }
 
                 if (doctorList.isNotEmpty()) {
                     _doctors.value = doctorList
                     cache.saveDoctors(doctorList)
-                    Log.d(tag, "Fetched and cached ${doctorList.size} doctors from API")
+                    // INJECT DOCTORS INTO KNOWLEDGE BASE
+                    HospitalKnowledgeBase.injectDoctorQAs(doctorList)
+                    Log.d(tag, "Fetched and cached ${doctorList.size} doctors from API and injected into KB")
                 } else {
+                    Log.d(tag, "API returned empty or all doctors failed to parse, trying cache...")
                     // API returned empty, try cache
                     loadFromCache()
                 }
@@ -81,9 +104,10 @@ class DoctorsViewModel(application: Application) : AndroidViewModel(application)
                     .distinct()
                     .sorted()
                 _departments.value = uniqueDepartments
+                Log.d(tag, "Departments: ${_departments.value}")
 
             } catch (e: Exception) {
-                Log.e(tag, "Error fetching doctors from API", e)
+                Log.e(tag, "Error fetching doctors from API: ${e.message}", e)
                 _error.value = "Network error. Loading cached data..."
                 // Try to load from cache as fallback
                 loadFromCache()
@@ -102,6 +126,8 @@ class DoctorsViewModel(application: Application) : AndroidViewModel(application)
             if (cachedDoctors != null && cachedDoctors.isNotEmpty()) {
                 _doctors.value = cachedDoctors
                 _error.value = null
+                // INJECT CACHED DOCTORS INTO KNOWLEDGE BASE
+                HospitalKnowledgeBase.injectDoctorQAs(cachedDoctors)
                 Log.d(tag, "Loaded ${cachedDoctors.size} doctors from cache")
 
                 // Extract unique departments
@@ -128,6 +154,8 @@ class DoctorsViewModel(application: Application) : AndroidViewModel(application)
             val staticDoctors = DoctorData.DOCTORS
             _doctors.value = staticDoctors
             _error.value = null
+            // INJECT STATIC DOCTORS INTO KNOWLEDGE BASE
+            HospitalKnowledgeBase.injectDoctorQAs(staticDoctors)
             Log.d(tag, "Loaded ${staticDoctors.size} doctors from static data")
 
             // Extract unique departments
@@ -268,5 +296,24 @@ class DoctorsViewModel(application: Application) : AndroidViewModel(application)
      */
     fun isDataFromCache(): Boolean {
         return cache.getDoctors() != null && cache.isCacheValid()
+    }
+
+    /**
+     * Debug method: Get all doctor names from knowledge base
+     */
+    fun getAllDoctorNamesFromKnowledgeBase(): List<String> {
+        // Search for all doctor Q&As in the knowledge base
+        val allDoctorQAs = HospitalKnowledgeBase.search("doctor", limit = 100)
+        val doctorNames = allDoctorQAs
+            .filter { it.id.startsWith("dynamic_doc_") && it.id.endsWith("_name") }
+            .mapNotNull { qa ->
+                // Extract doctor name from question "Who is Dr. Name?"
+                val match = Regex("""Who is (.+?)\?""").find(qa.question)
+                match?.groupValues?.get(1)
+            }
+            .distinct()
+
+        Log.d(tag, "Found ${doctorNames.size} doctor names in Knowledge Base: $doctorNames")
+        return doctorNames
     }
 }

@@ -1035,7 +1035,7 @@ fun AppointmentNavigationButtons(
                                     speech = if (currentLanguage == "en") 
                                         "Appointment confirmed! Your token is ${viewModel.appointmentToken.value}" 
                                         else "अपॉइंटमेंट की पुष्टि हुई! आपका टोकन ${viewModel.appointmentToken.value} है",
-                                    isShowOnConversationLayer = true
+                                    isShowOnConversationLayer = false
                                 ))
                             }
                         }

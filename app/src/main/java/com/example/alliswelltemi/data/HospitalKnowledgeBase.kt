@@ -20,6 +20,7 @@ object HospitalKnowledgeBase {
     // Generated from Hospital temi Dataset.json
     // Updated: April 22, 2026
     private val qaDatabase = listOf(
+        // ...existing code...
         KnowledgeBaseQA(
             id = "qa_1",
             question = "What is the hospital name ?",
@@ -72,7 +73,7 @@ object HospitalKnowledgeBase {
             id = "qa_7",
             question = "What is the hospital's phone number?",
             answer = "You can contact All Is Well Hospital directly by calling on the emergency number +91 76977 44444 or +91 70890 66888. These numbers connect you to the hospital's front desk and support team, where staff members can assist you with appointment bookings, department inquiries, emergency coordination, and general hospital information. The phone lines are active to ensure patients and visitors receive timely assistance whenever needed.",
-            keywords = listOf("query", "feedback", "bookings", "quicker", "available", "specific", "package", "without", "ensure", "health"),
+            keywords = listOf("query", "feedback", "bookings", "quicker", "available", "specific", "package", "without", "ensure", "health", "phone number"),
             category = "general",
             language = "en"
         ),
@@ -2366,15 +2367,83 @@ object HospitalKnowledgeBase {
         ),
     )
 
+    // Dynamic doctor Q&As injected from Strapi
+    private val dynamicDoctorQAs = mutableListOf<KnowledgeBaseQA>()
+
+    /**
+     * Inject doctor Q&As from Strapi into the knowledge base
+     * Called whenever doctors are fetched or updated
+     */
+    fun injectDoctorQAs(doctors: List<Doctor>) {
+        android.util.Log.d("HospitalKnowledgeBase", "Starting injection of ${doctors.size} doctors")
+
+        // Clear previous dynamic doctor QAs
+        dynamicDoctorQAs.clear()
+        
+        // Create Q&A pairs for each doctor
+        doctors.forEach { doctor ->
+            val doctorName = if (doctor.name.startsWith("Dr", ignoreCase = true)) 
+                doctor.name else "Dr. ${doctor.name}"
+            
+            android.util.Log.d("HospitalKnowledgeBase", "Injecting doctor: $doctorName (${doctor.department})")
+
+            // Q&A 1: Direct doctor name query
+            dynamicDoctorQAs.add(
+                KnowledgeBaseQA(
+                    id = "dynamic_doc_${doctor.id}_name",
+                    question = "Who is $doctorName?",
+                    answer = "Speciality: $doctorName is a ${ doctor.specialization ?: doctor.department} specialist. " +
+                            "Experience: ${doctor.yearsOfExperience} years. " +
+                            "Location: Cabin ${doctor.cabin}. " +
+                            "Bio: ${doctor.aboutBio}",
+                    keywords = listOf(
+                        doctor.name.lowercase(),
+                        doctor.specialization?.lowercase() ?: "",
+                        doctor.department.lowercase(),
+                        "doctor",
+                        "specialist"
+                    ).filter { it.isNotEmpty() },
+                    category = "general",
+                    language = "en"
+                )
+            )
+            
+            // Q&A 2: Department query
+            dynamicDoctorQAs.add(
+                KnowledgeBaseQA(
+                    id = "dynamic_doc_${doctor.id}_dept",
+                    question = "Is there a ${doctor.department} specialist?",
+                    answer = "$doctorName is available for ${doctor.department}. " +
+                            "Specialization: ${doctor.specialization}. " +
+                            "Experience: ${doctor.yearsOfExperience} years. " +
+                            "Cabin: ${doctor.cabin}",
+                    keywords = listOf(
+                        doctor.department.lowercase(),
+                        "specialist",
+                        "doctor",
+                        doctor.specialization?.lowercase() ?: ""
+                    ).filter { it.isNotEmpty() },
+                    category = "departments",
+                    language = "en"
+                )
+            )
+        }
+        
+        android.util.Log.d("HospitalKnowledgeBase", "Successfully injected ${dynamicDoctorQAs.size} dynamic doctor Q&As from ${doctors.size} doctors")
+    }
+
     /**
      * Search knowledge base for relevant Q&As
-     * Returns top N results sorted by relevance
+     * Returns top N results sorted by relevance (includes dynamic doctor Q&As)
      */
     fun search(userQuery: String, limit: Int = 3): List<KnowledgeBaseQA> {
         val lowerQuery = userQuery.lowercase()
 
+        // Combine static and dynamic Q&As
+        val allQAs = qaDatabase + dynamicDoctorQAs
+
         // Score each QA pair based on keyword matches
-        val results = qaDatabase.map { qa ->
+        val results = allQAs.map { qa ->
             val matchCount = qa.keywords.count { keyword ->
                 lowerQuery.contains(keyword)
             }

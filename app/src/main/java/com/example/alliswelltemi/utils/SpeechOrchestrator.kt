@@ -14,6 +14,7 @@ class SpeechOrchestrator(private val doctors: List<Doctor>) {
         FIND_DOCTOR,      // User asking about doctors or specialties
         NAVIGATE,         // User wants to go to a location
         BOOK,             // User wants to book an appointment
+        DANCE,            // User asking robot to dance
         GENERAL           // General questions about hospital
     }
 
@@ -22,11 +23,13 @@ class SpeechOrchestrator(private val doctors: List<Doctor>) {
         val query: String,
         val doctor: Doctor? = null,
         val department: String? = null,
-        val confidence: Float = 0.5f
+        val confidence: Float = 0.5f,
+        val danceMove: DanceService.DanceMove? = null  // Specific dance type if DANCE intent
     )
 
     /**
      * Analyze speech input and extract intent + relevant context
+     * Supports both English and Hindi keywords
      *
      * @param text User's spoken/typed input
      * @return Context with detected intent and relevant data
@@ -57,22 +60,46 @@ class SpeechOrchestrator(private val doctors: List<Doctor>) {
             .distinct()
             .find { dept -> cleaned.contains(dept.lowercase()) }
 
-        // Step 3: Detect intent from keywords
+        // Step 3: Detect dance intent (MUST be before other intents)
+        val danceMove = detectDanceIntent(cleaned)
+
+        // Step 4: Detect intent from keywords (English + Hindi)
         val intent = when {
-            // Navigation-related keywords
+            // Dance-related keywords (FIRST priority)
+            danceMove != null ||
+            cleaned.contains("dance") ||
+            cleaned.contains("dancing") ||
+            cleaned.contains("move") ||
+            cleaned.contains("groove") ||
+            cleaned.contains("boogie") ||
+            cleaned.contains("spin") ||
+            cleaned.contains("नाच") ||
+            cleaned.contains("नृत्य") ||
+            cleaned.contains("हिलना") ||
+            cleaned.contains("घूमना") -> Intent.DANCE
+
+            // Navigation-related keywords (English + Hindi)
             cleaned.contains("navigate") ||
             cleaned.contains("take me") ||
             cleaned.contains("go to") ||
             cleaned.contains("where is") ||
-            cleaned.contains("cabin") -> Intent.NAVIGATE
+            cleaned.contains("cabin") ||
+            cleaned.contains("ले चलो") ||
+            cleaned.contains("ले जाओ") ||
+            cleaned.contains("कहां है") ||
+            cleaned.contains("कहाँ है") ||
+            cleaned.contains("केबिन") -> Intent.NAVIGATE
 
-            // Booking-related keywords
+            // Booking-related keywords (English + Hindi)
             cleaned.contains("book") ||
             cleaned.contains("appointment") ||
             cleaned.contains("schedule") ||
-            cleaned.contains("reserve") -> Intent.BOOK
+            cleaned.contains("reserve") ||
+            cleaned.contains("बुक") ||
+            cleaned.contains("अपॉइंटमेंट") ||
+            cleaned.contains("अपोइंटमेंट") -> Intent.BOOK
 
-            // Doctor lookup keywords
+            // Doctor lookup keywords (English + Hindi)
             doctor != null ||
             department != null ||
             cleaned.contains("doctor") ||
@@ -80,7 +107,10 @@ class SpeechOrchestrator(private val doctors: List<Doctor>) {
             cleaned.contains("cardiologist") ||
             cleaned.contains("surgeon") ||
             cleaned.contains("neurologist") ||
-            cleaned.contains("pediatrician") -> Intent.FIND_DOCTOR
+            cleaned.contains("pediatrician") ||
+            cleaned.contains("डॉक्टर") ||
+            cleaned.contains("विशेषज्ञ") ||
+            cleaned.contains("चिकित्सक") -> Intent.FIND_DOCTOR
 
             // Default to general inquiry
             else -> Intent.GENERAL
@@ -88,6 +118,7 @@ class SpeechOrchestrator(private val doctors: List<Doctor>) {
 
         // Calculate confidence (higher if both doctor and department match, or specific keywords found)
         val confidence = when {
+            intent == Intent.DANCE -> 0.95f  // High confidence for dance
             doctor != null && department != null -> 0.95f
             doctor != null || department != null -> 0.85f
             intent != Intent.GENERAL -> 0.75f
@@ -99,8 +130,28 @@ class SpeechOrchestrator(private val doctors: List<Doctor>) {
             query = text,
             doctor = doctor,
             department = department,
-            confidence = confidence
+            confidence = confidence,
+            danceMove = danceMove
         )
+    }
+
+    /**
+     * Detect which type of dance the user is requesting
+     * Returns null if no specific dance detected
+     */
+    private fun detectDanceIntent(cleaned: String): DanceService.DanceMove? {
+        return when {
+            cleaned.contains("spin") || cleaned.contains("घूमना") -> DanceService.DanceMove.SPIN_DANCE
+            cleaned.contains("hip hop") || cleaned.contains("hip-hop") || cleaned.contains("हिप हॉप") -> DanceService.DanceMove.HIP_HOP
+            cleaned.contains("disco") || cleaned.contains("डिस्को") -> DanceService.DanceMove.DISCO_FEVER
+            cleaned.contains("robot") || cleaned.contains("boogie") || cleaned.contains("रोबोट") -> DanceService.DanceMove.ROBOT_BOOGIE
+            cleaned.contains("smooth") || cleaned.contains("groove") || cleaned.contains("सुचारु") -> DanceService.DanceMove.SMOOTH_GROOVE
+            // If just "dance" without specifying which, pick a random one
+            cleaned.contains("dance") || cleaned.contains("नाच") || cleaned.contains("नृत्य") -> {
+                DanceService.DanceMove.values().random()
+            }
+            else -> null
+        }
     }
 
     /**
@@ -122,4 +173,3 @@ class SpeechOrchestrator(private val doctors: List<Doctor>) {
         return cleaned.replace(Regex("\\s+"), " ").trim()
     }
 }
-

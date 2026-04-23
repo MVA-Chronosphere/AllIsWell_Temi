@@ -97,9 +97,29 @@
     <string name="booked">Booked</string>
     <string name="booked_hi">बुक किया गया</string>
     <string name="cabin">Cabin:</string>
-    <string name="cabin_hi">कैबिन:</string>
+     <string name="cabin_hi">कैबिन:</string>
     <string name="back">Back</string>
     <string name="back_hi">वापस</string>
     <string name="next">Next</string>
     <string name="next_hi">अगला</string>
+
+    <!-- Dance Feature Strings -->
+    <string name="dance_request">Dance Request Detected!</string>
+    <string name="dance_request_hi">नृत्य अनुरोध!</string>
+    <string name="dance_intro">Let me show you my dance moves!</string>
+    <string name="dance_intro_hi">मैं आपको मेरे नृत्य की गतिविधियां दिखाता हूँ!</string>
+    <string name="dance_complete">Thanks for watching! Did you enjoy my moves?</string>
+    <string name="dance_complete_hi">देखने के लिए धन्यवाद! क्या आपको मेरी गतिविधियां पसंद आईं?</string>
+    <string name="dance_spin">Watch me spin!</string>
+    <string name="dance_spin_hi">मुझे घूमते हुए देखो!</string>
+    <string name="dance_hip_hop">Let\'s get down!</string>
+    <string name="dance_hip_hop_hi">चलो नीचे करते हैं!</string>
+    <string name="dance_disco">Disco time!</string>
+    <string name="dance_disco_hi">डिस्को का समय!</string>
+    <string name="dance_robot">Beep boop!</string>
+    <string name="dance_robot_hi">बीप बूप!</string>
+    <string name="dance_smooth">Let\'s groove smoothly...</string>
+    <string name="dance_smooth_hi">चलिए सुचारु रूप से नृत्य करते हैं...</string>
+    <string name="dance_error">Oops! I had trouble dancing. Please try again.</string>
+    <string name="dance_error_hi">ओह! मुझे नृत्य करने में परेशानी हुई। कृपया दोबारा प्रयास करें।</string>
 </resources>
