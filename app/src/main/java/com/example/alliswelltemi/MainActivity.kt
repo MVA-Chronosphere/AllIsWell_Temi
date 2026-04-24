@@ -1,56 +1,121 @@
 package com.example.alliswelltemi
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.WindowManager
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.alliswelltemi.ui.screens.TemiMainScreen
-import com.example.alliswelltemi.ui.screens.NavigationScreen
-import com.example.alliswelltemi.ui.screens.AppointmentBookingScreen
-import com.example.alliswelltemi.ui.screens.DoctorsScreen
+import com.example.alliswelltemi.network.OllamaClient
+import com.example.alliswelltemi.network.OllamaRequest
+import com.example.alliswelltemi.ui.screens.*
 import com.example.alliswelltemi.ui.theme.TemiTheme
-import com.example.alliswelltemi.viewmodel.NavigationViewModel
+import com.example.alliswelltemi.utils.ConversationContext
+import com.example.alliswelltemi.utils.RagContextBuilder
+import com.example.alliswelltemi.utils.SpeechOrchestrator
 import com.example.alliswelltemi.viewmodel.AppointmentViewModel
 import com.example.alliswelltemi.viewmodel.DoctorsViewModel
-import com.robotemi.sdk.Robot
+import com.example.alliswelltemi.viewmodel.NavigationViewModel
+import com.robotemi.sdk.*
 import com.robotemi.sdk.TtsRequest
+import com.robotemi.sdk.NlpResult
+import com.robotemi.sdk.SttLanguage
+import com.robotemi.sdk.listeners.OnConversationStatusChangedListener
 import com.robotemi.sdk.listeners.OnRobotReadyListener
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import com.example.alliswelltemi.utils.DanceService
+import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
 
-class MainActivity : AppCompatActivity(), OnRobotReadyListener {
+class MainActivity : ComponentActivity(),
+    Robot.AsrListener,
+    Robot.NlpListener,
+    Robot.TtsListener,
+    Robot.ConversationViewAttachesListener,
+    OnConversationStatusChangedListener,
+    OnRobotReadyListener {
 
-    private var robot: Robot? = null
+    private val robotState = mutableStateOf<Robot?>(null)
+    private val robot: Robot? get() = robotState.value
     private val isRobotReady = mutableStateOf(false)
     private val currentScreen = mutableStateOf("main")
+    private lateinit var doctorsViewModel: DoctorsViewModel
+    private val appointmentViewModel by lazy { AppointmentViewModel() }
+
+    // Voice interaction manager for ASR pipeline
+    private var voiceInteractionManager: com.example.alliswelltemi.utils.VoiceInteractionManager? = null
+
+    // Expose conversation state to UI for guarding interactions
+    private val conversationActiveState = mutableStateOf(false)
+
+    // Production-grade voice pipeline
+    private lateinit var orchestrator: SpeechOrchestrator
+    private val isProcessingSpeech = AtomicBoolean(false)
+    
+    // Conversation Context - maintains chat history
+    private val conversationContext = ConversationContext(
+        maxHistoryItems = 5,
+        maxContextLength = 2000
+    )
+
+    // CRITICAL: SINGLE GLOBAL STATE - ensures ONLY ONE GPT conversation at a time
+    // Treat as MUTEX LOCK - no parallel operations allowed
+    @Volatile
+    private var isConversationActive = false
+
+    private var lastToastTime: Long = 0
+
+    private var lastInteractionTime: Long = System.currentTimeMillis()
+    private val INACTIVITY_TIMEOUT: Long = 30000 // 30 seconds
+    private val handler = Handler(Looper.getMainLooper())
+    private val inactivityRunnable = object : Runnable {
+        override fun run() {
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastInteractionTime >= INACTIVITY_TIMEOUT) {
+                // NEVER reset activity during active GPT conversation or while speaking
+                if (!isRobotSpeaking.get() && !isConversationActive && !isGptProcessing) {
+                    android.util.Log.i("TemiLifecycle", "Inactivity timeout reached, returning to main screen and clearing context")
+                    
+                    if (currentScreen.value != "main") {
+                        currentScreen.value = "main"
+                    }
+                    
+                    // CLEAR Conversation Memory after 30s of inactivity
+                    conversationContext.clearHistory()
+                } else {
+                    // If active, postpone check instead of just stopping
+                    android.util.Log.d("TemiLifecycle", "Inactivity timeout reached but system is busy (speaking=$isRobotSpeaking, active=$isConversationActive, processing=$isGptProcessing). Postponing clear.")
+                    lastInteractionTime = System.currentTimeMillis() // Reset timer to give another full window
+                }
+            }
+            handler.postDelayed(this, 5000) // Check every 5 seconds
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Set up fullscreen and landscape
-        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        android.util.Log.i("TemiMain", "========== APPLICATION START ==========")
+        
+        try {
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+            WindowInsetsControllerCompat(window, window.decorView).let { controller ->
+                controller.hide(WindowInsetsCompat.Type.systemBars())
+                controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            }
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-        // Initialize Temi Robot SDK
-        Robot.getInstance().addOnRobotReadyListener(this)
+            Robot.getInstance().addOnRobotReadyListener(this)
 
-<<<<<<< Updated upstream
-        // Set Compose content
-        setContent {
-            TemiTheme(darkTheme = true) {
-                when (currentScreen.value) {
-                    "navigation" -> {
-                        val navViewModel: NavigationViewModel = viewModel()
-                        NavigationScreen(
-                            robot = robot,
-                            viewModel = navViewModel,
-                            onBackPress = {
-                                currentScreen.value = "main"
-                            },
-                            onNavigationComplete = { _ ->
-                                // Optional: Do something after navigation completes
-                                // For now, stay on navigation screen
-=======
             doctorsViewModel = DoctorsViewModel(application)
 
             // Initialize orchestrator with empty list (will be updated when doctors load)
@@ -138,8 +203,6 @@ class MainActivity : AppCompatActivity(), OnRobotReadyListener {
              return
          }
 
-         robot?.finishConversation()
-
          // STEP 2: HARD BLOCK during active Ollama conversation
          if (isConversationActive) {
              android.util.Log.d("VOICE_PIPELINE", "❌ BLOCKED: Ollama conversation already active")
@@ -178,11 +241,36 @@ class MainActivity : AppCompatActivity(), OnRobotReadyListener {
     }
 
     override fun onConversationStatusChanged(status: Int, text: String) {
-        if (text.isNotBlank()) {
-            robot?.cancelAllTtsRequests()
-            robot?.finishConversation()
-        }
-    }
+         android.util.Log.d("TEMI_CLOUD_AI_BLOCK", "========== CONVERSATION STATUS CHANGED ==========")
+         android.util.Log.d("TEMI_CLOUD_AI_BLOCK", "Status: $status (1=Started, 2=Listening, 3=Processing, 4=Complete)")
+         android.util.Log.d("TEMI_CLOUD_AI_BLOCK", "Text: '${if (text.isBlank()) "<empty>" else text}'")
+
+         // ========== CRITICAL: BLOCK ALL TEMI Q&A RESPONSES ==========
+         // The Temi SDK automatically calls askQuestion() and tries to respond
+         // We MUST intercept and block ALL of these responses
+         // We do NOT want Temi's cloud AI to speak - ONLY OLLAMA should speak
+
+         if (text.isNotBlank()) {
+             android.util.Log.e("TEMI_CLOUD_AI_BLOCK", "❌ BLOCKING Temi askQuestion() response: '$text'")
+             android.util.Log.e("TEMI_CLOUD_AI_BLOCK", "Status code: $status")
+             android.util.Log.e("TEMI_CLOUD_AI_BLOCK", "This response will NOT be spoken - OLLAMA will handle it instead")
+
+             // EMERGENCY: Clear any pending Temi TTS immediately
+             try {
+                 robot?.speak(TtsRequest.create("", false))  // Send empty TTS to clear queue
+                 android.util.Log.d("TEMI_CLOUD_AI_BLOCK", "✅ Temi TTS queue cleared")
+             } catch (e: Exception) {
+                 android.util.Log.w("TEMI_CLOUD_AI_BLOCK", "Could not clear TTS queue: ${e.message}")
+             }
+
+             // Clear pending IDs
+             synchronized(pendingTtsIds) { pendingTtsIds.clear() }
+             isRobotSpeaking.set(false)
+         }
+
+         // ALWAYS return without processing - block any Temi behavior
+         return
+     }
 
     override fun onConversationAttaches(isAttached: Boolean) {
         android.util.Log.d("TEMI_CLOUD_AI_BLOCK", "Conversation attached: $isAttached")
@@ -372,45 +460,41 @@ class MainActivity : AppCompatActivity(), OnRobotReadyListener {
                             } catch (e: Exception) {
                                 android.util.Log.e("TemiSpeech", "Error during dance: ${e.message}", e)
                                 safeSpeak("Oops! I had trouble dancing. Please try again.")
->>>>>>> Stashed changes
                             }
-                        )
+                        }
                     }
-                    "appointment" -> {
-                        val appointmentViewModel: AppointmentViewModel = viewModel()
-                        AppointmentBookingScreen(
-                            robot = robot,
-                            viewModel = appointmentViewModel,
-                            onBackPress = {
-                                currentScreen.value = "main"
+                    // Don't call Ollama for dance requests - return early
+                    isProcessingSpeech.set(false)
+                    return@launch
+                }
+
+                // Step 3: Handle other navigation side effects on main thread
+                withContext(Dispatchers.Main) {
+                    when (context.intent) {
+                        SpeechOrchestrator.Intent.NAVIGATE -> {
+                            // If doctor matched, navigate to their cabin
+                            context.doctor?.let {
+                                robot?.goTo(it.cabin)
+                                android.util.Log.d("TemiSpeech", "Navigating to ${it.name}'s cabin: ${it.cabin}")
                             }
-                        )
-                    }
-                    "doctors" -> {
-                        val doctorsViewModel: DoctorsViewModel = viewModel()
-                        DoctorsScreen(
-                            robot = robot,
-                            viewModel = doctorsViewModel,
-                            onBackPress = {
-                                currentScreen.value = "main"
-                            },
-                            onSelectDoctor = { doctor ->
-                                // TODO: Handle doctor selection for booking
-                                currentScreen.value = "appointment"
+                        }
+
+                        SpeechOrchestrator.Intent.BOOK -> {
+                            currentScreen.value = "appointment"
+                        }
+
+                        SpeechOrchestrator.Intent.FIND_DOCTOR -> {
+                            // Optionally navigate to doctors screen if high confidence
+                            if (context.confidence >= 0.85f) {
+                                currentScreen.value = "doctors"
+                            } else {
+                                // Low confidence, keep on current screen
                             }
-                        )
-                    }
-                    else -> {
-                        TemiMainScreen(
-                            robot = robot,
-                            onNavigate = { destination ->
-                                handleNavigation(destination)
-                            }
-                        )
+                        }
+
+                        else -> {} // GENERAL or DANCE (already handled) - no special navigation
                     }
                 }
-<<<<<<< Updated upstream
-=======
 
                 // Step 4: Build optimized Ollama prompt on background thread (SKIP FOR DANCE)
                 val prompt = withContext(Dispatchers.Default) {
@@ -432,7 +516,6 @@ class MainActivity : AppCompatActivity(), OnRobotReadyListener {
 
                 // Step 5: Call Ollama on main thread (must happen after all context prep)
                 withContext(Dispatchers.Main) {
-                    robot?.finishConversation()
                     callOllama(prompt)
                 }
 
@@ -441,32 +524,142 @@ class MainActivity : AppCompatActivity(), OnRobotReadyListener {
                 withContext(Dispatchers.Main) {
                     safeSpeak("An error occurred while processing your request.")
                 }
->>>>>>> Stashed changes
             }
+        }
+    }
+
+    // Removed onWakeupWord override: not present in Temi SDK
+
+    override fun onTtsStatusChanged(ttsRequest: TtsRequest) {
+        synchronized(pendingTtsIds) {
+            when (ttsRequest.status) {
+                TtsRequest.Status.STARTED -> isRobotSpeaking.set(true)
+                TtsRequest.Status.COMPLETED, TtsRequest.Status.CANCELED, TtsRequest.Status.ERROR -> {
+                    pendingTtsIds.remove(ttsRequest.id)
+                    if (pendingTtsIds.isEmpty()) {
+                        isRobotSpeaking.set(false)
+                        handler.removeCallbacksAndMessages("tts_safety")
+                        // MANUAL PIPELINE: TTS complete, restart ASR listening
+                        android.util.Log.d("VOICE_PIPELINE", "TTS finished - restarting ASR listening")
+                        // robot?.startListening() // Removed: not in Temi SDK
+                        voiceInteractionManager?.startListening() // Use your ASR pipeline
+                    }
+                }
+                else -> {}
+            }
+        }
+     }
+
+    private fun handleNavigation(destination: String) {
+        currentScreen.value = destination
+        resetInactivityTimer()
+    }
+
+    private fun resetInactivityTimer() {
+        lastInteractionTime = System.currentTimeMillis()
+
+        // DISABLE INACTIVITY RESET DURING GPT
+        if (isConversationActive) {
+            android.util.Log.d("OLLAMA_FIX", "Timer blocked during conversation")
+            return
+        }
+
+        handler.removeCallbacks(inactivityRunnable)
+        handler.post(inactivityRunnable)
+        android.util.Log.d("OLLAMA_FIX", "Inactivity timer RESTARTED")
+    }
+
+     private fun safeSpeak(message: String) {
+         try {
+             if (robot == null || message.isBlank()) return
+
+             // NEVER INTERRUPT CONVERSATION: Block speech during active GPT conversation
+             if (isConversationActive) {
+                 android.util.Log.d("VOICE_PIPELINE", "BLOCKED safeSpeak: conversation active")
+                 return
+             }
+
+             android.util.Log.i("VOICE_PIPELINE_FLOW", "✅ STEP 4: Speaking Ollama response (${message.length} chars)")
+             lastSafeSpeakMessage = message
+             synchronized(pendingTtsIds) { pendingTtsIds.clear() }
+             isRobotSpeaking.set(true)
+             handler.removeCallbacksAndMessages("tts_safety")
+
+            val cleanedMessage = message
+                .replace(NEWLINE_REGEX, ". ")
+                .replace(SPACE_REGEX, " ")
+                .replace(":", ". ")
+                .replace("Dr.", "Doctor", ignoreCase = true)
+                .replace(SYMBOL_REGEX, "")
+                .trim()
+
+            val sentences = cleanedMessage.split(Regex("(?<=[.!?])\\s+"))
+                .map { it.trim() }
+                .filter { it.isNotBlank() }
+
+            if (sentences.isEmpty()) {
+                isRobotSpeaking.set(false)
+                return
+            }
+
+            val chunks = mutableListOf<String>()
+            var currentChunk = ""
+            for (sentence in sentences) {
+                if (currentChunk.isEmpty()) currentChunk = sentence
+                else if (currentChunk.length + sentence.length < 400) currentChunk += " " + sentence
+                else {
+                    chunks.add(currentChunk)
+                    currentChunk = sentence
+                }
+            }
+            if (currentChunk.isNotEmpty()) chunks.add(currentChunk)
+
+             val requests = chunks.map { TtsRequest.create(it, isShowOnConversationLayer = false) }
+             synchronized(pendingTtsIds) { requests.forEach { pendingTtsIds.add(it.id) } }
+
+            requests.forEach { robot?.speak(it) }
+
+            val fallbackTimeout = (cleanedMessage.length * 100L) + 10000L
+            handler.postDelayed(object : Runnable {
+                override fun run() {
+                    if (isRobotSpeaking.get()) {
+                        synchronized(pendingTtsIds) { pendingTtsIds.clear() }
+                        isRobotSpeaking.set(false)
+                    }
+                }
+            }, fallbackTimeout)
+        } catch (_: Exception) {
+            isRobotSpeaking.set(false)
         }
     }
 
     override fun onRobotReady(isReady: Boolean) {
         if (isReady) {
-            this.robot = Robot.getInstance()
-            isRobotReady.value = true
+            robotState.value = Robot.getInstance()
 
-<<<<<<< Updated upstream
-            // Initialization message
-            this.robot?.speak(
-                TtsRequest.create(
-                    speech = "Hello, I am Temi and I am ready to assist you",
-                    isShowOnConversationLayer = false
-                )
-            )
-=======
-            // Register only the listeners needed for the custom voice pipeline:
+            // ========== CRITICAL: DISABLE ALL TEMI DEFAULT AI ==========
+            // The key is NOT registering the NLP listener, which prevents Temi cloud AI from processing
+
+            // Register ONLY the listeners we control for manual pipeline:
             robot?.addAsrListener(this)                                   // Manual STT
             robot?.addTtsListener(this)                                   // Track speech status
             robot?.addConversationViewAttachesListener(this)              // Track UI state
-            robot?.addOnConversationStatusChangedListener(this)           // Block Temi cloud responses
-            // Do NOT add NLP listener - prevents Temi cloud AI and askQuestion()
-            // Only Ollama/manual pipeline will process speech.
+            robot?.addOnConversationStatusChangedListener(this)           // Block Temi Q&A responses
+
+            // ✅ DO NOT add NLP listener - this is CRITICAL
+            // If NLP listener is registered, Temi SDK automatically processes speech with cloud AI
+            // By NOT adding it, ALL speech processing goes through our manual pipeline
+            // robot?.addNlpListener(this)  // <-- ❌ NEVER ADD THIS - ENABLES TEMI CLOUD AI
+
+            // ========== ADDITIONAL: DISABLE TEMI CONVERSATION MODE ==========
+            // Prevent Temi's default conversation UI and askQuestion() from appearing
+            // Note: toggleConversationLayer() and stopConversation() are not available in this SDK version
+            // Conversation blocking is achieved by not registering NLP listener above
+
+            // CRITICAL: Block askQuestion() by not registering NLP listener
+            // This prevents Temi SDK from automatically calling askQuestion()
+            // All speech will be processed by our Ollama pipeline instead
+
             // Enable kiosk mode and hide system UI overlays
             robot?.setKioskModeOn(true)
             robot?.hideTopBar()
@@ -483,59 +676,50 @@ class MainActivity : AppCompatActivity(), OnRobotReadyListener {
                 android.util.Log.e("TemiMain", "Failed to initialize VoiceInteractionManager: ${e.message}", e)
             }
 
-            // Temi cloud AI and askQuestion() are fully disabled. Only custom pipeline is active.
+            android.util.Log.d("TEMI_DISABLE", "========== TEMI CLOUD AI DISABLED ==========")
+            android.util.Log.d("TEMI_DISABLE", "✅ NLP listener NOT registered - Temi cloud AI disabled")
+            android.util.Log.d("TEMI_DISABLE", "✅ ASR listener registered - manual STT pipeline active")
+            android.util.Log.d("TEMI_DISABLE", "✅ OnConversationStatusChanged listener registered - blocking Temi Q&A")
+            android.util.Log.d("TEMI_DISABLE", "✅ Conversation layer disabled - no default UI")
+            android.util.Log.d("TEMI_DISABLE", "✅ Using MANUAL voice pipeline with OLLAMA only")
+            android.util.Log.d("TEMI_DISABLE", "✅ askQuestion() blocked - OLLAMA will handle all responses")
 
             this.isRobotReady.value = true
->>>>>>> Stashed changes
         }
-    }
+     }
 
-    /**
-     * Navigation handler for menu items
-     * This can be extended to open different screens or trigger specific actions
-     */
-    private fun handleNavigation(destination: String) {
-        // Implement navigation based on destination
-        when (destination) {
-            "navigation" -> {
-                currentScreen.value = "navigation"
-            }
-            "appointment" -> {
-                currentScreen.value = "appointment"
-            }
-            "doctors" -> {
-                currentScreen.value = "doctors"
-            }
-            "feedback" -> {
-                // TODO: Open feedback screen or show feedback form
-                // This could be a bottom sheet, dialog, or new screen
-            }
-            "emergency" -> {
-                // TODO: Trigger emergency alert system
-                // You can integrate with hospital alert system here
-            }
-            "info" -> {
-                // TODO: Open hospital information screen
-            }
-            "language" -> {
-                // Language already handled in composable
-            }
-        }
+    override fun onResume() {
+        super.onResume()
+        robot?.addOnConversationStatusChangedListener(this)
+        handler.post(inactivityRunnable)
     }
 
     override fun onPause() {
         super.onPause()
-        Robot.getInstance().removeOnRobotReadyListener(this)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Robot.getInstance().addOnRobotReadyListener(this)
+        robot?.removeOnConversationStatusChangedListener(this)
+        handler.removeCallbacks(inactivityRunnable)
     }
 
     override fun onDestroy() {
+        // Release voice interaction manager
+        voiceInteractionManager?.release()
         super.onDestroy()
         Robot.getInstance().removeOnRobotReadyListener(this)
+        robot?.removeAsrListener(this)
+        // robot?.removeNlpListener(this)  // <-- Not added, so not removing
+        robot?.removeTtsListener(this)
+        robot?.removeConversationViewAttachesListener(this)
+        robot?.removeOnConversationStatusChangedListener(this)
+    }
+
+    override fun onUserInteraction() {
+        super.onUserInteraction()
+        resetInactivityTimer()
+    }
+
+    companion object {
+        private val NEWLINE_REGEX = Regex("\\n+")
+        private val SPACE_REGEX = Regex("\\s+")
+        private val SYMBOL_REGEX = Regex("[()#*]")
     }
 }
-

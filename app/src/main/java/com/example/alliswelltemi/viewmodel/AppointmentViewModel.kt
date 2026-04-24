@@ -3,8 +3,13 @@ package com.example.alliswelltemi.viewmodel
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.alliswelltemi.data.Doctor
 import com.example.alliswelltemi.data.TimeSlot
+import com.example.alliswelltemi.data.AppointmentRequest
+import com.example.alliswelltemi.data.AppointmentData
+import com.example.alliswelltemi.network.RetrofitClient
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.UUID
 
@@ -38,6 +43,13 @@ class AppointmentViewModel : ViewModel() {
     private val _patientPhone = mutableStateOf("")
     val patientPhone: State<String> = _patientPhone
 
+    // Error states for validation feedback
+    private val _nameError = mutableStateOf<String?>(null)
+    val nameError: State<String?> = _nameError
+
+    private val _phoneError = mutableStateOf<String?>(null)
+    val phoneError: State<String?> = _phoneError
+
     // Generated appointment token
     private val _appointmentToken = mutableStateOf("")
     val appointmentToken: State<String> = _appointmentToken
@@ -45,6 +57,9 @@ class AppointmentViewModel : ViewModel() {
     // Loading state
     private val _isLoading = mutableStateOf(false)
     val isLoading: State<Boolean> = _isLoading
+
+    private val _statusResult = mutableStateOf<String?>(null)
+    val statusResult: State<String?> = _statusResult
 
     // Available departments list
     private val _availableDepartments = mutableStateOf(emptyList<String>())
@@ -73,14 +88,25 @@ class AppointmentViewModel : ViewModel() {
      * Set selected doctor and move to next step
      */
     fun selectDoctor(doctor: Doctor) {
+        android.util.Log.d("AppointmentViewModel", "Selected doctor: ${doctor.name}, moving to step 2")
         _selectedDoctor.value = doctor
         _currentStep.value = 2
+    }
+
+    /**
+     * Set selected doctor from voice command (without moving to next step)
+     * Allows customization of when to move to next step
+     */
+    fun setSelectedDoctor(doctor: Doctor) {
+        android.util.Log.d("AppointmentViewModel", "Set doctor (voice): ${doctor.name}")
+        _selectedDoctor.value = doctor
     }
 
     /**
      * Set selected date and move to next step
      */
     fun selectDate(date: LocalDate) {
+        android.util.Log.d("AppointmentViewModel", "Selected date: $date, moving to step 3")
         _selectedDate.value = date
         _currentStep.value = 3
     }
@@ -89,6 +115,7 @@ class AppointmentViewModel : ViewModel() {
      * Set selected time slot and move to next step
      */
     fun selectTimeSlot(timeSlot: TimeSlot) {
+        android.util.Log.d("AppointmentViewModel", "Selected time: ${timeSlot.startTime}, moving to step 4")
         _selectedTimeSlot.value = timeSlot
         _currentStep.value = 4
     }
@@ -113,27 +140,47 @@ class AppointmentViewModel : ViewModel() {
     fun confirmDetails(): Boolean {
         val name = _patientName.value.trim()
         val phone = _patientPhone.value.trim()
+        var isValid = true
 
-        if (name.isEmpty() || phone.isEmpty()) {
-            return false
+        // Reset errors
+        _nameError.value = null
+        _phoneError.value = null
+
+        if (name.isEmpty()) {
+            _nameError.value = "Name is required"
+            isValid = false
+        } else if (name.length < 2) {
+            _nameError.value = "Name is too short"
+            isValid = false
         }
 
-        if (phone.length < 10) {
-            return false
+        // Basic mobile validation (starts with 6-9 and is 10 digits)
+        val phoneRegex = Regex("^[6-9]\\d{9}$")
+        if (phone.isEmpty()) {
+            _phoneError.value = "Phone number is required"
+            isValid = false
+        } else if (!phoneRegex.matches(phone)) {
+            _phoneError.value = "Enter a valid 10-digit mobile number"
+            isValid = false
         }
 
-        _currentStep.value = 5
-        generateAppointmentToken()
-        return true
+        if (isValid) {
+            android.util.Log.d("AppointmentViewModel", "Details confirmed for $name, moving to step 5")
+            generateAppointmentToken()
+            _currentStep.value = 5
+        }
+        return isValid
     }
 
     /**
-     * Generate unique appointment token
+     * Generate unique and readable appointment token
+     * Format: APT-YYMMDD-XXXX (Date + 4 random characters)
      */
     private fun generateAppointmentToken() {
-        val timestamp = System.currentTimeMillis()
-        val uuid = UUID.randomUUID().toString().take(6).uppercase()
-        _appointmentToken.value = "APT-$uuid-$timestamp".take(20)
+        val datePart = java.time.format.DateTimeFormatter.ofPattern("yyMMdd").format(LocalDate.now())
+        val randomPart = UUID.randomUUID().toString().take(4).uppercase()
+        _appointmentToken.value = "APT-$datePart-$randomPart"
+        android.util.Log.d("AppointmentViewModel", "Generated token: ${_appointmentToken.value}")
     }
 
     /**
@@ -163,6 +210,7 @@ class AppointmentViewModel : ViewModel() {
      * Reset booking process (start over)
      */
     fun resetBooking() {
+        android.util.Log.d("AppointmentViewModel", "Resetting booking process")
         _currentStep.value = 1
         _selectedDoctor.value = null
         _selectedDate.value = null
@@ -180,6 +228,99 @@ class AppointmentViewModel : ViewModel() {
         _voiceInput.value = spokenText
         // Voice input processing logic would go here based on current step
         // For now, we just capture it
+    }
+
+    /**
+     * Submit appointment to Strapi backend
+     */
+    fun submitAppointment(onComplete: (Boolean, String) -> Unit) {
+        val doctor = _selectedDoctor.value ?: return
+        val date = _selectedDate.value ?: return
+        val time = _selectedTimeSlot.value ?: return
+        val name = _patientName.value
+        val phone = _patientPhone.value
+        val token = _appointmentToken.value
+
+        android.util.Log.i("AppointmentViewModel", "Submitting appointment: Doctor=${doctor.name}, Token=$token")
+
+        viewModelScope.launch {
+            try {
+                _isLoading.value = true
+                
+                val appointmentRequest = AppointmentRequest(
+                    data = AppointmentData(
+                        doctorName = doctor.name,
+                        department = doctor.department,
+                        date = date.toString(),
+                        time = time.startTime,
+                        patientName = name,
+                        patientPhone = phone,
+                        token = token
+                    )
+                )
+
+                val response = RetrofitClient.apiService.createAppointment(appointmentRequest)
+                
+                if (response.error != null) {
+                    android.util.Log.e("AppointmentViewModel", "Submission failed: ${response.error["message"]}")
+                    onComplete(false, "API Error: ${response.error["message"]}")
+                } else {
+                    android.util.Log.i("AppointmentViewModel", "Appointment successfully created in Strapi")
+                    onComplete(true, "Appointment confirmed! Your token is $token")
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("AppointmentViewModel", "Error submitting appointment", e)
+                onComplete(false, "Error: ${e.message}")
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    /**
+     * Check appointment status by token
+     */
+    fun checkAppointmentStatus(token: String, onComplete: (Boolean, String) -> Unit) {
+        android.util.Log.d("AppointmentViewModel", "Checking status for token: $token")
+        viewModelScope.launch {
+            try {
+                _isLoading.value = true
+                _statusResult.value = null
+                
+                val response = RetrofitClient.apiService.getAppointmentByToken(token)
+                
+                if (response.error != null) {
+                    android.util.Log.e("AppointmentViewModel", "Status check failed: ${response.error["message"]}")
+                    onComplete(false, "API Error: ${response.error["message"]}")
+                } else {
+                    // Strapi returns an array for get requests with filters
+                    val list = response.data as? List<Map<String, Any>>
+                    if (list != null && list.isNotEmpty()) {
+                        val appointment = list[0]
+                        // Handle both v4 (attributes) and v5 (direct fields)
+                        val fields = (appointment["attributes"] as? Map<String, Any>) ?: appointment
+                        
+                        val doctor = fields["doctor_name"]?.toString() ?: "Unknown"
+                        val date = fields["date"]?.toString() ?: "Unknown"
+                        val time = fields["time"]?.toString() ?: "Unknown"
+                        val status = fields["status"]?.toString() ?: "pending"
+                        
+                        val result = "Your appointment with $doctor on $date at $time is $status."
+                        android.util.Log.d("AppointmentViewModel", "Status retrieved: $status")
+                        _statusResult.value = result
+                        onComplete(true, result)
+                    } else {
+                        android.util.Log.w("AppointmentViewModel", "No appointment found for token: $token")
+                        onComplete(false, "No appointment found with token $token")
+                    }
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("AppointmentViewModel", "Error checking appointment status", e)
+                onComplete(false, "Error: ${e.message}")
+            } finally {
+                _isLoading.value = false
+            }
+        }
     }
 
     /**

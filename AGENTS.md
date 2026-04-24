@@ -339,38 +339,3 @@ val text = stringResource(
 robot?.speak(TtsRequest.create(speech = text))
 ```
 
-### Creating Custom Animations
-Use Compose `AnimatedVisibility` or `animateColorAsState()`:
-```kotlin
-val scale by animateFloatAsState(targetValue = if (isGlowing) 1.1f else 1f)
-Image(modifier = Modifier.scale(scale), ...)
-```
-See TemiAvatarComponent in TemiComponents.kt for example.
-
----
-
-## Performance & Optimization Notes
-
-- **Recomposition:** Only affected composables recompose when state changes (Compose automatically optimizes)
-- **Memory:** Avoid `remember` for large objects; use static resources in TemiUtils object
-- **Animations:** GPU-accelerated (safe to use freely); test on device for frame rate
-- **Battery:** Dark theme saves power on OLED Temi displays
-- **Temi SDK calls:** Non-blocking; no need for coroutines unless awaiting results
-
----
-
-## When You Get Stuck
-
-1. **Gradle sync fails:** Check internet, run `./gradlew --refresh-dependencies`
-2. **Compose preview won't load:** Rebuild project or invalidate Android Studio cache
-3. **Robot not speaking:** Verify Temi SDK initialized (check logcat for "onRobotReady")
-4. **Colors look wrong:** Check Material3 theme application in MainActivity + colorResource() usage
-5. **Strings not localizing:** Ensure both English and Hindi entries in strings.xml
-6. **Navigation not working:** Verify `onNavigate()` callback updates `currentScreen.value` in MainActivity
-
-For detailed architecture diagrams and file references, see: **ARCHITECTURE_GUIDE.md** | **QUICK_START.md** | **TEMI_SETUP_COMPLETE.md**
-
----
-
-**Last Updated:** April 18, 2026 | **SDK Version:** Temi 1.137.1 | **Compose:** 1.5.3
-
