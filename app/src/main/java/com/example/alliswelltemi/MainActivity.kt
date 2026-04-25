@@ -107,7 +107,9 @@ class MainActivity : ComponentActivity(),
         super.onCreate(savedInstanceState)
 
         android.util.Log.i("TemiMain", "========== APPLICATION START ==========")
-        
+        // Eagerly initialize TTS manager to avoid speech delay after Ollama response
+        // Removed TemiTTSManager initialization (now using Temi's built-in TTS only)
+
         try {
             WindowCompat.setDecorFitsSystemWindows(window, false)
             WindowInsetsControllerCompat(window, window.decorView).let { controller ->
@@ -505,14 +507,12 @@ class MainActivity : ComponentActivity(),
 
             isRobotSpeaking.set(true)
             
-            // Use speakWithLanguage for multi-lingual TTS support (Google TTS for Hindi)
+            // Use speakWithLanguage for multi-lingual TTS support (Temi built-in TTS)
             chunks.forEach { chunk ->
                 speakWithLanguage(
-                    context = this@MainActivity,
                     text = chunk,
                     language = detectedLanguage,
-                    robot = robot,
-                    queueMode = android.speech.tts.TextToSpeech.QUEUE_ADD
+                    robot = robot
                 )
             }
 
@@ -571,13 +571,11 @@ class MainActivity : ComponentActivity(),
 
             isRobotSpeaking.set(true)
 
-            // Use speakWithLanguage for multi-lingual TTS support
+            // Use speakWithLanguage for multi-lingual TTS support (Temi built-in TTS)
             speakWithLanguage(
-                context = this@MainActivity,
                 text = cleanedMessage,
                 language = detectedLanguage,
-                robot = robot,
-                queueMode = android.speech.tts.TextToSpeech.QUEUE_ADD
+                robot = robot
             )
 
             handler.postDelayed({
@@ -601,13 +599,7 @@ class MainActivity : ComponentActivity(),
             robot?.setKioskModeOn(true)
             robot?.hideTopBar()
 
-            // Initialize TemiTTSManager with completion listener
-            com.example.alliswelltemi.utils.TemiTTSManager.initialize(this)
-            com.example.alliswelltemi.utils.TemiTTSManager.setOnCompletionListener {
-                android.util.Log.d("VOICE_PIPELINE", "Hindi TTS finished - restarting ASR listening")
-                isRobotSpeaking.set(false)
-                voiceInteractionManager?.startListening()
-            }
+            // Removed TemiTTSManager initialization and completion listener (now using Temi's built-in TTS only)
 
             try {
                 voiceInteractionManager = com.example.alliswelltemi.utils.VoiceInteractionManager(
