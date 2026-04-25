@@ -1,22 +1,22 @@
 package com.example.alliswelltemi.viewmodel
 
-import android.app.Application
+import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.alliswelltemi.data.Doctor
 import com.example.alliswelltemi.data.DoctorCache
-import com.example.alliswelltemi.data.DoctorData
-import com.example.alliswelltemi.data.HospitalKnowledgeBase
 import com.example.alliswelltemi.network.RetrofitClient
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import android.util.Log
+import kotlinx.coroutines.withContext
 
 /**
- * ViewModel for managing doctors from Strapi CMS with caching support
+ * ViewModel for managing doctors from Strapi CMS
+ * PERFORMANCE OPTIMIZED: Eager loading + caching for instant access
  */
-class DoctorsViewModel(application: Application) : AndroidViewModel(application) {
+class DoctorsViewModel(private val context: Context? = null) : ViewModel() {
 
     private val _doctors = mutableStateOf<List<Doctor>>(emptyList())
     val doctors: State<List<Doctor>> = _doctors
@@ -30,144 +30,163 @@ class DoctorsViewModel(application: Application) : AndroidViewModel(application)
     private val _selectedDepartment = mutableStateOf<String?>(null)
     val selectedDepartment: State<String?> = _selectedDepartment
 
+    private val _searchQuery = mutableStateOf("")
+    val searchQuery: State<String> = _searchQuery
+
     private val _departments = mutableStateOf<List<String>>(emptyList())
     val departments: State<List<String>> = _departments
 
-    private val cache = DoctorCache(getApplication())
-    private val tag = "DoctorsViewModel"
+    private val _selectedDoctorForNav = mutableStateOf<Doctor?>(null)
+    val selectedDoctorForNav: State<Doctor?> = _selectedDoctorForNav
+
+    private val _isNavigating = mutableStateOf(false)
+    val isNavigating: State<Boolean> = _isNavigating
+
+    private val doctorCache: DoctorCache? = context?.let { DoctorCache(it) }
+
+    /**
+     * Get filtered and searched doctors list
+     */
+    val filteredDoctors: List<Doctor>
+        get() {
+            val query = _searchQuery.value.lowercase().trim()
+            val dept = _selectedDepartment.value
+
+            return _doctors.value.filter { doctor ->
+                val matchesDept = dept == null || doctor.department == dept
+                val matchesQuery = query.isEmpty() ||
+                        doctor.name.lowercase().contains(query) ||
+                        doctor.department.lowercase().contains(query) ||
+                        doctor.specialization.lowercase().contains(query)
+                matchesDept && matchesQuery
+            }
+        }
 
     init {
-        // Only fetch if data is not already loaded or if cache is stale
-        if (_doctors.value.isEmpty()) {
-            if (isDataFromCache()) {
-                loadFromCache()
-                // Optionally refresh in background if cache is valid but older than some threshold
-                if (cache.getCacheAge() > 600000L) { // 10 minutes
-                   Log.d(tag, "Cache is valid but > 10 mins old, refreshing in background")
-                   fetchDoctors()
-                }
-            } else {
-                fetchDoctors()
-            }
-        }
+        // PERFORMANCE FIX: Load immediately with cache-first strategy
+        fetchDoctorsWithCache()
     }
 
     /**
-     * Fetch all doctors from Strapi CMS with caching fallback
+     * Update search query
      */
-    fun fetchDoctors() {
+    fun onSearchQueryChanged(query: String) {
+        _searchQuery.value = query
+    }
+
+    /**
+     * Pre-fetch data or force refresh
+     */
+    fun refresh() {
+        fetchDoctors(forceRefresh = true)
+    }
+
+    /**
+     * PERFORMANCE OPTIMIZED: Fetch with cache-first strategy
+     * 1. Load from cache immediately (instant UI)
+     * 2. Fetch from API in background (fresh data)
+     * 3. Update cache for next time
+     */
+    private fun fetchDoctorsWithCache() {
         viewModelScope.launch {
             try {
-                _isLoading.value = true
-                _error.value = null
-
-                // Try to fetch from API
-                Log.d(tag, "Starting to fetch doctors from Strapi API...")
-                val response = RetrofitClient.apiService.getDoctors()
-                Log.d(tag, "API Response received. Raw data count: ${response.data?.size ?: 0}")
-
-                // Log all raw doctors received
-                response.data?.forEachIndexed { index, doctorDoc ->
-                    Log.d(tag, "Raw doctor $index: name=${doctorDoc.name}, specialty=${doctorDoc.specialty}, attributes=${doctorDoc.attributes?.name}")
+                // STEP 1: Try cache first for instant loading
+                val cachedDoctors = withContext(Dispatchers.IO) {
+                    doctorCache?.getDoctors()
                 }
 
-                val doctorList = response.data?.mapNotNull { doctorDoc ->
-                    val doctor = doctorDoc.toDomain()
-                    if (doctor != null) {
-                        Log.d(tag, "Parsed doctor: ${doctor.name} (${doctor.specialization})")
-                    } else {
-                        Log.w(tag, "Failed to parse doctor: ${doctorDoc.name}")
-                    }
-                    doctor
-                } ?: emptyList()
+                if (cachedDoctors != null && doctorCache?.isCacheValid() == true) {
+                    android.util.Log.d("DoctorsViewModel", "⚡ Loaded ${cachedDoctors.size} doctors from cache (instant)")
+                    _doctors.value = cachedDoctors
+                    extractDepartments(cachedDoctors)
 
-                Log.d(tag, "Total parsed doctors: ${doctorList.size}")
-                doctorList.forEach { doctor ->
-                    Log.d(tag, "  ✓ ${doctor.name} - ${doctor.department} - Cabin ${doctor.cabin}")
-                }
-
-                if (doctorList.isNotEmpty()) {
-                    _doctors.value = doctorList
-                    cache.saveDoctors(doctorList)
-                    // INJECT DOCTORS INTO KNOWLEDGE BASE
-                    HospitalKnowledgeBase.injectDoctorQAs(doctorList)
-                    Log.d(tag, "Fetched and cached ${doctorList.size} doctors from API and injected into KB")
+                    // Still fetch in background to update cache
+                    fetchDoctors(forceRefresh = false, silent = true)
                 } else {
-                    Log.d(tag, "API returned empty or all doctors failed to parse, trying cache...")
-                    // API returned empty, try cache
-                    loadFromCache()
+                    // No cache or expired - fetch from API
+                    android.util.Log.d("DoctorsViewModel", "Cache miss or expired - fetching from API")
+                    fetchDoctors(forceRefresh = true, silent = false)
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("DoctorsViewModel", "Error with cache strategy", e)
+                fetchDoctors(forceRefresh = true, silent = false)
+            }
+        }
+    }
+
+    /**
+     * Fetch all doctors from Strapi CMS
+     * PERFORMANCE OPTIMIZED: Parallel processing + caching
+     */
+    fun fetchDoctors(forceRefresh: Boolean = false, silent: Boolean = false) {
+        viewModelScope.launch {
+            try {
+                if (!silent) {
+                    _isLoading.value = true
+                }
+                _error.value = null
+
+                val startTime = System.currentTimeMillis()
+
+                // Call API with optimized parameters
+                val response = withContext(Dispatchers.IO) {
+                    RetrofitClient.apiService.getDoctors()
                 }
 
-                // Extract unique departments
-                val uniqueDepartments = _doctors.value
-                    .map { it.department }
-                    .distinct()
-                    .sorted()
-                _departments.value = uniqueDepartments
-                Log.d(tag, "Departments: ${_departments.value}")
+                val doctorList = withContext(Dispatchers.Default) {
+                    response.data?.mapNotNull { doctorDoc ->
+                        try {
+                            doctorDoc.toDomain()
+                        } catch (e: Exception) {
+                            android.util.Log.w("DoctorsViewModel", "Failed to parse doctor: ${e.message}")
+                            null
+                        }
+                    } ?: emptyList()
+                }
 
+                val elapsedMs = System.currentTimeMillis() - startTime
+                android.util.Log.d("DoctorsViewModel", "⚡ Fetched ${doctorList.size} doctors in ${elapsedMs}ms")
+
+                if (doctorList.isEmpty()) {
+                    _error.value = "No doctors found. Please try again later."
+                    return@launch
+                }
+
+                _doctors.value = doctorList
+                extractDepartments(doctorList)
+
+                // PERFORMANCE: Save to cache for next time
+                withContext(Dispatchers.IO) {
+                    doctorCache?.saveDoctors(doctorList)
+                }
+
+            } catch (e: java.net.SocketTimeoutException) {
+                _error.value = "Connection timeout. Please check your network and try again."
+                android.util.Log.e("DoctorsViewModel", "Timeout fetching doctors", e)
+            } catch (e: java.net.UnknownHostException) {
+                _error.value = "Unable to connect. Please check your internet connection."
+                android.util.Log.e("DoctorsViewModel", "Network error fetching doctors", e)
             } catch (e: Exception) {
-                Log.e(tag, "Error fetching doctors from API: ${e.message}", e)
-                _error.value = "Network error. Loading cached data..."
-                // Try to load from cache as fallback
-                loadFromCache()
+                _error.value = "Failed to load doctors. Please try again."
+                android.util.Log.e("DoctorsViewModel", "Error fetching doctors", e)
             } finally {
-                _isLoading.value = false
+                if (!silent) {
+                    _isLoading.value = false
+                }
             }
         }
     }
 
     /**
-     * Load doctors from cache
+     * Extract unique departments from doctor list
      */
-    private fun loadFromCache() {
-        try {
-            val cachedDoctors = cache.getDoctors()
-            if (cachedDoctors != null && cachedDoctors.isNotEmpty()) {
-                _doctors.value = cachedDoctors
-                _error.value = null
-                // INJECT CACHED DOCTORS INTO KNOWLEDGE BASE
-                HospitalKnowledgeBase.injectDoctorQAs(cachedDoctors)
-                Log.d(tag, "Loaded ${cachedDoctors.size} doctors from cache")
-
-                // Extract unique departments
-                val uniqueDepartments = cachedDoctors
-                    .map { it.department }
-                    .distinct()
-                    .sorted()
-                _departments.value = uniqueDepartments
-            } else {
-                // No cache available, use static fallback
-                loadStaticFallback()
-            }
-        } catch (e: Exception) {
-            Log.e(tag, "Error loading from cache", e)
-            loadStaticFallback()
-        }
-    }
-
-    /**
-     * Load static fallback doctor data
-     */
-    private fun loadStaticFallback() {
-        try {
-            val staticDoctors = DoctorData.DOCTORS
-            _doctors.value = staticDoctors
-            _error.value = null
-            // INJECT STATIC DOCTORS INTO KNOWLEDGE BASE
-            HospitalKnowledgeBase.injectDoctorQAs(staticDoctors)
-            Log.d(tag, "Loaded ${staticDoctors.size} doctors from static data")
-
-            // Extract unique departments
-            val uniqueDepartments = staticDoctors
-                .map { it.department }
-                .distinct()
-                .sorted()
-            _departments.value = uniqueDepartments
-        } catch (e: Exception) {
-            Log.e(tag, "Error loading static data", e)
-            _error.value = "Could not load doctor information. Please try again."
-        }
+    private fun extractDepartments(doctorList: List<Doctor>) {
+        val uniqueDepartments = doctorList
+            .map { it.department }
+            .filter { it.isNotBlank() }
+            .distinct()
+            .sorted()
+        _departments.value = uniqueDepartments
     }
 
     /**
@@ -177,143 +196,38 @@ class DoctorsViewModel(application: Application) : AndroidViewModel(application)
         _selectedDepartment.value = department
     }
 
-    /**
-     * Get filtered doctors list
-     */
-    fun getFilteredDoctors(): List<Doctor> {
-        return if (_selectedDepartment.value == null) {
-            _doctors.value
-        } else {
-            _doctors.value.filter { it.department == _selectedDepartment.value }
-        }
+    fun selectDoctorForNavigation(doctor: Doctor?) {
+        _selectedDoctorForNav.value = doctor
     }
 
-     /**
-      * Search doctors by name or department with fuzzy matching
-      */
-     fun searchDoctors(query: String): List<Doctor> {
-         val searchQuery = query.lowercase().trim()
-         if (searchQuery.isEmpty()) {
-             return getFilteredDoctors()
-         }
-
-         return getFilteredDoctors().filter { doctor ->
-             doctor.name.lowercase().contains(searchQuery) ||
-             doctor.department.lowercase().contains(searchQuery) ||
-             doctor.specialization.lowercase().contains(searchQuery) ||
-             // Fuzzy matching for similar names
-             hasSimilarName(doctor.name, searchQuery)
-         }
-     }
-
-     /**
-      * Check if doctor name is similar to search query (fuzzy matching)
-      */
-     private fun hasSimilarName(doctorName: String, query: String): Boolean {
-         val nameTokens = doctorName.lowercase()
-             .replace("dr.", "")
-             .replace("dr ", "")
-             .split(" ")
-             .filter { it.isNotEmpty() }
-
-         return nameTokens.any { token ->
-             levenshteinDistance(token, query) <= 2 && token.length > 2
-         }
-     }
-
-     /**
-      * Calculate Levenshtein distance for fuzzy matching
-      */
-     private fun levenshteinDistance(s1: String, s2: String): Int {
-         if (s1 == s2) return 0
-         if (s1.isEmpty()) return s2.length
-         if (s2.isEmpty()) return s1.length
-
-         val dp = Array(s1.length + 1) { IntArray(s2.length + 1) }
-
-         for (i in 0..s1.length) dp[i][0] = i
-         for (j in 0..s2.length) dp[0][j] = j
-
-         for (i in 1..s1.length) {
-             for (j in 1..s2.length) {
-                 val cost = if (s1[i - 1] == s2[j - 1]) 0 else 1
-                 dp[i][j] = minOf(
-                     dp[i - 1][j] + 1,      // deletion
-                     dp[i][j - 1] + 1,      // insertion
-                     dp[i - 1][j - 1] + cost // substitution
-                 )
-             }
-         }
-
-         return dp[s1.length][s2.length]
-     }
-
-    /**
-     * Get knowledge base string for RAG (Retrieval-Augmented Generation)
-     */
-    fun getKnowledgeBase(): String {
-        val doctorList = _doctors.value
-        if (doctorList.isEmpty()) return "No doctor information available."
-
-        val sb = StringBuilder()
-        sb.append("Hospital Doctors and Departments Information: ")
-        doctorList.forEach { doctor ->
-            sb.append("Dr. ${doctor.name} is in the ${doctor.department} department. ")
-            sb.append("Specialization: ${doctor.specialization}. ")
-            sb.append("Experience: ${doctor.yearsOfExperience} years. ")
-            sb.append("Cabin: ${doctor.cabin}. ")
-            sb.append("Bio: ${doctor.aboutBio} ")
-            sb.append("| ")
-        }
-        return sb.toString()
+    fun setNavigating(navigating: Boolean) {
+        _isNavigating.value = navigating
     }
 
     /**
      * Get doctor by ID
      */
     fun getDoctorById(id: String): Doctor? {
-        return _doctors.value.find { it.id == id }
+        return _doctors.value.find { id == it.id }
     }
 
     /**
      * Retry fetching doctors
      */
     fun retry() {
-        cache.clearCache()
-        fetchDoctors()
+        fetchDoctors(forceRefresh = true)
     }
 
     /**
-     * Clear cache manually
+     * Clear cache and reload
      */
-    fun clearCache() {
-        cache.clearCache()
-        Log.d(tag, "Cache cleared by user")
-    }
-
-    /**
-     * Check if current data is from cache
-     */
-    fun isDataFromCache(): Boolean {
-        return cache.getDoctors() != null && cache.isCacheValid()
-    }
-
-    /**
-     * Debug method: Get all doctor names from knowledge base
-     */
-    fun getAllDoctorNamesFromKnowledgeBase(): List<String> {
-        // Search for all doctor Q&As in the knowledge base
-        val allDoctorQAs = HospitalKnowledgeBase.search("doctor", limit = 100)
-        val doctorNames = allDoctorQAs
-            .filter { it.id.startsWith("dynamic_doc_") && it.id.endsWith("_name") }
-            .mapNotNull { qa ->
-                // Extract doctor name from question "Who is Dr. Name?"
-                val match = Regex("""Who is (.+?)\?""").find(qa.question)
-                match?.groupValues?.get(1)
+    fun clearCacheAndReload() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                doctorCache?.clearCache()
             }
-            .distinct()
-
-        Log.d(tag, "Found ${doctorNames.size} doctor names in Knowledge Base: $doctorNames")
-        return doctorNames
+            fetchDoctors(forceRefresh = true)
+        }
     }
 }
+

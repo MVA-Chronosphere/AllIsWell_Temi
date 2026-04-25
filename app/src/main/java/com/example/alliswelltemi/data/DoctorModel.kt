@@ -12,6 +12,7 @@ data class Doctor(
     val yearsOfExperience: Int,
     val aboutBio: String,
     val cabin: String,  // e.g., "3A", "5B"
+    val gender: String = "unspecified", // "male", "female", "other", "unspecified"
     val email: String = "",
     val phone: String = "",
     val specialization: String = "",
@@ -38,7 +39,8 @@ object DoctorData {
             department = "Cardiology",
             yearsOfExperience = 15,
             aboutBio = "Experienced cardiologist with specialization in interventional cardiology and cardiac surgery.",
-            cabin = "3A"
+            cabin = "3A",
+            gender = "male"
         ),
         Doctor(
             id = "doc_002",
@@ -46,7 +48,8 @@ object DoctorData {
             department = "Neurology",
             yearsOfExperience = 12,
             aboutBio = "Specialist in neurological disorders with expertise in stroke management and epilepsy.",
-            cabin = "4B"
+            cabin = "4B",
+            gender = "female"
         ),
         Doctor(
             id = "doc_003",
@@ -54,7 +57,8 @@ object DoctorData {
             department = "Orthopedics",
             yearsOfExperience = 18,
             aboutBio = "Orthopedic surgeon specializing in joint replacement and sports medicine.",
-            cabin = "2C"
+            cabin = "2C",
+            gender = "male"
         ),
         Doctor(
             id = "doc_004",
@@ -62,7 +66,8 @@ object DoctorData {
             department = "Dermatology",
             yearsOfExperience = 10,
             aboutBio = "Dermatologist with expertise in cosmetic and clinical dermatology.",
-            cabin = "5D"
+            cabin = "5D",
+            gender = "female"
         ),
         Doctor(
             id = "doc_005",
@@ -70,7 +75,8 @@ object DoctorData {
             department = "General Surgery",
             yearsOfExperience = 20,
             aboutBio = "Senior surgeon with extensive experience in general and laparoscopic surgery.",
-            cabin = "1E"
+            cabin = "1E",
+            gender = "male"
         ),
         Doctor(
             id = "doc_006",
@@ -78,7 +84,17 @@ object DoctorData {
             department = "Pediatrics",
             yearsOfExperience = 14,
             aboutBio = "Pediatrician specializing in neonatal care and child development.",
-            cabin = "6F"
+            cabin = "6F",
+            gender = "female"
+        ),
+        Doctor(
+            id = "doc_007",
+            name = "Dr. Apurva Yadav",
+            department = "Ophthalmology",
+            yearsOfExperience = 9,
+            aboutBio = "Consultant Ophthalmologist & Cataract Surgeon.",
+            cabin = "",
+            gender = "female"
         )
     )
 

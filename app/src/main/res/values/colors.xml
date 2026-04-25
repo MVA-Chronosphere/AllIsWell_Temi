@@ -1,52 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Dark Theme Base -->
-    <color name="dark_bg">#0B1220</color>
-    <color name="dark_bg_secondary">#1A2332</color>
-    <color name="dark_surface">#242E3F</color>
+    <!-- NEW MATCHA/ALMOND PREMIUM HOSPITAL PALETTE -->
+    <color name="matcha">#809671</color>
+    <color name="almond">#E5E0D8</color>
+    <color name="pistache">#B3B792</color>
+    <color name="chai">#D2AB80</color>
+    <color name="carob">#725C3A</color>
+    <color name="vanilla">#E5D2B8</color>
+    <color name="white">#FFFFFF</color>
 
-    <!-- Neon Accent Colors -->
-    <color name="neon_blue">#00D9FF</color>
-    <color name="neon_purple">#B100FF</color>
-    <color name="neon_green">#00FF41</color>
-    <color name="neon_pink">#FF006E</color>
+    <!-- Semantic Colors -->
+    <color name="background_light">#E5E0D8</color>
+    <color name="card_primary">#809671</color>
+    <color name="card_secondary">#B3B792</color>
+    <color name="button_primary">#D2AB80</color>
+    <color name="text_heading">#725C3A</color>
+    <color name="text_body">#725C3A</color>
+    <color name="toggle_background">#E5D2B8</color>
+    <color name="toggle_active">#809671</color>
+    <color name="border_color">#B3B792</color>
+    <color name="shadow_color">#00000015</color>
 
-    <!-- Hospital Alliswell Theme Colors -->
-    <color name="primary_blue">#1E3A8A</color>
-    <color name="accent_gold">#D4A017</color>
-    <color name="background">#F9FAFB</color>
-    <color name="card_background">#FFFFFF</color>
-    <color name="text_dark">#1F2937</color>
-    <color name="emergency_red">#DC2626</color>
-    <color name="text_secondary">#6B7280</color>
-    <color name="border_light">#E5E7EB</color>
-    <color name="shadow_color">#000000</color>
-
-    <!-- Compose Colors -->
-    <color name="gradient_blue_start">#0D47A1</color>
-    <color name="gradient_blue_end">#1976D2</color>
-    <color name="gradient_teal_start">#00695C</color>
-    <color name="gradient_teal_end">#00897B</color>
-    <color name="gradient_purple_start">#4A148C</color>
-    <color name="gradient_purple_end">#7B1FA2</color>
-    <color name="gradient_red_start">#B71C1C</color>
-    <color name="gradient_red_end">#D32F2F</color>
-    <color name="gradient_orange_start">#E65100</color>
-    <color name="gradient_orange_end">#F57C00</color>
-    <color name="gradient_indigo_start">#1A237E</color>
-    <color name="gradient_indigo_end">#283593</color>
-
-    <!-- Text Colors -->
-    <color name="text_white">#FFFFFF</color>
-    <color name="text_light_gray">#E0E0E0</color>
-    <color name="text_medium_gray">#A0A0A0</color>
-
-    <!-- Legacy colors -->
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Legacy/Deprecated XML Layout Colors (for backward compatibility) -->
+    <color name="background">#E5E0D8</color>
+    <color name="card_background">#D2AB80</color>
+    <color name="text_dark">#725C3A</color>
+    <color name="text_secondary">#725C3A</color>
+    <color name="primary_blue">#809671</color>
+    <color name="accent_gold">#D2AB80</color>
+    <color name="border_light">#B3B792</color>
+    <color name="emergency_red">#C85A54</color>
+    <color name="purple_200">#809671</color>
+    <color name="purple_700">#809671</color>
+    <color name="teal_200">#B3B792</color>
+    <color name="black">#000000</color>
 </resources>

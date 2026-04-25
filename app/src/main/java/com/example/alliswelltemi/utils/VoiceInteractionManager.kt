@@ -11,7 +11,6 @@ import com.example.alliswelltemi.network.OllamaRequest
 import com.example.alliswelltemi.network.VoiceResult
 import com.example.alliswelltemi.network.VoiceState
 import com.robotemi.sdk.Robot
-import com.robotemi.sdk.TtsRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,7 +35,8 @@ import java.util.*
 class VoiceInteractionManager(
     private val context: Context,
     private val robot: Robot?,
-    private val coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope,
+    private val language: String // New language parameter
 ) {
     private var speechRecognizer: SpeechRecognizer? = null
     private var isListening = false
@@ -69,7 +69,7 @@ class VoiceInteractionManager(
 
             speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
             speechRecognizer?.setRecognitionListener(recognitionListener)
-            Log.d(TAG, "SpeechRecognizer initialized successfully")
+            Log.d(TAG, "SpeechRec ognizer initialized successfully")
         } catch (e: Exception) {
             Log.e(TAG, "Error initializing SpeechRecognizer", e)
             onError?.invoke("Failed to initialize speech recognition")
@@ -250,10 +250,9 @@ class VoiceInteractionManager(
                     try {
                         OllamaClient.api.generate(
                             OllamaRequest(
-                                model = "llama3:8b",
+                                model = "llama3",
                                 prompt = hospitalContextPrompt,
-                                stream = false,
-                                temperature = 0.7
+                                stream = false
                             )
                         )
                     } catch (e: Exception) {
@@ -391,7 +390,11 @@ class VoiceInteractionManager(
             }
 
             Log.d(TAG, "Speaking response: '$text' (${text.length} chars)")
-            robot.speak(TtsRequest.create(text, isShowOnConversationLayer = false))
+            
+            // Auto-detect language if text contains Hindi characters
+            val speakLang = if (isHindi(text)) "hi" else language
+            
+            speakWithLanguage(context, text, speakLang, robot)
             updateState(VoiceState.IDLE)
         } catch (e: Exception) {
             Log.e(TAG, "Error speaking response", e)
@@ -494,4 +497,3 @@ class VoiceInteractionManager(
         private const val TAG = "VoiceInteraction"
     }
 }
-

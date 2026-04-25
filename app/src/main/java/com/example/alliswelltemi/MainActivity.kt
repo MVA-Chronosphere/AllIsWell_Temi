@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.alliswelltemi.network.OllamaClient
 import com.example.alliswelltemi.network.OllamaRequest
+import com.example.alliswelltemi.network.OllamaOptions
 import com.example.alliswelltemi.ui.screens.*
 import com.example.alliswelltemi.ui.theme.TemiTheme
 import com.example.alliswelltemi.utils.ConversationContext
@@ -35,6 +36,7 @@ import kotlinx.coroutines.withContext
 import com.example.alliswelltemi.utils.DanceService
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
+import com.example.alliswelltemi.utils.speakWithLanguage
 
 class MainActivity : ComponentActivity(),
     Robot.AsrListener,
@@ -116,7 +118,7 @@ class MainActivity : ComponentActivity(),
 
             Robot.getInstance().addOnRobotReadyListener(this)
 
-            doctorsViewModel = DoctorsViewModel(application)
+            doctorsViewModel = DoctorsViewModel(context = this@MainActivity)
 
             // Initialize orchestrator with empty list (will be updated when doctors load)
             orchestrator = SpeechOrchestrator(emptyList())
@@ -147,17 +149,16 @@ class MainActivity : ComponentActivity(),
                             NavigationScreen(
                                 robot = currentRobot,
                                 viewModel = navViewModel,
-                                isThinking = isGptProcessing,
-                                isConversationActive = isConversationActive,
                                 onBackPress = { currentScreen.value = "main" }
                             )
                         }
                         "appointment" -> {
                             AppointmentBookingScreen(
                                 robot = currentRobot,
+                                onBackPress = { currentScreen.value = "main" },
                                 viewModel = appointmentViewModel,
                                 doctorsViewModel = doctorsViewModel,
-                                onBackPress = { currentScreen.value = "main" }
+                                currentLanguage = "en"
                             )
                         }
                         "doctors" -> {
@@ -171,522 +172,18 @@ class MainActivity : ComponentActivity(),
                         else -> {
                             TemiMainScreen(
                                 robot = currentRobot,
-                                isThinking = isGptProcessing,
-                                isConversationActive = isConversationActive,
-                                onNavigate = { destination -> handleNavigation(destination) }
+                                onNavigate = { screen ->
+                                    currentScreen.value = screen
+                                }
                             )
                         }
                     }
                 }
             }
         } catch (e: Exception) {
-            android.util.Log.e("TemiMain", "CRITICAL ERROR in onCreate(): ${e.message}", e)
+            android.util.Log.e("TemiMain", "FATAL: Crash in onCreate: ${e.message}", e)
         }
     }
-
-    private var lastProcessedText = ""
-    private var lastSafeSpeakMessage = ""
-    private val isRobotSpeaking = AtomicBoolean(false)
-    private val pendingTtsIds = Collections.synchronizedSet(mutableSetOf<UUID>())
-    private var isGptProcessing by mutableStateOf(false)
-    private var gptRequestStartTime: Long = 0L
-
-     override fun onAsrResult(asrResult: String, sttLanguage: SttLanguage) {
-         android.util.Log.d("VOICE_PIPELINE", "========== ASR RESULT RECEIVED ==========")
-         android.util.Log.d("VOICE_PIPELINE", "Speech: '$asrResult'")
-         android.util.Log.d("VOICE_PIPELINE", "Language: ${sttLanguage.name}")
-         android.util.Log.i("VOICE_PIPELINE_FLOW", "✅ STEP 1: Speech captured by ASR")
-
-         // STEP 1: Validate input
-         if (asrResult.isBlank()) {
-             android.util.Log.w("VOICE_PIPELINE", "⚠️ Empty ASR result, ignoring")
-             return
-         }
-
-         // STEP 2: HARD BLOCK during active Ollama conversation
-         if (isConversationActive) {
-             android.util.Log.d("VOICE_PIPELINE", "❌ BLOCKED: Ollama conversation already active")
-             return
-         }
-
-         // STEP 3: Race condition safety - ensure serial processing
-         if (!isProcessingSpeech.compareAndSet(false, true)) {
-             android.util.Log.d("VOICE_PIPELINE", "❌ BLOCKED: Already processing previous speech")
-             return
-         }
-
-         // STEP 4: Process speech with Ollama EXCLUSIVELY
-         try {
-             android.util.Log.d("VOICE_PIPELINE", "✅ STEP 2: Starting manual speech processing with Ollama")
-             processSpeech(asrResult)
-         } catch (e: Exception) {
-             android.util.Log.e("VOICE_PIPELINE", "❌ Error processing speech: ${e.message}", e)
-             safeSpeak("An error occurred. Please try again.")
-         } finally {
-             isProcessingSpeech.set(false)
-         }
-     }
-
-    override fun onNlpCompleted(nlpResult: NlpResult) {
-        // ⚠️ CRITICAL: This should NEVER be called because we don't register NLP listener
-        // If it IS called, we block it as a safety measure
-        android.util.Log.e("TEMI_CLOUD_AI_BLOCK", "========== TEMI NLP DETECTED ==========")
-        android.util.Log.e("TEMI_CLOUD_AI_BLOCK", "❌ BLOCKING Temi cloud NLP response!")
-        android.util.Log.e("TEMI_CLOUD_AI_BLOCK", "Action: ${nlpResult.action}")
-        android.util.Log.e("TEMI_CLOUD_AI_BLOCK", "Query: ${nlpResult.resolvedQuery}")
-        android.util.Log.e("TEMI_CLOUD_AI_BLOCK", "This response will NOT be used - using Ollama only")
-
-        // Do NOT process this result - return immediately
-        return
-    }
-
-    override fun onConversationStatusChanged(status: Int, text: String) {
-         android.util.Log.d("TEMI_CLOUD_AI_BLOCK", "========== CONVERSATION STATUS CHANGED ==========")
-         android.util.Log.d("TEMI_CLOUD_AI_BLOCK", "Status: $status (1=Started, 2=Listening, 3=Processing, 4=Complete)")
-         android.util.Log.d("TEMI_CLOUD_AI_BLOCK", "Text: '${if (text.isBlank()) "<empty>" else text}'")
-
-         // ========== CRITICAL: BLOCK ALL TEMI Q&A RESPONSES ==========
-         // The Temi SDK automatically calls askQuestion() and tries to respond
-         // We MUST intercept and block ALL of these responses
-         // We do NOT want Temi's cloud AI to speak - ONLY OLLAMA should speak
-
-         if (text.isNotBlank()) {
-             android.util.Log.e("TEMI_CLOUD_AI_BLOCK", "❌ BLOCKING Temi askQuestion() response: '$text'")
-             android.util.Log.e("TEMI_CLOUD_AI_BLOCK", "Status code: $status")
-             android.util.Log.e("TEMI_CLOUD_AI_BLOCK", "This response will NOT be spoken - OLLAMA will handle it instead")
-
-             // EMERGENCY: Clear any pending Temi TTS immediately
-             try {
-                 robot?.speak(TtsRequest.create("", false))  // Send empty TTS to clear queue
-                 android.util.Log.d("TEMI_CLOUD_AI_BLOCK", "✅ Temi TTS queue cleared")
-             } catch (e: Exception) {
-                 android.util.Log.w("TEMI_CLOUD_AI_BLOCK", "Could not clear TTS queue: ${e.message}")
-             }
-
-             // Clear pending IDs
-             synchronized(pendingTtsIds) { pendingTtsIds.clear() }
-             isRobotSpeaking.set(false)
-         }
-
-         // ALWAYS return without processing - block any Temi behavior
-         return
-     }
-
-    override fun onConversationAttaches(isAttached: Boolean) {
-        android.util.Log.d("TEMI_CLOUD_AI_BLOCK", "Conversation attached: $isAttached")
-
-        // ========== BLOCK TEMI CONVERSATION LAYER ==========
-        // Prevent Temi's default conversation UI from showing
-        // Note: toggleConversationLayer() is not available in this SDK version
-        // Blocking is achieved by not registering NLP listener
-        if (isAttached) {
-            android.util.Log.d("TEMI_CLOUD_AI_BLOCK", "Conversation layer attached (cannot be toggled in this SDK version)")
-        }
-    }
-
-     /**
-      * Call Ollama LLM with streaming support and exclusive conversation lock protection
-      * CRITICAL: Ensures ONLY ONE Ollama conversation at a time
-      * Treat as MUTEX LOCK - no parallel operations allowed
-      */
-     private fun callOllama(prompt: String) {
-         // HARD LOCK: Prevents multiple Ollama calls
-         if (isConversationActive) {
-             android.util.Log.d("VOICE_PIPELINE", "BLOCKED: Duplicate conversation attempt - already active")
-             return
-         }
-
-         isConversationActive = true
-         conversationActiveState.value = true // Sync UI state
-
-         android.util.Log.i("VOICE_PIPELINE", "========== STARTING OLLAMA CONVERSATION ==========")
-         android.util.Log.d("VOICE_PIPELINE", "Streaming call START - isConversationActive = true")
-
-         // Prevent duplicate calls
-         if (isGptProcessing) {
-             android.util.Log.d("VOICE_PIPELINE", "Skipping duplicate Ollama call (already processing)")
-             isConversationActive = false // Release lock
-             conversationActiveState.value = false
-             return
-         }
-
-         isGptProcessing = true
-         gptRequestStartTime = System.currentTimeMillis()
-
-         // BLOCK inactivity timer during Ollama - prevents activity reset mid-conversation
-         handler.removeCallbacks(inactivityRunnable)
-         android.util.Log.d("VOICE_PIPELINE", "Inactivity timer BLOCKED during conversation")
-
-        // Clean the prompt - remove excessive newlines and whitespace
-        val cleanedPrompt = prompt
-            .replace(Regex("\n{3,}"), "\n\n")  // Max 2 consecutive newlines
-            .replace(Regex(" {2,}"), " ")       // Single spaces only
-            .trim()
-
-        android.util.Log.d("OLLAMA_FIX", "Cleaned prompt length: ${cleanedPrompt.length} chars (original: ${prompt.length})")
-        android.util.Log.d("OLLAMA_FIX", "Calling Ollama.generateStreaming() now...")
-
-        // Launch streaming coroutine
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                val ollamaRequest = OllamaRequest(
-                    model = "llama3:8b",
-                    prompt = cleanedPrompt,
-                    stream = true,
-                    temperature = 0.7
-                )
-
-                android.util.Log.d("OLLAMA_FIX", "Ollama streaming request created")
-
-                // Collect streaming response - WAIT for complete response before speaking
-                val fullResponse = StringBuilder()
-                OllamaClient.generateStreaming(ollamaRequest).collect { chunk ->
-                    fullResponse.append(chunk)
-                    // IMPORTANT: Do NOT speak streaming chunks immediately
-                    // Buffer them and speak the complete response when done
-                }
-
-                val finalResponse = fullResponse.toString()
-                val elapsedMs = System.currentTimeMillis() - gptRequestStartTime
-
-                android.util.Log.d("OLLAMA_FIX", "========== OLLAMA RESPONSE RECEIVED ==========")
-                android.util.Log.d("OLLAMA_FIX", "Response received after ${elapsedMs}ms")
-                android.util.Log.d("OLLAMA_FIX", "Response length: ${finalResponse.length} chars")
-                android.util.Log.d("OLLAMA_RESPONSE", "========== OLLAMA RESPONSE START ==========")
-                android.util.Log.d("OLLAMA_RESPONSE", finalResponse)
-                android.util.Log.d("OLLAMA_RESPONSE", "========== OLLAMA RESPONSE END ==========")
-
-                // Step 4: Save to conversation context
-                val lastQuestion = cleanedPrompt.substringAfter("User: ").substringBefore("\n\nIMPORTANT")
-                conversationContext.addTurn(lastQuestion, finalResponse)
-                android.util.Log.d("OLLAMA_FIX", "Saved turn to context. Total turns: ${conversationContext.getTurnCount()}")
-
-                // RELEASE conversation lock AFTER streaming completes
-                withContext(Dispatchers.Main) {
-                    // Speak the COMPLETE response now that streaming is done
-                    android.util.Log.d("OLLAMA_FIX", "Speaking complete response: ${finalResponse.length} chars")
-
-                    // CRITICAL: Release conversation lock BEFORE calling safeSpeak()
-                    // so safeSpeak() is not blocked by the isConversationActive check
-                    isGptProcessing = false
-                    isConversationActive = false
-                    conversationActiveState.value = false
-                    android.util.Log.d("OLLAMA_FIX", "Conversation lock RELEASED")
-
-                    // NOW speak the response (will not be blocked)
-                    safeSpeak(finalResponse)
-
-                    // Restart inactivity timer after Ollama completes
-                    handler.post(inactivityRunnable)
-                    android.util.Log.d("OLLAMA_FIX", "Inactivity timer RESTARTED")
-                }
-
-            } catch (e: Exception) {
-                android.util.Log.e("OLLAMA_FIX", "========== EXCEPTION in callOllama() ==========")
-                android.util.Log.e("OLLAMA_FIX", "Exception: ${e.message}", e)
-
-                // Generate fallback response
-                val fallbackResponse = RagContextBuilder.generateFallbackResponse(cleanedPrompt, doctorsViewModel.doctors.value)
-                android.util.Log.d("OLLAMA_FIX", "Fallback response: $fallbackResponse")
-
-                withContext(Dispatchers.Main) {
-                    safeSpeak(fallbackResponse)
-
-                    // Release locks and restart timer
-                    isGptProcessing = false
-                    isConversationActive = false
-                    conversationActiveState.value = false
-                    handler.post(inactivityRunnable)
-                }
-            }
-        }
-    }
-
-     /**
-      * Speak the complete Ollama response
-      */
-     private fun processSpeech(text: String) {
-         if (text.isBlank()) {
-             android.util.Log.w("VOICE_PIPELINE", "processSpeech called with blank text - ignoring")
-             return
-         }
-
-         // BLOCK INPUT DURING ACTIVE SESSION
-         if (isConversationActive) {
-             android.util.Log.d("VOICE_PIPELINE", "Input ignored (active conversation)")
-             return
-         }
-
-         if (text == lastProcessedText) {
-             android.util.Log.d("VOICE_PIPELINE", "processSpeech: Duplicate text skipped - '$text'")
-             return
-         }
-
-         lastProcessedText = text
-         android.util.Log.i("VOICE_PIPELINE_FLOW", "✅ STEP 3: Calling Ollama LLM")
-         resetInactivityTimer()
-
-        val doctors = doctorsViewModel.doctors.value
-        if (doctors.isEmpty()) {
-            android.util.Log.w("TemiSpeech", "processSpeech: Doctors list empty, waiting for data to load")
-            safeSpeak("Doctors list is still loading. Please try again.")
-            return
-        }
-
-        // Move all heavy work to background thread using coroutines
-        lifecycleScope.launch {
-            val perf_start = System.currentTimeMillis()
-
-            try {
-                // Step 1: Analyze intent on background thread
-                val context = withContext(Dispatchers.Default) {
-                    android.util.Log.d("PERF", "Orchestrator.analyze() starting on background thread")
-                    orchestrator.analyze(text)
-                }
-
-                android.util.Log.d("TemiSpeech", "Intent: ${context.intent}, Confidence: ${context.confidence}, Doctor: ${context.doctor?.name}, Dept: ${context.department}")
-
-                // Step 2: Handle DANCE intent (skip Ollama for dance)
-                if (context.intent == SpeechOrchestrator.Intent.DANCE) {
-                    withContext(Dispatchers.Main) {
-                        android.util.Log.i("TemiSpeech", "🎉 DANCE REQUEST DETECTED! Performing dance...")
-                        // Launch dance asynchronously
-                        lifecycleScope.launch {
-                            try {
-                                val danceMove = context.danceMove ?: DanceService.DanceMove.SMOOTH_GROOVE
-                                DanceService.performDance(robot, danceMove) {
-                                    android.util.Log.d("TemiSpeech", "✅ Dance completed!")
-                                }
-                            } catch (e: Exception) {
-                                android.util.Log.e("TemiSpeech", "Error during dance: ${e.message}", e)
-                                safeSpeak("Oops! I had trouble dancing. Please try again.")
-                            }
-                        }
-                    }
-                    // Don't call Ollama for dance requests - return early
-                    isProcessingSpeech.set(false)
-                    return@launch
-                }
-
-                // Step 3: Handle other navigation side effects on main thread
-                withContext(Dispatchers.Main) {
-                    when (context.intent) {
-                        SpeechOrchestrator.Intent.NAVIGATE -> {
-                            // If doctor matched, navigate to their cabin
-                            context.doctor?.let {
-                                robot?.goTo(it.cabin)
-                                android.util.Log.d("TemiSpeech", "Navigating to ${it.name}'s cabin: ${it.cabin}")
-                            }
-                        }
-
-                        SpeechOrchestrator.Intent.BOOK -> {
-                            currentScreen.value = "appointment"
-                        }
-
-                        SpeechOrchestrator.Intent.FIND_DOCTOR -> {
-                            // Optionally navigate to doctors screen if high confidence
-                            if (context.confidence >= 0.85f) {
-                                currentScreen.value = "doctors"
-                            } else {
-                                // Low confidence, keep on current screen
-                            }
-                        }
-
-                        else -> {} // GENERAL or DANCE (already handled) - no special navigation
-                    }
-                }
-
-                // Step 4: Build optimized Ollama prompt on background thread (SKIP FOR DANCE)
-                val prompt = withContext(Dispatchers.Default) {
-                    android.util.Log.d("PERF", "RagContextBuilder.buildOllamaPrompt() starting")
-                    RagContextBuilder.buildOllamaPrompt(
-                        query = text, 
-                        doctors = doctors,
-                        historyContext = conversationContext.getContextString()
-                    )
-                }
-
-                val perf_time = System.currentTimeMillis() - perf_start
-                android.util.Log.d("PERF", "Background processing completed in ${perf_time}ms")
-
-                // Log full prompt for debugging (multi-line)
-                android.util.Log.d("OLLAMA_PROMPT", "========== OLLAMA PROMPT START ==========")
-                android.util.Log.d("OLLAMA_PROMPT", prompt)
-                android.util.Log.d("OLLAMA_PROMPT", "========== OLLAMA PROMPT END (${prompt.length} chars) ==========")
-
-                // Step 5: Call Ollama on main thread (must happen after all context prep)
-                withContext(Dispatchers.Main) {
-                    callOllama(prompt)
-                }
-
-            } catch (e: Exception) {
-                android.util.Log.e("TemiSpeech", "Error in background processing: ${e.message}", e)
-                withContext(Dispatchers.Main) {
-                    safeSpeak("An error occurred while processing your request.")
-                }
-            }
-        }
-    }
-
-    // Removed onWakeupWord override: not present in Temi SDK
-
-    override fun onTtsStatusChanged(ttsRequest: TtsRequest) {
-        synchronized(pendingTtsIds) {
-            when (ttsRequest.status) {
-                TtsRequest.Status.STARTED -> isRobotSpeaking.set(true)
-                TtsRequest.Status.COMPLETED, TtsRequest.Status.CANCELED, TtsRequest.Status.ERROR -> {
-                    pendingTtsIds.remove(ttsRequest.id)
-                    if (pendingTtsIds.isEmpty()) {
-                        isRobotSpeaking.set(false)
-                        handler.removeCallbacksAndMessages("tts_safety")
-                        // MANUAL PIPELINE: TTS complete, restart ASR listening
-                        android.util.Log.d("VOICE_PIPELINE", "TTS finished - restarting ASR listening")
-                        // robot?.startListening() // Removed: not in Temi SDK
-                        voiceInteractionManager?.startListening() // Use your ASR pipeline
-                    }
-                }
-                else -> {}
-            }
-        }
-     }
-
-    private fun handleNavigation(destination: String) {
-        currentScreen.value = destination
-        resetInactivityTimer()
-    }
-
-    private fun resetInactivityTimer() {
-        lastInteractionTime = System.currentTimeMillis()
-
-        // DISABLE INACTIVITY RESET DURING GPT
-        if (isConversationActive) {
-            android.util.Log.d("OLLAMA_FIX", "Timer blocked during conversation")
-            return
-        }
-
-        handler.removeCallbacks(inactivityRunnable)
-        handler.post(inactivityRunnable)
-        android.util.Log.d("OLLAMA_FIX", "Inactivity timer RESTARTED")
-    }
-
-     private fun safeSpeak(message: String) {
-         try {
-             if (robot == null || message.isBlank()) return
-
-             // NEVER INTERRUPT CONVERSATION: Block speech during active GPT conversation
-             if (isConversationActive) {
-                 android.util.Log.d("VOICE_PIPELINE", "BLOCKED safeSpeak: conversation active")
-                 return
-             }
-
-             android.util.Log.i("VOICE_PIPELINE_FLOW", "✅ STEP 4: Speaking Ollama response (${message.length} chars)")
-             lastSafeSpeakMessage = message
-             synchronized(pendingTtsIds) { pendingTtsIds.clear() }
-             isRobotSpeaking.set(true)
-             handler.removeCallbacksAndMessages("tts_safety")
-
-            val cleanedMessage = message
-                .replace(NEWLINE_REGEX, ". ")
-                .replace(SPACE_REGEX, " ")
-                .replace(":", ". ")
-                .replace("Dr.", "Doctor", ignoreCase = true)
-                .replace(SYMBOL_REGEX, "")
-                .trim()
-
-            val sentences = cleanedMessage.split(Regex("(?<=[.!?])\\s+"))
-                .map { it.trim() }
-                .filter { it.isNotBlank() }
-
-            if (sentences.isEmpty()) {
-                isRobotSpeaking.set(false)
-                return
-            }
-
-            val chunks = mutableListOf<String>()
-            var currentChunk = ""
-            for (sentence in sentences) {
-                if (currentChunk.isEmpty()) currentChunk = sentence
-                else if (currentChunk.length + sentence.length < 400) currentChunk += " " + sentence
-                else {
-                    chunks.add(currentChunk)
-                    currentChunk = sentence
-                }
-            }
-            if (currentChunk.isNotEmpty()) chunks.add(currentChunk)
-
-             val requests = chunks.map { TtsRequest.create(it, isShowOnConversationLayer = false) }
-             synchronized(pendingTtsIds) { requests.forEach { pendingTtsIds.add(it.id) } }
-
-            requests.forEach { robot?.speak(it) }
-
-            val fallbackTimeout = (cleanedMessage.length * 100L) + 10000L
-            handler.postDelayed(object : Runnable {
-                override fun run() {
-                    if (isRobotSpeaking.get()) {
-                        synchronized(pendingTtsIds) { pendingTtsIds.clear() }
-                        isRobotSpeaking.set(false)
-                    }
-                }
-            }, fallbackTimeout)
-        } catch (_: Exception) {
-            isRobotSpeaking.set(false)
-        }
-    }
-
-    override fun onRobotReady(isReady: Boolean) {
-        if (isReady) {
-            robotState.value = Robot.getInstance()
-
-            // ========== CRITICAL: DISABLE ALL TEMI DEFAULT AI ==========
-            // The key is NOT registering the NLP listener, which prevents Temi cloud AI from processing
-
-            // Register ONLY the listeners we control for manual pipeline:
-            robot?.addAsrListener(this)                                   // Manual STT
-            robot?.addTtsListener(this)                                   // Track speech status
-            robot?.addConversationViewAttachesListener(this)              // Track UI state
-            robot?.addOnConversationStatusChangedListener(this)           // Block Temi Q&A responses
-
-            // ✅ DO NOT add NLP listener - this is CRITICAL
-            // If NLP listener is registered, Temi SDK automatically processes speech with cloud AI
-            // By NOT adding it, ALL speech processing goes through our manual pipeline
-            // robot?.addNlpListener(this)  // <-- ❌ NEVER ADD THIS - ENABLES TEMI CLOUD AI
-
-            // ========== ADDITIONAL: DISABLE TEMI CONVERSATION MODE ==========
-            // Prevent Temi's default conversation UI and askQuestion() from appearing
-            // Note: toggleConversationLayer() and stopConversation() are not available in this SDK version
-            // Conversation blocking is achieved by not registering NLP listener above
-
-            // CRITICAL: Block askQuestion() by not registering NLP listener
-            // This prevents Temi SDK from automatically calling askQuestion()
-            // All speech will be processed by our Ollama pipeline instead
-
-            // Enable kiosk mode and hide system UI overlays
-            robot?.setKioskModeOn(true)
-            robot?.hideTopBar()
-
-            // Initialize voice interaction manager for ASR pipeline
-            try {
-                voiceInteractionManager = com.example.alliswelltemi.utils.VoiceInteractionManager(
-                    context = this,
-                    robot = robot,
-                    coroutineScope = lifecycleScope
-                )
-                android.util.Log.d("TemiMain", "VoiceInteractionManager initialized successfully")
-            } catch (e: Exception) {
-                android.util.Log.e("TemiMain", "Failed to initialize VoiceInteractionManager: ${e.message}", e)
-            }
-
-            android.util.Log.d("TEMI_DISABLE", "========== TEMI CLOUD AI DISABLED ==========")
-            android.util.Log.d("TEMI_DISABLE", "✅ NLP listener NOT registered - Temi cloud AI disabled")
-            android.util.Log.d("TEMI_DISABLE", "✅ ASR listener registered - manual STT pipeline active")
-            android.util.Log.d("TEMI_DISABLE", "✅ OnConversationStatusChanged listener registered - blocking Temi Q&A")
-            android.util.Log.d("TEMI_DISABLE", "✅ Conversation layer disabled - no default UI")
-            android.util.Log.d("TEMI_DISABLE", "✅ Using MANUAL voice pipeline with OLLAMA only")
-            android.util.Log.d("TEMI_DISABLE", "✅ askQuestion() blocked - OLLAMA will handle all responses")
-
-            this.isRobotReady.value = true
-        }
-     }
 
     override fun onResume() {
         super.onResume()
@@ -701,12 +198,10 @@ class MainActivity : ComponentActivity(),
     }
 
     override fun onDestroy() {
-        // Release voice interaction manager
         voiceInteractionManager?.release()
         super.onDestroy()
         Robot.getInstance().removeOnRobotReadyListener(this)
         robot?.removeAsrListener(this)
-        // robot?.removeNlpListener(this)  // <-- Not added, so not removing
         robot?.removeTtsListener(this)
         robot?.removeConversationViewAttachesListener(this)
         robot?.removeOnConversationStatusChangedListener(this)
@@ -714,12 +209,379 @@ class MainActivity : ComponentActivity(),
 
     override fun onUserInteraction() {
         super.onUserInteraction()
-        resetInactivityTimer()
+        lastInteractionTime = System.currentTimeMillis()
     }
 
     companion object {
-        private val NEWLINE_REGEX = Regex("\\n+")
-        private val SPACE_REGEX = Regex("\\s+")
-        private val SYMBOL_REGEX = Regex("[()#*]")
+        private const val NEWLINE_REGEX = "(\\r\\n|\\n|\\r)"
+        private const val SPACE_REGEX = "\\s+"
+        private const val SYMBOL_REGEX = "[*#_]"
+    }
+
+    // ASR Listener
+    override fun onAsrResult(asrResult: String, sttLanguage: SttLanguage) {
+        android.util.Log.i("VOICE_PIPELINE_FLOW", "✅ STEP 2: ASR Received '$asrResult' ($sttLanguage)")
+        processSpeech(asrResult)
+    }
+
+    // NLP Listener (required for interface, but NOT registered to disable cloud AI)
+    override fun onNlpCompleted(nlpResult: NlpResult) {
+        android.util.Log.d("TEMI_DISABLE", "BLOCKED onNlpCompleted: cloud AI ignored")
+    }
+
+    // TTS Listener
+    private val pendingTtsIds = mutableSetOf<UUID>()
+    private val isRobotSpeaking = AtomicBoolean(false)
+    private var lastSafeSpeakMessage = ""
+
+    override fun onTtsStatusChanged(ttsRequest: TtsRequest) {
+        synchronized(pendingTtsIds) {
+            when (ttsRequest.status) {
+                TtsRequest.Status.STARTED -> isRobotSpeaking.set(true)
+                TtsRequest.Status.COMPLETED, TtsRequest.Status.CANCELED, TtsRequest.Status.ERROR -> {
+                    pendingTtsIds.remove(ttsRequest.id)
+                    if (pendingTtsIds.isEmpty()) {
+                        isRobotSpeaking.set(false)
+                        handler.removeCallbacksAndMessages("tts_safety")
+                        // MANUAL PIPELINE: TTS complete, restart ASR listening
+                        android.util.Log.d("VOICE_PIPELINE", "TTS finished - restarting ASR listening")
+                        voiceInteractionManager?.startListening() 
+                    }
+                }
+                else -> {}
+            }
+        }
+    }
+
+    // Conversation statuses
+    override fun onConversationStatusChanged(status: Int, text: String) {
+        android.util.Log.d("TEMI_DISABLE", "onConversationStatusChanged: status=$status, text='$text'")
+        // If Temi tries to speak something through its default AI (status 1=talking), finish it
+        if (status == 1) {
+            android.util.Log.w("TEMI_DISABLE", "🛑 INTERCEPTED default Temi speech attempt! Killing conversation.")
+            robot?.finishConversation()
+        }
+    }
+
+    override fun onConversationAttaches(isAttached: Boolean) {
+        android.util.Log.d("TEMI_DISABLE", "Conversation UI Attached: $isAttached")
+    }
+
+    private var isGptProcessing = false
+    private var lastProcessedText = ""
+
+    private fun callOllama(prompt: String) {
+        if (isConversationActive || isGptProcessing) {
+            android.util.Log.w("OLLAMA_FIX", "Blocked parallel Ollama call")
+            return
+        }
+
+        // 1. ACQUIRE LOCK (Main Thread)
+        isConversationActive = true
+        isGptProcessing = true
+        conversationActiveState.value = true
+        android.util.Log.i("OLLAMA_FIX", "========== OLLAMA REQUEST START ==========")
+        android.util.Log.d("OLLAMA_FIX", "Conversation lock ACQUIRED")
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            val gptRequestStartTime = System.currentTimeMillis()
+            val cleanedPrompt = prompt.trim()
+
+            try {
+                // Step 2: Call Ollama with manual context injection
+                val ollamaRequest = OllamaRequest(
+                    model = "llama3:8b",
+                    prompt = cleanedPrompt,
+                    stream = true,
+                    options = OllamaOptions(num_predict = 150)  // Limit to ~2-3 sentences for speed
+                )
+                android.util.Log.d("OLLAMA_FIX", "Ollama streaming request created")
+
+                // PERFORMANCE FIX: Collect streaming response and speak IMMEDIATELY when we have enough
+                val fullResponse = StringBuilder()
+                var firstChunkTime: Long? = null
+                var hasSpokenFirstPart = false
+                val sentenceBuffer = StringBuilder()
+
+                OllamaClient.generateStreaming(ollamaRequest).collect { chunk ->
+                    if (firstChunkTime == null) {
+                        firstChunkTime = System.currentTimeMillis()
+                        val timeToFirstChunk = firstChunkTime!! - gptRequestStartTime
+                        android.util.Log.d("OLLAMA_PERF", "⚡ First chunk received in ${timeToFirstChunk}ms")
+                    }
+
+                    fullResponse.append(chunk)
+                    sentenceBuffer.append(chunk)
+
+                    // Speak as soon as we have a complete sentence (ends with . ! ?)
+                    if (!hasSpokenFirstPart && sentenceBuffer.length > 20) {
+                        val text = sentenceBuffer.toString()
+                        if (text.matches(Regex(".*[.!?]\\s*"))) {
+                            hasSpokenFirstPart = true
+                            val speakText = text.trim()
+                            android.util.Log.d("OLLAMA_PERF", "🔊 Speaking first part early (${speakText.length} chars)")
+
+                            // CRITICAL FIX: Temporarily allow speaking during conversation lock
+                            withContext(Dispatchers.Main) {
+                                safeSpeakDuringStreaming(speakText)
+                            }
+                            sentenceBuffer.clear()
+                        }
+                    }
+                }
+
+                val finalResponse = fullResponse.toString()
+                val elapsedMs = System.currentTimeMillis() - gptRequestStartTime
+
+                android.util.Log.d("OLLAMA_FIX", "========== OLLAMA RESPONSE RECEIVED ==========")
+                android.util.Log.d("OLLAMA_FIX", "Response received after ${elapsedMs}ms")
+
+                // Step 4: Save to conversation context
+                val lastQuestion = if (cleanedPrompt.contains("User: ")) {
+                    cleanedPrompt.substringAfter("User: ").substringBefore("\n\nIMPORTANT")
+                } else {
+                    "Unknown question"
+                }
+                conversationContext.addTurn(lastQuestion, finalResponse)
+
+                // RELEASE conversation lock AFTER streaming completes
+                withContext(Dispatchers.Main) {
+                    isGptProcessing = false
+                    isConversationActive = false
+                    conversationActiveState.value = false
+                    android.util.Log.d("OLLAMA_FIX", "Conversation lock RELEASED")
+
+                    // Only speak if we haven't already started speaking
+                    if (!hasSpokenFirstPart) {
+                        safeSpeak(finalResponse)
+                    }
+                    handler.post(inactivityRunnable)
+                }
+
+            } catch (e: Exception) {
+                android.util.Log.e("OLLAMA_FIX", "Exception: ${e.message}", e)
+                val fallbackResponse = RagContextBuilder.generateFallbackResponse(cleanedPrompt, doctorsViewModel.doctors.value)
+                withContext(Dispatchers.Main) {
+                    safeSpeak(fallbackResponse)
+                    isGptProcessing = false
+                    isConversationActive = false
+                    conversationActiveState.value = false
+                    handler.post(inactivityRunnable)
+                }
+            }
+        }
+    }
+
+    private fun processSpeech(text: String) {
+        if (text.isBlank() || isConversationActive) return
+        if (text == lastProcessedText) return
+
+        lastProcessedText = text
+        robot?.finishConversation()
+        resetInactivityTimer()
+
+        val doctors = doctorsViewModel.doctors.value
+        if (doctors.isEmpty()) {
+            safeSpeak("Doctors list is still loading. Please try again.")
+            return
+        }
+
+        lifecycleScope.launch {
+            try {
+                val context = withContext(Dispatchers.Default) {
+                    orchestrator.analyze(text)
+                }
+
+                if (context.intent == SpeechOrchestrator.Intent.DANCE) {
+                    withContext(Dispatchers.Main) {
+                        lifecycleScope.launch {
+                            try {
+                                val danceMove = context.danceMove ?: DanceService.DanceMove.SMOOTH_GROOVE
+                                DanceService.performDance(
+                                    robot = robot,
+                                    danceMove = danceMove,
+                                    context = this@MainActivity,
+                                    language = "en"
+                                ) { }
+                            } catch (e: Exception) {
+                                safeSpeak("Oops! I had trouble dancing. Please try again.")
+                            }
+                        }
+                    }
+                    isProcessingSpeech.set(false)
+                    return@launch
+                }
+
+                withContext(Dispatchers.Main) {
+                    when (context.intent) {
+                        SpeechOrchestrator.Intent.NAVIGATE -> {
+                            context.doctor?.let { robot?.goTo(it.cabin) }
+                        }
+                        SpeechOrchestrator.Intent.BOOK -> { currentScreen.value = "appointment" }
+                        SpeechOrchestrator.Intent.FIND_DOCTOR -> {
+                            if (context.confidence >= 0.85f) {
+                                currentScreen.value = "doctors"
+                            } else {
+                                // Do nothing or handle low confidence
+                            }
+                        }
+                        else -> {}
+                    }
+                }
+
+                val prompt = withContext(Dispatchers.Default) {
+                    RagContextBuilder.buildOllamaPrompt(
+                        query = text, 
+                        doctors = doctors,
+                        historyContext = conversationContext.getContextString()
+                    )
+                }
+
+                withContext(Dispatchers.Main) {
+                    callOllama(prompt)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) { safeSpeak("An error occurred while processing your request.") }
+            }
+        }
+    }
+
+    private fun safeSpeak(message: String) {
+        try {
+            if (robot == null || message.isBlank() || isConversationActive) return
+
+            val cleanedMessage = message
+                .replace(NEWLINE_REGEX, ". ")
+                .replace(SPACE_REGEX, " ")
+                .replace(":", ". ")
+                .replace("Dr.", "Doctor", ignoreCase = true)
+                .replace(SYMBOL_REGEX, "")
+                .trim()
+
+            // Detect language automatically for better TTS matching
+            val detectedLanguage = if (com.example.alliswelltemi.utils.isHindi(cleanedMessage)) "hi" else "en"
+
+            val sentences = cleanedMessage.split(Regex("(?<=[.!?])\\s+"))
+                .map { it.trim() }
+                .filter { it.isNotBlank() }
+
+            if (sentences.isEmpty()) return
+
+            val chunks = mutableListOf<String>()
+            var currentChunk = ""
+            for (sentence in sentences) {
+                if (currentChunk.isEmpty()) currentChunk = sentence
+                else if (currentChunk.length + sentence.length < 400) currentChunk += " " + sentence
+                else {
+                    chunks.add(currentChunk)
+                    currentChunk = sentence
+                }
+            }
+            if (currentChunk.isNotEmpty()) chunks.add(currentChunk)
+
+            isRobotSpeaking.set(true)
+            
+            // Use speakWithLanguage for multi-lingual TTS support (Google TTS for Hindi)
+            chunks.forEach { chunk ->
+                speakWithLanguage(
+                    context = this@MainActivity,
+                    text = chunk,
+                    language = detectedLanguage,
+                    robot = robot,
+                    queueMode = android.speech.tts.TextToSpeech.QUEUE_ADD
+                )
+            }
+
+            handler.postDelayed({
+                if (isRobotSpeaking.get()) {
+                    isRobotSpeaking.set(false)
+                }
+            }, (cleanedMessage.length * 100L) + 10000L)
+        } catch (_: Exception) {
+            isRobotSpeaking.set(false)
+        }
+    }
+
+    /**
+     * PERFORMANCE FIX: Speak during streaming without conversation lock blocking
+     * Used for early streaming responses to provide instant feedback
+     */
+    private fun safeSpeakDuringStreaming(message: String) {
+        try {
+            if (robot == null || message.isBlank()) return
+
+            val cleanedMessage = message
+                .replace(NEWLINE_REGEX, ". ")
+                .replace(SPACE_REGEX, " ")
+                .replace(":", ". ")
+                .replace("Dr.", "Doctor", ignoreCase = true)
+                .replace(SYMBOL_REGEX, "")
+                .trim()
+
+            android.util.Log.d("OLLAMA_PERF", "💬 Speaking during stream: '$cleanedMessage'")
+
+            // Detect language automatically for better TTS matching
+            val detectedLanguage = if (com.example.alliswelltemi.utils.isHindi(cleanedMessage)) "hi" else "en"
+
+            isRobotSpeaking.set(true)
+
+            // Use speakWithLanguage for multi-lingual TTS support
+            speakWithLanguage(
+                context = this@MainActivity,
+                text = cleanedMessage,
+                language = detectedLanguage,
+                robot = robot,
+                queueMode = android.speech.tts.TextToSpeech.QUEUE_ADD
+            )
+
+            handler.postDelayed({
+                if (isRobotSpeaking.get()) {
+                    isRobotSpeaking.set(false)
+                }
+            }, (cleanedMessage.length * 100L) + 5000L)
+        } catch (e: Exception) {
+            android.util.Log.e("MainActivity", "Error speaking during streaming: ${e.message}", e)
+            isRobotSpeaking.set(false)
+        }
+    }
+
+    override fun onRobotReady(isReady: Boolean) {
+        if (isReady) {
+            robotState.value = Robot.getInstance()
+            robot?.addAsrListener(this)
+            robot?.addTtsListener(this)
+            robot?.addConversationViewAttachesListener(this)
+            robot?.addOnConversationStatusChangedListener(this)
+            robot?.setKioskModeOn(true)
+            robot?.hideTopBar()
+
+            // Initialize TemiTTSManager with completion listener
+            com.example.alliswelltemi.utils.TemiTTSManager.initialize(this)
+            com.example.alliswelltemi.utils.TemiTTSManager.setOnCompletionListener {
+                android.util.Log.d("VOICE_PIPELINE", "Hindi TTS finished - restarting ASR listening")
+                isRobotSpeaking.set(false)
+                voiceInteractionManager?.startListening()
+            }
+
+            try {
+                voiceInteractionManager = com.example.alliswelltemi.utils.VoiceInteractionManager(
+                    context = this,
+                    robot = robot,
+                    coroutineScope = lifecycleScope,
+                    language = "en"
+                )
+            } catch (e: Exception) {
+                android.util.Log.e("TemiMain", "Failed to initialize VoiceInteractionManager", e)
+            }
+
+            this.isRobotReady.value = true
+        }
+    }
+
+    private fun resetInactivityTimer() {
+        lastInteractionTime = System.currentTimeMillis()
+        if (isConversationActive) return
+        handler.removeCallbacks(inactivityRunnable)
+        handler.post(inactivityRunnable)
     }
 }

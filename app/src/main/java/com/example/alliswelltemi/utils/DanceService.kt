@@ -1,5 +1,6 @@
 package com.example.alliswelltemi.utils
 
+import android.content.Context
 import android.util.Log
 import com.robotemi.sdk.Robot
 import com.robotemi.sdk.TtsRequest
@@ -52,11 +53,15 @@ object DanceService {
      * Execute a full dance sequence on the Temi robot
      * @param robot The Temi robot instance
      * @param danceMove Type of dance to perform
+     * @param context The context for speech synthesis
+     * @param language The language for speech synthesis
      * @param onComplete Callback when dance finishes
      */
     suspend fun performDance(
         robot: Robot?,
         danceMove: DanceMove,
+        context: Context?,
+        language: String = "en-US",
         onComplete: (() -> Unit)? = null
     ) {
         if (robot == null) {
@@ -76,10 +81,9 @@ object DanceService {
 
         try {
             // Initial greeting
-            robot.speak(TtsRequest.create(
-                speech = "Let me show you my dance moves!",
-                isShowOnConversationLayer = false
-            ))
+            context?.let {
+                speakWithLanguage(it, "Let me show you my dance moves!", language, robot)
+            }
             delay(500)
 
             // Execute each move in sequence
@@ -101,10 +105,9 @@ object DanceService {
 
                 // Speak if this move has speech
                 move.speech?.let {
-                    robot.speak(TtsRequest.create(
-                        speech = it,
-                        isShowOnConversationLayer = false
-                    ))
+                    context?.let { ctx ->
+                        speakWithLanguage(ctx, it, language, robot)
+                    }
                 }
 
                 // Wait for this move's duration
@@ -116,10 +119,9 @@ object DanceService {
             resetToNeutral(robot)
 
             // Closing speech
-            robot.speak(TtsRequest.create(
-                speech = "Thanks for watching! Did you enjoy my moves?",
-                isShowOnConversationLayer = false
-            ))
+            context?.let {
+                speakWithLanguage(it, "Thanks for watching! Did you enjoy my moves?", language, robot)
+            }
 
             onComplete?.invoke()
 
@@ -373,4 +375,3 @@ object DanceService {
         }
     }
 }
-

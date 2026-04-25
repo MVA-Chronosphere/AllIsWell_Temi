@@ -190,6 +190,7 @@ object RagContextBuilder {
 
     /**
      * Build optimized Ollama prompt with smart knowledge base retrieval
+     * PERFORMANCE OPTIMIZED: Shorter prompts = faster generation
      * For "tell me doctors" queries, includes ALL doctors
      * For other queries, uses filtered context
      * Now includes conversation history for context-aware responses
@@ -200,75 +201,51 @@ object RagContextBuilder {
         // Check if this is a general doctor list query
         val isGeneralDoctorQuery = isGeneralDoctorQuery(query)
 
-        // Use all doctors context for general queries, filtered for specific ones
-        val context = if (isGeneralDoctorQuery) {
-            buildContextWithAllDoctors(query, doctors)
+        // PERFORMANCE: Limit context size aggressively
+        val relevantDoctors = if (isGeneralDoctorQuery) {
+            doctors.take(5)  // REDUCED from ALL to 5 for general queries
         } else {
-            buildContext(query, doctors)
+            // Filter to relevant doctors, max 3
+            doctors.filter { doctor ->
+                val doctorName = doctor.name.lowercase().replace("dr.", "").replace("dr ", "").trim()
+                val department = doctor.department.lowercase()
+                val lowerQuery = query.lowercase()
+                lowerQuery.contains(doctorName) || lowerQuery.contains(department)
+            }.take(3)  // REDUCED from 10 to 3
         }
 
-        val langInstruction = if (language == "hi") {
-            """
-            आप एक अस्पताल सहायक हैं। बहुत ही खुशदिल और सम्मानजनक तरीके से जवाब दीजिए।
-            
-            CRITICAL: आपको ONLY हिंदी (Hindi/Devanagari script) में ही जवाब देना है।
-            NEVER respond in English when user asks in Hindi.
-            यूज़र ने हिंदी में पूछा है, तो जवाब भी हिंदी में ही दीजिए।
-            """.trimIndent()
-        } else {
-            """
-            You are a cheerful and respectful hospital assistant. Respond warmly and with care.
-            
-            CRITICAL: You MUST respond ONLY in English.
-            NEVER respond in Hindi when user asks in English.
-            """.trimIndent()
-        }
-
-        val fallbackPhrase = if (language == "hi") {
-            "मेरे पास वह विशिष्ट जानकारी नहीं है, लेकिन मैं अस्पताल में आपकी सहायता कर सकता हूँ।"
-        } else {
-            "I don't have that specific information, but I can help you at the hospital."
-        }
-
-        // SMART RETRIEVAL: Get only relevant Q&As from knowledge base
-        val relevantQAs = HospitalKnowledgeBase.search(query, limit = 3)
-        val knowledgeBaseContext = if (relevantQAs.isNotEmpty()) {
-            val qaText = relevantQAs.joinToString("\n\n") { qa ->
-                "Q: ${qa.question}\nA: ${qa.answer}"
+        // Ultra-compact doctor context
+        val doctorContext = if (relevantDoctors.isNotEmpty()) {
+            relevantDoctors.joinToString("; ") { doctor ->
+                "${doctor.name}-${doctor.department}-Cabin ${doctor.cabin}"
             }
-            """
-            Relevant Hospital Information:
-            $qaText
-            """.trimIndent()
         } else {
-            ""  // Empty if no relevant Q&As found
+            "No specific doctor match"
         }
 
+        // PERFORMANCE: Simplified prompt - removed verbose instructions
+        val langInstruction = if (language == "hi") {
+            "हिंदी में जवाब दें।"
+        } else {
+            "Answer in English only."
+        }
+
+        // SMART RETRIEVAL: Get only 1-2 relevant Q&As (reduced from 3)
+        val relevantQAs = HospitalKnowledgeBase.search(query, limit = 2)
+        val knowledgeBaseContext = if (relevantQAs.isNotEmpty()) {
+            relevantQAs.joinToString("; ") { qa -> "${qa.question}: ${qa.answer}" }
+        } else {
+            ""
+        }
+
+        // CRITICAL PERFORMANCE FIX: Ultra-compact prompt format
         return """
         $langInstruction
-
-        ${if (knowledgeBaseContext.isNotEmpty()) knowledgeBaseContext + "\n" else ""}
-        
-        ${if (historyContext.isNotEmpty()) historyContext + "\n" else ""}
-
-        $context
-
-        User: $query
-
-        IMPORTANT INSTRUCTIONS (CRITICAL):
-        1. LANGUAGE REQUIREMENT: Answer ONLY in ${if (language == "hi") "Hindi (हिंदी में जवाब दीजिए)" else "English"}. DO NOT mix languages.
-        2. LANGUAGE DETECTION: User asked in ${if (language == "hi") "Hindi" else "English"}, so respond in ${if (language == "hi") "Hindi" else "English"} ONLY.
-        3. Use ONLY the information provided above (Hospital Information, Previous Context, and Doctors list) to answer.
-        4. For follow-up questions (like "repeat that", "who is he", "what did you say"), refer primarily to the "Previous Conversation Context" provided above.
-        5. DO NOT make assumptions or notes about expertise not explicitly stated.
-        6. If a doctor's specialty does not match the user's request, DO NOT include them in the answer.
-        7. Answer clearly and cheerfully in 1-3 sentences.
-        8. NEVER make up information or invent answers.
-        9. For doctor lists, include their name, specialty, and cabin number ONLY.
-        10. If you don't have the information provided, say "$fallbackPhrase"
-        11. Be concise. Start your response directly with the answer.
-        12. REMEMBER: ${if (language == "hi") "हिंदी में जवाब दें (Answer in Hindi)" else "Answer in English"}.
-        """.trimIndent()
+        ${if (historyContext.isNotEmpty()) "Context: $historyContext" else ""}
+        ${if (knowledgeBaseContext.isNotEmpty()) "Info: $knowledgeBaseContext" else ""}
+        Doctors: $doctorContext
+        Q: $query
+        A: """.trimIndent().replace("\n\n", "\n")  // Remove extra blank lines
     }
 
     /**

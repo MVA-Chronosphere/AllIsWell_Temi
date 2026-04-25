@@ -1,11 +1,17 @@
 package com.example.alliswelltemi.ui.screens
 
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -13,591 +19,450 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toUpperCase
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.border
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.drawscope.translate
+import com.example.alliswelltemi.ui.theme.HospitalColors
+import com.example.alliswelltemi.ui.components.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.intl.Locale
 import com.example.alliswelltemi.R
 import com.robotemi.sdk.Robot
 import com.robotemi.sdk.TtsRequest
-import java.text.SimpleDateFormat
-import java.util.Date
+import coil.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 
 /**
  * Main Hospital Assistant Screen for Temi Robot (13.3-inch display)
  * Optimized for 1920x1080 landscape resolution.
- * Matches the requested UI design exactly.
+ * Premium Soft Purple Theme Applied
  */
 @Composable
 fun TemiMainScreen(
     modifier: Modifier = Modifier,
     robot: Robot? = null,
-    isThinking: Boolean = false,
-    isConversationActive: Boolean = false,
     onNavigate: (String) -> Unit = {}
 ) {
-    var currentLanguage by remember { mutableStateOf("en") }
-    val darkBg = colorResource(id = R.color.dark_bg)
-    
-    val dateFormatter = remember { SimpleDateFormat("MMM dd, yyyy", java.util.Locale.getDefault()) }
-    val timeFormatter = remember { SimpleDateFormat("hh:mm a", java.util.Locale.getDefault()) }
-    var currentTime by remember { mutableStateOf(Date()) }
-
-    LaunchedEffect(Unit) {
-        while (true) {
-            currentTime = Date()
-            kotlinx.coroutines.delay(1000)
-        }
-    }
-
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(darkBg)
-            .padding(horizontal = 64.dp, vertical = 40.dp)
+            .background(HospitalColors.Background),
+        contentAlignment = Alignment.TopStart
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            // 1. HEADER (Hospital Logo, NABH Badge, Date/Time, Language Toggle)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Left: Hospital Title + NABH Badge
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.LocalHospital,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(28.dp)
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(
-                        text = if (currentLanguage == "en")
-                            stringResource(id = R.string.hospital_title)
-                        else
-                            stringResource(id = R.string.hospital_title_hi),
-                        color = Color.White,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                    Spacer(modifier = Modifier.width(20.dp))
-                    // NABH Accreditation Badge
-                    Surface(
-                        modifier = Modifier.padding(horizontal = 8.dp),
-                        shape = RoundedCornerShape(4.dp),
-                        color = Color(0xFF00D9FF).copy(alpha = 0.2f)
-                    ) {
-                        Text(
-                            text = if (currentLanguage == "en")
-                                stringResource(id = R.string.nabh_accredited)
-                            else
-                                stringResource(id = R.string.nabh_accredited_hi),
-                            color = Color(0xFF00D9FF),
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                        )
-                    }
-                }
+        Column(
+            modifier = Modifier
+                .width(1000.dp)
+                .fillMaxHeight()
+        ) {
+            GlobalStatusBar()
 
-                // Right: Date/Time and Language Toggle
-                Row(
-                    modifier = Modifier.clickable {
-                        currentLanguage = if (currentLanguage == "en") "hi" else "en"
-                        onNavigate("language")
-                    },
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    // Date and Time
-                    Column(
-                        horizontalAlignment = Alignment.End,
-                        modifier = Modifier.padding(end = 8.dp)
-                    ) {
-                        Text(
-                            text = dateFormatter.format(currentTime),
-                            color = Color.White.copy(alpha = 0.7f),
-                            fontSize = 12.sp
-                        )
-                        Text(
-                            text = timeFormatter.format(currentTime),
-                            color = Color.White,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-
-                    Icon(
-                        imageVector = Icons.Default.Language,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = if (currentLanguage == "en")
-                            stringResource(id = R.string.english)
-                        else
-                            stringResource(id = R.string.hindi),
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(50.dp))
-
-            // 2. HERO SECTION (Greeting Title + Subtitle + Avatar)
-            // When answering questions, hide greeting text and show animated eyes
-            if (!isThinking && !isConversationActive) {
-                // NORMAL STATE: Show greeting text
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = if (currentLanguage == "en") "Namaste!" else "नमस्ते!",
-                            color = Color.White,
-                            fontSize = 56.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Text(
-                            text = if (currentLanguage == "en")
-                                "How can I help you today?"
-                            else
-                                "आज मैं आपकी कैसे मदद कर सकता हूँ?",
-                            color = Color.LightGray.copy(alpha = 0.8f),
-                            fontSize = 24.sp,
-                            lineHeight = 34.sp
-                        )
-                    }
-
-                    // Robot Avatar - Normal Smiling Eyes
-                    TemiAvatarSmiling()
-                }
-            } else {
-                // ANSWERING STATE: Show animated listening eyes, hide greeting text
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
-                    contentAlignment = Alignment.Center
-                ) {
-                    // Show animated Temi eyes while answering
-                    TemiAvatarListening(isListening = isThinking || isConversationActive)
-                }
-            }
-
-            Spacer(modifier = Modifier.height(40.dp))
-
-            // 3. MAIN MENU TITLE - Hide menu when answering
-            if (!isThinking && !isConversationActive) {
-                Text(
-                    text = if (currentLanguage == "en") "Main Menu" else "मुख्य मेनू",
-                    color = Color.Gray,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // 4. MENU GRID (2 columns x 2 rows)
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(20.dp)
-                ) {
-                    // First Row: Find & Navigate | Doctors & Departments
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(20.dp)
-                ) {
-                    MenuCard(
-                        title = if (currentLanguage == "en")
-                            stringResource(id = R.string.find_navigate)
-                        else
-                            stringResource(id = R.string.find_navigate_hi),
-                        subtitle = if (currentLanguage == "en")
-                            stringResource(id = R.string.find_navigate_subtitle)
-                        else
-                            stringResource(id = R.string.find_navigate_subtitle_hi),
-                        icon = Icons.Default.LocationOn,
-                        startColor = colorResource(id = R.color.gradient_blue_start),
-                        endColor = colorResource(id = R.color.gradient_blue_end),
-                        modifier = Modifier.weight(1f),
-                        onClick = {
-                            val speech = if (currentLanguage == "en")
-                                "I'll take you there. Where would you like to go?"
-                            else
-                                "मैं आपको वहां ले जाऊंगा। आप कहां जाना चाहते हैं?"
-                            robot?.speak(TtsRequest.create(speech = speech, isShowOnConversationLayer = false))
-                            onNavigate("navigation")
-                        }
-                    )
-                    MenuCard(
-                        title = if (currentLanguage == "en")
-                            stringResource(id = R.string.doctors_departments)
-                        else
-                            stringResource(id = R.string.doctors_departments_hi),
-                        subtitle = if (currentLanguage == "en")
-                            stringResource(id = R.string.doctors_departments_subtitle)
-                        else
-                            stringResource(id = R.string.doctors_departments_subtitle_hi),
-                        icon = Icons.Default.AccountCircle,
-                        startColor = colorResource(id = R.color.gradient_teal_start),
-                        endColor = colorResource(id = R.color.gradient_teal_end),
-                        modifier = Modifier.weight(1f),
-                        onClick = {
-                            val speech = if (currentLanguage == "en")
-                                "Finding specialist doctors for you"
-                            else
-                                "मैं आपके लिए विशेषज्ञ डॉक्टर खोज रहा हूँ"
-                            robot?.speak(TtsRequest.create(speech = speech, isShowOnConversationLayer = false))
-                            onNavigate("doctors")
-                        }
-                    )
-                }
-                
-                // Second Row: Book Appointment | Share Feedback
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(20.dp)
-                ) {
-                    MenuCard(
-                        title = if (currentLanguage == "en")
-                            stringResource(id = R.string.book_appointment)
-                        else
-                            stringResource(id = R.string.book_appointment_hi),
-                        subtitle = if (currentLanguage == "en")
-                            stringResource(id = R.string.book_appointment_subtitle)
-                        else
-                            stringResource(id = R.string.book_appointment_subtitle_hi),
-                        icon = Icons.Default.DateRange,
-                        startColor = colorResource(id = R.color.gradient_purple_start),
-                        endColor = colorResource(id = R.color.gradient_purple_end),
-                        modifier = Modifier.weight(1f),
-                        onClick = {
-                            val speech = if (currentLanguage == "en")
-                                "Let's book an appointment"
-                            else
-                                "आइए एक अपॉइंटमेंट बुक करते हैं"
-                            robot?.speak(TtsRequest.create(speech = speech, isShowOnConversationLayer = false))
-                            onNavigate("appointment")
-                        }
-                    )
-                    MenuCard(
-                        title = if (currentLanguage == "en")
-                            stringResource(id = R.string.feedback)
-                        else
-                            stringResource(id = R.string.feedback_hi),
-                        subtitle = if (currentLanguage == "en")
-                            stringResource(id = R.string.feedback_subtitle)
-                        else
-                            stringResource(id = R.string.feedback_subtitle_hi),
-                        icon = Icons.Default.RateReview,
-                        startColor = colorResource(id = R.color.gradient_orange_start),
-                        endColor = colorResource(id = R.color.gradient_orange_end),
-                        modifier = Modifier.weight(1f),
-                        onClick = {
-                            val speech = if (currentLanguage == "en")
-                                "Thank you for your feedback. Please share your thoughts"
-                            else
-                                "आपकी प्रतिक्रिया के लिए धन्यवाद। कृपया अपने विचार साझा करें"
-                            robot?.speak(TtsRequest.create(speech = speech, isShowOnConversationLayer = false))
-                            onNavigate("feedback")
-                        }
-                    )
-                }
-            }
-            }  // Close the if (!isThinking && !isConversationActive) block
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            // 5. BOTTOM VOICE HINT BAR
-            Surface(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(84.dp),
-                shape = RoundedCornerShape(42.dp),
-                color = Color.White.copy(alpha = 0.08f)
+                    .padding(horizontal = 60.dp)
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.Start
             ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 32.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // HERO SECTION
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.Start
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.GraphicEq,
-                            contentDescription = null,
-                            tint = Color.White.copy(alpha = 0.7f),
-                            modifier = Modifier.size(32.dp)
+                    Text(
+                        text = "NAMASTE",
+                        style = MaterialTheme.typography.displayLarge.copy(
+                            fontSize = 80.sp,
+                            fontWeight = FontWeight.Black,
+                            letterSpacing = (-2).sp,
+                            color = HospitalColors.DeepSlate
                         )
-                        Spacer(modifier = Modifier.width(20.dp))
-                        Text(
-                            text = if (isThinking) {
-                                if (currentLanguage == "en") "Thinking..." else "सोच रहा हूँ..."
-                            } else {
-                                if (currentLanguage == "en")
-                                    stringResource(id = R.string.voice_hint)
-                                else
-                                    stringResource(id = R.string.voice_hint_hi)
-                            },
-                            color = Color.White.copy(alpha = 0.9f),
-                            fontSize = 16.sp
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "I am Temi, your medical assistant. How can I help you?",
+                        style = MaterialTheme.typography.displayMedium.copy(
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = HospitalColors.DeepSlate.copy(alpha = 0.7f)
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(40.dp))
+
+                // NAVIGATION GRID: 2x2 grid with 32px gap
+                val gridItems = remember {
+                    listOf(
+                        MenuItem(
+                            id = "navigation",
+                            title = "Find & \nNavigate",
+                            subtitle = "RADIOLOGY, LAB, PHARMACY",
+                            backgroundColor = HospitalColors.SkyBlue,
+                            icon = Icons.Default.LocationOn
+                        ),
+                        MenuItem(
+                            id = "doctors",
+                            title = "Doctors & \nDepartments",
+                            subtitle = "124 SPECIALISTS ON DUTY",
+                            backgroundColor = Color(0xFF7B61FF), // Vibrant Purple from image
+                            icon = Icons.Default.Groups
+                        ),
+                        MenuItem(
+                            id = "appointment",
+                            title = "Book \nAppointment",
+                            subtitle = "NEXT AVAILABLE: 2:30 PM",
+                            backgroundColor = Color(0xFF7B61FF),
+                            icon = Icons.Default.CalendarToday
+                        ),
+                        MenuItem(
+                            id = "feedback",
+                            title = "Patient \nFeedback",
+                            subtitle = "RATE YOUR EXPERIENCE",
+                            backgroundColor = HospitalColors.SkyBlue,
+                            icon = Icons.Default.ChatBubbleOutline
+                        )
+                    )
+                }
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(32.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(32.dp)
+                    ) {
+                        HeroMenuCard(
+                            item = gridItems[0],
+                            modifier = Modifier.weight(1f),
+                            onClick = { onNavigate("navigation") }
+                        )
+                        HeroMenuCard(
+                            item = gridItems[1],
+                            modifier = Modifier.weight(1f),
+                            onClick = { onNavigate("doctors") }
                         )
                     }
-
-                    // Microphone Action Button
-                    Surface(
-                        modifier = Modifier
-                            .size(56.dp)
-                            .clickable {
-                                // MANUAL PIPELINE: Click only updates UI state
-                                // ASR listener will handle all voice processing
-                                if (!isThinking && !isConversationActive) {
-                                    android.util.Log.d("VOICE_PIPELINE", "Mic clicked - ASR will trigger voice input")
-                                } else {
-                                    android.util.Log.d("VOICE_PIPELINE", "Mic click blocked - conversation active or thinking")
-                                }
-                            },
-                        shape = CircleShape,
-                        color = if (isThinking || isConversationActive) Color.Gray else Color.White
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(32.dp)
                     ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            if (isThinking || isConversationActive) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(24.dp),
-                                    color = Color.White,
-                                    strokeWidth = 2.dp
-                                )
-                            } else {
-                                Icon(
-                                    imageVector = Icons.Default.Mic,
-                                    contentDescription = "Voice Input",
-                                    tint = darkBg,
-                                    modifier = Modifier.size(30.dp)
-                                )
-                            }
-                        }
+                        HeroMenuCard(
+                            item = gridItems[2],
+                            modifier = Modifier.weight(1f),
+                            onClick = { onNavigate("appointment") }
+                        )
+                        HeroMenuCard(
+                            item = gridItems[3],
+                            modifier = Modifier.weight(1f),
+                            onClick = { onNavigate("feedback") }
+                        )
                     }
                 }
+                Spacer(modifier = Modifier.height(100.dp))
+            }
+        }
+
+        // DEMO AVATAR - Right side empty space
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+                .padding(end = 40.dp),
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            AsyncImage(
+                model = "https://img.freepik.com/free-vector/doctor-character-background_1270-84.jpg", // Demo avatar URL
+                contentDescription = "Avatar",
+                modifier = Modifier
+                    .size(400.dp)
+                    .graphicsLayer {
+                        alpha = 0.9f
+                    },
+                contentScale = ContentScale.Fit,
+                error = painterResource(id = R.drawable.ic_launcher_foreground)
+            )
+        }
+
+        // Global Voice Footer Overlay
+        VoiceFooterOverlay(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 24.dp),
+            isListening = false,
+            onMicClick = {
+                // Future implementation for voice trigger
+            }
+        )
+    }
+}
+
+data class MenuItem(
+    val id: String,
+    val title: String,
+    val subtitle: String,
+    val backgroundColor: Color,
+    val icon: ImageVector
+)
+
+@Composable
+fun HeroMenuCard(
+    item: MenuItem,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = modifier
+            .height(220.dp)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = rememberRipple(color = Color.White),
+                onClick = onClick
+            )
+            .shadow(
+                elevation = 12.dp,
+                shape = RoundedCornerShape(32.dp),
+                spotColor = Color.Black.copy(alpha = 0.1f)
+            ),
+        shape = RoundedCornerShape(32.dp),
+        colors = CardDefaults.cardColors(containerColor = item.backgroundColor)
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .padding(24.dp)
+                    .align(Alignment.TopStart)
+            ) {
+                Text(
+                    text = item.title,
+                    style = MaterialTheme.typography.displaySmall.copy(
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.Black,
+                        color = Color.White,
+                        letterSpacing = (-1).sp,
+                        lineHeight = 36.sp
+                    )
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = item.subtitle.toUpperCase(Locale.current),
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White.copy(alpha = 0.7f),
+                        letterSpacing = 1.sp
+                    )
+                )
+            }
+
+            // Bottom-right icon in circle
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(24.dp)
+                    .size(48.dp)
+                    .border(2.dp, Color.White.copy(alpha = 0.3f), CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = item.icon,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun DotPatternOverlay() {
+    Canvas(modifier = Modifier.fillMaxSize()) {
+        val dotRadius = 2.dp.toPx()
+        val spacing = 24.dp.toPx()
+        for (x in 0..size.width.toInt() step spacing.toInt()) {
+            for (y in 0..size.height.toInt() step spacing.toInt()) {
+                drawCircle(
+                    color = Color.White.copy(alpha = 0.2f),
+                    radius = dotRadius,
+                    center = Offset(x.toFloat(), y.toFloat())
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun VoiceFooter(
+    modifier: Modifier = Modifier,
+    isListening: Boolean = false
+) {
+    Surface(
+        modifier = modifier
+            .fillMaxWidth(0.9f)
+            .height(110.dp)
+            .shadow(
+                elevation = 40.dp,
+                shape = RoundedCornerShape(55.dp),
+                spotColor = HospitalColors.RoyalBlue.copy(alpha = 0.3f)
+            ),
+        shape = RoundedCornerShape(55.dp),
+        color = HospitalColors.PureWhite
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 40.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Voice Command: \"Take me to the Cardiology Department\"",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+                    color = HospitalColors.DeepSlate.copy(alpha = 0.6f)
+                )
+            )
+
+            Box(
+                modifier = Modifier
+                    .size(110.dp)
+                    .offset(x = 40.dp) // Pop out slightly to match "floating" feel if needed or just align
+                    .background(HospitalColors.RoyalBlue, CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Mic,
+                    contentDescription = "Mic",
+                    tint = Color.White,
+                    modifier = Modifier.size(44.dp)
+                )
             }
         }
     }
 }
 
 /**
- * Custom Gradient Menu Card Composable
+ * Animated Menu Card with Press Animation + Ripple + Entry Animation
+ * Fixed size (320dp x 110dp), gradient background, smooth interactions
  */
 @Composable
-fun MenuCard(
+fun AnimatedMenuCard(
     title: String,
     subtitle: String,
     icon: ImageVector,
     startColor: Color,
     endColor: Color,
     modifier: Modifier = Modifier,
+    delayMillis: Int = 0,
     onClick: () -> Unit
 ) {
-    Surface(
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
+
+    // Press scale animation
+    val scale by animateFloatAsState(
+        targetValue = if (pressed) 0.95f else 1f,
+        animationSpec = spring(
+            dampingRatio = 0.6f,
+            stiffness = Spring.StiffnessHigh
+        ),
+        label = "card_press_scale"
+    )
+
+    // Entry animation (fade + slide in)
+    val entryAlpha by animateFloatAsState(
+        targetValue = 1f,
+        animationSpec = tween(500, delayMillis = delayMillis, easing = EaseOutCubic),
+        label = "card_entry_alpha"
+    )
+
+    val entryOffset by animateFloatAsState(
+        targetValue = 0f,
+        animationSpec = tween(500, delayMillis = delayMillis, easing = EaseOutCubic),
+        label = "card_entry_offset"
+    )
+
+    Card(
         modifier = modifier
-            .height(160.dp)
-            .clickable(onClick = onClick),
+            .graphicsLayer {
+                alpha = entryAlpha
+                translationY = entryOffset * 50f
+                scaleX = scale
+                scaleY = scale
+            }
+            .clip(RoundedCornerShape(20.dp))
+            .clickable(
+                interactionSource = interactionSource,
+                indication = rememberRipple(color = Color.White),
+                onClick = onClick
+            )
+            .shadow(
+                elevation = 12.dp,
+                shape = RoundedCornerShape(20.dp),
+                ambientColor = Color.Black.copy(alpha = 0.3f),
+                spotColor = Color.Black.copy(alpha = 0.4f)
+            ),
         shape = RoundedCornerShape(20.dp),
-        color = Color.Transparent
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
         Box(
             modifier = Modifier
+                .fillMaxSize()
                 .background(
-                    Brush.linearGradient(
+                    brush = Brush.linearGradient(
                         colors = listOf(startColor, endColor)
-                    )
+                    ),
+                    shape = RoundedCornerShape(20.dp)
                 )
-                .padding(24.dp)
+                .padding(16.dp)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    tint = Color.White,
+                    tint = Color(0xFFE2D2CB),
                     modifier = Modifier.size(40.dp)
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
                     text = title,
-                    color = Color.White,
-                    fontSize = 22.sp,
+                    color = Color(0xFFE2D2CB),
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = subtitle,
-                    color = Color.White.copy(alpha = 0.75f),
-                    fontSize = 14.sp
+                    color = Color(0xFFE2D2CB).copy(alpha = 0.85f),
+                    fontSize = 11.sp,
+                    maxLines = 2
                 )
             }
 
             Icon(
                 imageVector = Icons.Default.ChevronRight,
                 contentDescription = null,
-                tint = Color.White.copy(alpha = 0.5f),
+                tint = Color(0xFFE2D2CB).copy(alpha = 0.6f),
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .size(24.dp)
+                    .size(20.dp)
             )
         }
     }
 }
-
-/**
- * Temi Avatar with Smiling Eyes (Normal State)
- */
-@Composable
-fun TemiAvatarSmiling() {
-    Box(
-        modifier = Modifier
-            .size(240.dp)
-            .padding(start = 32.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        // Blue glow effect
-        Box(
-            modifier = Modifier
-                .size(200.dp)
-                .background(
-                    Brush.radialGradient(
-                        colors = listOf(Color(0xFF00D9FF).copy(alpha = 0.2f), Color.Transparent)
-                    )
-                )
-        )
-
-        // Head shape
-        Surface(
-            modifier = Modifier.size(160.dp, 120.dp),
-            color = Color.Black,
-            shape = RoundedCornerShape(36.dp),
-            border = BorderStroke(2.dp, Color(0xFF00D9FF).copy(alpha = 0.4f))
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Row {
-                    // Smiling Eye Left
-                    Box(
-                        modifier = Modifier
-                            .size(32.dp, 16.dp)
-                            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                            .background(Color(0xFF00D9FF))
-                    )
-                    Spacer(modifier = Modifier.width(24.dp))
-                    // Smiling Eye Right
-                    Box(
-                        modifier = Modifier
-                            .size(32.dp, 16.dp)
-                            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                            .background(Color(0xFF00D9FF))
-                    )
-                }
-            }
-        }
-    }
-}
-
-/**
- * Temi Avatar with Listening/Animated Eyes (Answering State)
- */
-@Composable
-fun TemiAvatarListening(isListening: Boolean = true) {
-    var eyeScale by remember { mutableStateOf(1f) }
-
-    // Blinking and pulsing animation
-    LaunchedEffect(isListening) {
-        if (isListening) {
-            while (true) {
-                // Blink animation
-                kotlinx.coroutines.delay(100)
-                eyeScale = 0.7f
-                kotlinx.coroutines.delay(150)
-                eyeScale = 1f
-
-                // Keep eyes on for a bit
-                kotlinx.coroutines.delay(1500)
-            }
-        }
-    }
-
-    Box(
-        modifier = Modifier
-            .size(240.dp)
-            .padding(start = 32.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        // Blue glow effect - more intense when listening
-        Box(
-            modifier = Modifier
-                .size(200.dp)
-                .background(
-                    Brush.radialGradient(
-                        colors = listOf(
-                            Color(0xFF00D9FF).copy(alpha = if (isListening) 0.4f else 0.2f),
-                            Color.Transparent
-                        )
-                    )
-                )
-        )
-
-        // Head shape
-        Surface(
-            modifier = Modifier.size(160.dp, 120.dp),
-            color = Color.Black,
-            shape = RoundedCornerShape(36.dp),
-            border = BorderStroke(2.dp, Color(0xFF00D9FF).copy(alpha = 0.6f))
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-                    // Listening Eye Left - Full circle, animated
-                    Box(
-                        modifier = Modifier
-                            .size((32 * eyeScale).dp, (32 * eyeScale).dp)
-                            .clip(CircleShape)
-                            .background(Color(0xFF00D9FF))
-                    )
-
-                    // Listening Eye Right - Full circle, animated
-                    Box(
-                        modifier = Modifier
-                            .size((32 * eyeScale).dp, (32 * eyeScale).dp)
-                            .clip(CircleShape)
-                            .background(Color(0xFF00D9FF))
-                    )
-                }
-            }
-        }
-
-        // Listening indicator text below
-        if (isListening) {
-            Column(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Listening...",
-                    color = Color(0xFF00D9FF),
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-        }
-    }
-}
-

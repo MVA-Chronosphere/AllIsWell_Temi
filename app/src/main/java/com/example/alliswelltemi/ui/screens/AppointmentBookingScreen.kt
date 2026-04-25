@@ -1,10 +1,20 @@
 package com.example.alliswelltemi.ui.screens
 
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import com.example.alliswelltemi.R
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -12,13 +22,26 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.alliswelltemi.R
+import com.example.alliswelltemi.ui.components.*
+import com.example.alliswelltemi.ui.theme.HospitalColors
 import com.example.alliswelltemi.data.Doctor
 import com.example.alliswelltemi.data.DoctorData
 import com.example.alliswelltemi.data.TimeSlot
@@ -28,672 +51,1086 @@ import com.robotemi.sdk.Robot
 import com.robotemi.sdk.TtsRequest
 import java.time.LocalDate
 import java.time.YearMonth
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toUpperCase
+import androidx.activity.compose.BackHandler
+import com.robotemi.sdk.SttLanguage
 
-/**
- * Appointment Booking Screen with multi-step flow
- * Steps: 1=doctor, 2=date, 3=time, 4=details, 5=confirm
- */
 @Composable
 fun AppointmentBookingScreen(
     robot: Robot? = null,
     onBackPress: () -> Unit = {},
     viewModel: AppointmentViewModel = viewModel(),
-    doctorsViewModel: DoctorsViewModel = viewModel()
+    doctorsViewModel: DoctorsViewModel = viewModel(),
+    currentLanguage: String = "en"
 ) {
-    var currentLanguage by remember { mutableStateOf("en") }
-    val darkBg = colorResource(id = R.color.dark_bg)
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.resetBooking()
+        }
+    }
 
-    LaunchedEffect(doctorsViewModel.doctors.value) {
-        if (doctorsViewModel.departments.value.isNotEmpty()) {
-            viewModel.initializeDepartments(doctorsViewModel.departments.value)
+    BackHandler {
+        if (viewModel.currentStep.value > 1) {
+            viewModel.goToPreviousStep()
+        } else {
+            viewModel.resetBooking()
+            onBackPress()
+        }
+    }
+
+    val departments by doctorsViewModel.departments
+    val doctorsFromApi by doctorsViewModel.doctors
+    val isDoctorsLoading by doctorsViewModel.isLoading
+    val doctorsError by doctorsViewModel.error
+
+    LaunchedEffect(Unit) {
+        if (doctorsFromApi.isEmpty()) {
+            doctorsViewModel.refresh()
+        }
+    }
+
+    LaunchedEffect(departments, doctorsFromApi) {
+        if (departments.isNotEmpty()) {
+            viewModel.initializeDepartments(departments)
             viewModel.loadTimeSlots(DoctorData.getAvailableTimeSlots())
             
-            // Auto-load first department if nothing selected
             if (viewModel.doctorsInDepartment.value.isEmpty()) {
-                doctorsViewModel.departments.value.firstOrNull()?.let {
-                    viewModel.loadDoctorsByDepartment(it, doctorsViewModel.doctors.value)
+                departments.firstOrNull()?.let { dept ->
+                    val doctorsForDept = doctorsFromApi.filter { it.department == dept }
+                    if (doctorsForDept.isNotEmpty()) {
+                        viewModel.loadDoctorsByDepartment(dept, doctorsForDept)
+                    }
                 }
             }
         }
     }
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(darkBg)
-            .padding(horizontal = 64.dp, vertical = 40.dp)
+            .background(Color(0xFFEDE7D8))
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Top
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            // Header
-            AppointmentHeader(
-                currentStep = viewModel.currentStep.value,
-                language = currentLanguage,
-                onLanguageToggle = { currentLanguage = if (currentLanguage == "en") "hi" else "en" },
-                onBackPress = onBackPress
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Progress Indicator
-            AppointmentProgressBar(currentStep = viewModel.currentStep.value)
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Step Content
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                if (viewModel.isLoading.value) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center),
-                        color = Color(0xFF00D9FF)
-                    )
-                } else {
-                    when (viewModel.currentStep.value) {
-                        1 -> StepSelectDoctor(
-                            viewModel = viewModel,
-                            doctorsViewModel = doctorsViewModel,
-                            language = currentLanguage,
-                            robot = robot,
-                            departments = viewModel.availableDepartments.value
-                        )
-                    2 -> StepSelectDate(
-                        viewModel = viewModel,
-                        language = currentLanguage,
-                        robot = robot
-                    )
-                    3 -> StepSelectTime(
-                        viewModel = viewModel,
-                        language = currentLanguage,
-                        robot = robot,
-                        timeSlots = viewModel.availableTimeSlots.value
-                    )
-                    4 -> StepPatientDetails(
-                        viewModel = viewModel,
-                        language = currentLanguage,
-                        robot = robot
-                    )
-                    5 -> StepConfirmation(
-                        viewModel = viewModel,
-                        language = currentLanguage,
-                        robot = robot,
-                        onHome = onBackPress
-                    )
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Navigation Buttons
-        if (viewModel.currentStep.value < 5) {
-                AppointmentNavigationButtons(
-                    viewModel = viewModel,
-                    currentLanguage = currentLanguage,
-                    canProceed = canProceedToNextStep(viewModel),
-                    robot = robot
-                )
-            }
-        }
-    }
-}
-
-/**
- * Step 1: Select Doctor from list
- */
-@Composable
-fun StepSelectDoctor(
-    viewModel: AppointmentViewModel,
-    doctorsViewModel: DoctorsViewModel,
-    language: String,
-    robot: Robot?,
-    departments: List<String>
-) {
-    var selectedDepartment by remember { mutableStateOf(departments.firstOrNull() ?: "") }
-
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = if (language == "en") "Step 1: Select Doctor" else "चरण 1: डॉक्टर चुनें",
-            color = Color.White,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Department Selection
-        Text(
-            text = if (language == "en") "Select Department:" else "विभाग चुनें:",
-            color = Color.White,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
+        // GLOBAL HEADER
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                .padding(horizontal = 40.dp, vertical = 24.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            departments.forEach { dept ->
-                Surface(
-                    modifier = Modifier
-                        .clickable {
+            // BACK BUTTON (Circular, soft shadow)
+            Surface(
+                modifier = Modifier
+                    .size(48.dp)
+                    .shadow(elevation = 4.dp, shape = CircleShape)
+                    .clip(CircleShape)
+                    .clickable {
+                        if (viewModel.currentStep.value > 1) {
+                            viewModel.goToPreviousStep()
+                        } else {
+                            viewModel.resetBooking()
+                            onBackPress()
+                        }
+                    },
+                color = Color.White,
+                shape = CircleShape
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Back",
+                        tint = HospitalColors.Carob,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.width(24.dp))
+
+            // HOSPITAL LOGO
+            Image(
+                painter = painterResource(id = R.drawable.hospital_logo),
+                contentDescription = "Hospital Logo",
+                modifier = Modifier
+                    .height(100.dp)
+                    .wrapContentWidth(),
+                alignment = Alignment.CenterStart
+            )
+
+            // CENTERED TITLE
+            Text(
+                text = (if (currentLanguage == "en") "BOOK APPOINTMENT" else "अपॉइंटमेंट बुक करें").toUpperCase(Locale.current),
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Black,
+                    fontSize = 30.sp,
+                    letterSpacing = 1.sp
+                ),
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center,
+                color = HospitalColors.Carob
+            )
+            
+            // Placeholder to balance title
+            Spacer(modifier = Modifier.width(72.dp))
+        }
+
+        // PROGRESS BAR
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            AppointmentProgressBar(currentStep = viewModel.currentStep.value)
+        }
+
+        Spacer(modifier = Modifier.height(40.dp))
+
+        // MAIN CONTENT CONTAINER
+        Box(
+            modifier = Modifier
+                .widthIn(max = 1100.dp)
+                .fillMaxWidth(0.95f)
+                .align(Alignment.CenterHorizontally),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            if (viewModel.isLoading.value || isDoctorsLoading) {
+                CircularProgressIndicator(
+                    color = HospitalColors.Chai,
+                    modifier = Modifier.size(64.dp)
+                )
+            } else if (doctorsError != null && doctorsFromApi.isEmpty()) {
+                ErrorState(error = doctorsError, onRetry = { doctorsViewModel.refresh() })
+            } else {
+                AnimatedContent(
+                    targetState = viewModel.currentStep.value,
+                    label = "step_transition",
+                    transitionSpec = {
+                        slideInHorizontally(initialOffsetX = { it }) togetherWith
+                        slideOutHorizontally(targetOffsetX = { -it })
+                    }
+                ) { step ->
+                    when (step) {
+                        1 -> StepSelectDoctor(
+                            viewModel = viewModel,
+                            language = currentLanguage,
+                            robot = robot,
+                            departments = departments,
+                            allDoctorsFromApi = doctorsFromApi,
+                            onBack = {
+                                viewModel.resetBooking()
+                                onBackPress()
+                            }
+                        )
+                        2 -> StepSelectDateAndTime(
+                            viewModel = viewModel,
+                            language = currentLanguage,
+                            robot = robot,
+                            timeSlots = viewModel.availableTimeSlots.value,
+                            onBack = { viewModel.goToPreviousStep() }
+                        )
+                        3 -> StepPatientDetails(
+                            viewModel = viewModel,
+                            language = currentLanguage,
+                            robot = robot,
+                            onBack = { viewModel.goToPreviousStep() }
+                        )
+                        4 -> StepConfirmation(
+                            viewModel = viewModel,
+                            language = currentLanguage,
+                            robot = robot,
+                            onHome = onBackPress
+                        )
+                        else -> Unit
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(40.dp))
+    }
+}
+
+/**
+ * Modern Clinical Header with Title and Progress Bar (Top Aligned)
+ */
+@Composable
+fun AppointmentHeader(
+    currentStep: Int,
+    language: String
+) {
+    // Header is now handled by TemiScreenScaffold
+    // Progress bar only
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 32.dp),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        AppointmentProgressBar(currentStep = currentStep)
+    }
+}
+
+@Composable
+fun ErrorState(error: String?, onRetry: () -> Unit) {
+    Surface(
+        modifier = Modifier
+            .widthIn(max = 600.dp)
+            .shadow(
+                elevation = 12.dp,
+                shape = RoundedCornerShape(24.dp),
+                ambientColor = HospitalColors.Carob.copy(alpha = 0.1f)
+            ),
+        shape = RoundedCornerShape(24.dp),
+        color = HospitalColors.Vanilla,
+        border = BorderStroke(2.dp, HospitalColors.ErrorRed.copy(alpha = 0.2f))
+    ) {
+        Column(
+            modifier = Modifier.padding(48.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Error,
+                contentDescription = null,
+                tint = HospitalColors.ErrorRed,
+                modifier = Modifier.size(56.dp)
+            )
+            
+            Text(
+                text = "UNABLE TO LOAD DOCTORS",
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    fontWeight = FontWeight.Black,
+                    fontSize = 18.sp,
+                    color = HospitalColors.ErrorRed
+                )
+            )
+            
+            Text(
+                text = error ?: "Please check your connection",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    color = HospitalColors.Carob.copy(alpha = 0.7f)
+                ),
+                textAlign = TextAlign.Center
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            ClinicalButton(
+                text = if (error != null) "RETRY" else "RETRY",
+                onClick = onRetry,
+                modifier = Modifier
+                    .width(200.dp)
+                    .height(48.dp),
+                containerColor = HospitalColors.Chai
+            )
+        }
+    }
+}
+
+@Composable
+fun StepSelectDoctor(
+    viewModel: AppointmentViewModel,
+    language: String,
+    robot: Robot?,
+    departments: List<String>,
+    allDoctorsFromApi: List<Doctor>,
+    onBack: () -> Unit
+) {
+    var selectedDepartment by remember(departments, viewModel.selectedDepartment.value) { 
+        mutableStateOf(viewModel.selectedDepartment.value ?: departments.firstOrNull() ?: "")
+    }
+
+    LaunchedEffect(selectedDepartment, allDoctorsFromApi) {
+        if (selectedDepartment.isNotEmpty() && allDoctorsFromApi.isNotEmpty()) {
+            val doctorsForDept = allDoctorsFromApi.filter { it.department == selectedDepartment }
+            viewModel.loadDoctorsByDepartment(selectedDepartment, doctorsForDept)
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 40.dp),
+        verticalArrangement = Arrangement.spacedBy(40.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // DEPARTMENT ROW
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = (if (language == "en") "SELECT DEPARTMENT" else "विभाग चुनें").toUpperCase(Locale.current),
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Black,
+                    letterSpacing = 2.sp,
+                    color = HospitalColors.Carob
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+
+            // Single Row for Departments
+            androidx.compose.foundation.lazy.LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
+                contentPadding = PaddingValues(horizontal = 16.dp)
+            ) {
+                items(departments.size) { index ->
+                    val dept = departments[index]
+                    val isSelected = selectedDepartment == dept
+                    DepartmentChip(
+                        department = dept,
+                        isSelected = isSelected,
+                        onClick = {
                             selectedDepartment = dept
-                            viewModel.loadDoctorsByDepartment(dept, doctorsViewModel.doctors.value)
+                            viewModel.selectDepartment(dept, allDoctorsFromApi.filter { it.department == dept })
                         },
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
-                    color = if (selectedDepartment == dept)
-                        Color(0xFF00D9FF)
-                    else
-                        Color.White.copy(alpha = 0.1f)
-                ) {
-                    Text(
-                        text = dept,
-                        color = if (selectedDepartment == dept) Color.Black else Color.White,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Medium,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+                        modifier = Modifier.widthIn(min = 160.dp)
                     )
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Doctor List
-        Text(
-            text = if (language == "en") "Available Doctors:" else "उपलब्ध डॉक्टर:",
-            color = Color.White,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        viewModel.doctorsInDepartment.value.forEach { doctor ->
-            AppointmentDoctorCard(
-                doctor = doctor,
-                language = language,
-                onSelect = {
-                    viewModel.selectDoctor(doctor)
-                    val speech = if (language == "en")
-                        "You selected ${doctor.name} from ${doctor.department}. Please select a date."
-                    else
-                        "आपने ${doctor.name} को ${doctor.department} से चुना। कृपया एक तारीख चुनें।"
-                    robot?.speak(TtsRequest.create(speech = speech, isShowOnConversationLayer = false))
-                }
+        // DOCTORS LIST
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = (if (language == "en") "SELECT DOCTOR" else "डॉक्टर चुनें").toUpperCase(Locale.current),
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Black,
+                    letterSpacing = 2.sp,
+                    color = HospitalColors.Carob
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            val doctorsInDept = viewModel.doctorsInDepartment.value
+            if (doctorsInDept.isEmpty()) {
+                Text(
+                    text = if (language == "en") "No doctors available" else "कोई डॉक्टर उपलब्ध नहीं है",
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        color = HospitalColors.Carob.copy(alpha = 0.5f)
+                    )
+                )
+            } else {
+                doctorsInDept.forEach { doctor ->
+                    AppointmentDoctorCard(
+                        doctor = doctor,
+                        isSelected = viewModel.selectedDoctor.value?.id == doctor.id,
+                        language = language,
+                        onClick = {
+                            viewModel.selectDoctor(doctor)
+                            val speech = if (language == "en")
+                                "You selected ${doctor.name}. Please select a date."
+                            else
+                                "आपने ${doctor.name} को चुना। कृपया तारीख चुनें।"
+                            robot?.speak(TtsRequest.create(speech = speech, isShowOnConversationLayer = false))
+                        }
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // NEXT BUTTON
+        ClinicalButton(
+            text = if (language == "en") "NEXT" else "अगला",
+            onClick = { viewModel.goToNextStep() },
+            modifier = Modifier
+                .width(200.dp)
+                .height(56.dp),
+            enabled = viewModel.selectedDoctor.value != null,
+            containerColor = HospitalColors.Chai
+        )
+    }
+}
+
+@Composable
+fun DepartmentChip(
+    department: String,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val bgColor by animateColorAsState(
+        targetValue = if (isSelected) HospitalColors.Chai else Color(0xFFF1F5F9),
+        label = "dept_bg"
+    )
+    val textColor by animateColorAsState(
+        targetValue = if (isSelected) Color.White else HospitalColors.Carob,
+        label = "dept_text"
+    )
+
+    Surface(
+        modifier = modifier
+            .height(68.dp)
+            .clip(RoundedCornerShape(34.dp))
+            .clickable { onClick() },
+        shape = RoundedCornerShape(34.dp),
+        color = bgColor,
+        border = if (!isSelected) BorderStroke(1.dp, HospitalColors.Chai.copy(alpha = 0.1f)) else null
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Text(
+                text = department.toUpperCase(Locale.current),
+                style = MaterialTheme.typography.labelLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = textColor
+                ),
+                modifier = Modifier.padding(horizontal = 24.dp)
+            )
         }
     }
 }
 
-/**
- * Doctor Card Component
- */
 @Composable
 fun AppointmentDoctorCard(
     doctor: Doctor,
+    isSelected: Boolean,
     language: String,
-    onSelect: () -> Unit
+    onClick: () -> Unit
 ) {
+    val scale by animateFloatAsState(
+        targetValue = if (isSelected) 1.03f else 1f,
+        label = "card_scale",
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    )
+    val bgColor = Color.White
+    val contentColor = HospitalColors.Carob
+    val elevation by animateFloatAsState(
+        targetValue = if (isSelected) 16.dp.value else 4.dp.value,
+        label = "card_elevation"
+    )
+
     Surface(
         modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onSelect),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
-        color = Color.White.copy(alpha = 0.08f)
+            .fillMaxWidth(0.9f) // Slightly wider for better presence
+            .height(145.dp) // Increased height for better interactivity
+            .shadow(
+                elevation = elevation.dp,
+                shape = RoundedCornerShape(28.dp),
+                ambientColor = HospitalColors.Carob.copy(alpha = 0.15f)
+            )
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
+            .clip(RoundedCornerShape(28.dp))
+            .clickable(
+                indication = rememberRipple(bounded = true, color = HospitalColors.Chai.copy(alpha = 0.1f)),
+                interactionSource = remember { MutableInteractionSource() }
+            ) { onClick() },
+        shape = RoundedCornerShape(28.dp),
+        color = bgColor,
+        border = BorderStroke(
+            width = if (isSelected) 3.dp else 1.dp,
+            color = if (isSelected) Color(0xFF2563EB) else HospitalColors.Chai.copy(alpha = 0.1f)
+        )
     ) {
         Row(
             modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
+                .padding(20.dp)
+                .fillMaxSize(),
+            horizontalArrangement = Arrangement.spacedBy(20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = doctor.name,
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = "${doctor.department} • ${doctor.yearsOfExperience} years",
-                    color = Color.White.copy(alpha = 0.7f),
-                    fontSize = 12.sp
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = doctor.aboutBio,
-                    color = Color.White.copy(alpha = 0.6f),
-                    fontSize = 11.sp,
-                    maxLines = 2
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = if (language == "en") "Cabin: ${doctor.cabin}" else "कैबिन: ${doctor.cabin}",
-                    color = Color(0xFF00D9FF),
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Bold
+            // Avatar Circle with dynamic background
+            Box(
+                modifier = Modifier
+                    .size(72.dp)
+                    .background(
+                        HospitalColors.Chai.copy(alpha = 0.08f),
+                        CircleShape
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = null,
+                    tint = contentColor,
+                    modifier = Modifier.size(44.dp)
                 )
             }
 
-            Icon(
-                imageVector = Icons.Default.ChevronRight,
-                contentDescription = null,
-                tint = Color(0xFF00D9FF),
-                modifier = Modifier.size(24.dp)
-            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = doctor.name.toUpperCase(Locale.current),
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        color = contentColor,
+                        fontWeight = FontWeight.Black,
+                        fontSize = 25.sp,
+                        letterSpacing = 0.5.sp
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = doctor.specialization.toUpperCase(Locale.current),
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        color = HospitalColors.Carob.copy(alpha = 0.5f),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        letterSpacing = 1.2.sp
+                    )
+                )
+            }
+
+            // Status Indicator
+            if (isSelected) {
+                Surface(
+                    shape = CircleShape,
+                    color = Color(0xFF2563EB),
+                    modifier = Modifier.size(32.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = "Selected",
+                        tint = Color.White,
+                        modifier = Modifier.padding(6.dp)
+                    )
+                }
+            } else {
+                Icon(
+                    imageVector = Icons.Default.ChevronRight,
+                    contentDescription = null,
+                    tint = HospitalColors.Chai.copy(alpha = 0.3f),
+                    modifier = Modifier.size(24.dp)
+                )
+            }
         }
     }
 }
 
-/**
- * Step 2: Select Date
- */
 @Composable
-fun StepSelectDate(
+fun StepSelectDateAndTime(
     viewModel: AppointmentViewModel,
     language: String,
-    robot: Robot?
+    robot: Robot?,
+    timeSlots: List<TimeSlot>,
+    onBack: () -> Unit
 ) {
     var displayMonth by remember { mutableStateOf(YearMonth.now()) }
 
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = if (language == "en") "Step 2: Select Date" else "चरण 2: तारीख चुनें",
-            color = Color.White,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Month/Year Navigation
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 40.dp),
+        verticalArrangement = Arrangement.spacedBy(40.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // TWO-COLUMN LAYOUT: 60% Calendar, 40% Time
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            horizontalArrangement = Arrangement.spacedBy(64.dp),
+            verticalAlignment = Alignment.Top
         ) {
-            Icon(
-                imageVector = Icons.Default.ChevronLeft,
-                contentDescription = "Previous",
-                tint = Color.White,
-                modifier = Modifier
-                    .size(32.dp)
-                    .clickable {
-                        displayMonth = displayMonth.minusMonths(1)
-                        robot?.speak(TtsRequest.create(
-                            speech = if (language == "en") "Showing ${displayMonth.month}" else "${displayMonth.month} दिखा रहा है",
-                            isShowOnConversationLayer = false
-                        ))
-                    }
-            )
+            // LEFT COLUMN: Calendar (60%)
+            Column(
+                modifier = Modifier.weight(0.6f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                Text(
+                    text = (if (language == "en") "CHOOSE DATE" else "तारीख चुनें").toUpperCase(Locale.current),
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Black,
+                        letterSpacing = 2.sp,
+                        color = HospitalColors.Carob
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
 
-            Text(
-                text = "${displayMonth.month} ${displayMonth.year}",
-                color = Color.White,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(24.dp),
+                    color = Color.White,
+                    shadowElevation = 2.dp
+                ) {
+                    Column(
+                        modifier = Modifier.padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(20.dp)
+                    ) {
+                        // Month Navigation
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            MonthNavigationButton(
+                                direction = "prev",
+                                onClick = { displayMonth = displayMonth.minusMonths(1) }
+                            )
 
-            Icon(
-                imageVector = Icons.Default.ChevronRight,
-                contentDescription = "Next",
-                tint = Color.White,
-                modifier = Modifier
-                    .size(32.dp)
-                    .clickable {
-                        displayMonth = displayMonth.plusMonths(1)
-                        robot?.speak(TtsRequest.create(
-                            speech = if (language == "en") "Showing ${displayMonth.month}" else "${displayMonth.month} दिखा रहा है",
-                            isShowOnConversationLayer = false
-                        ))
+                            Text(
+                                text = "${displayMonth.month.name} ${displayMonth.year}".toUpperCase(Locale.current),
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontWeight = FontWeight.Black,
+                                    color = HospitalColors.Carob,
+                                    fontSize = 22.sp
+                                )
+                            )
+
+                            MonthNavigationButton(
+                                direction = "next",
+                                onClick = { displayMonth = displayMonth.plusMonths(1) }
+                            )
+                        }
+
+                        CalendarGrid(
+                            yearMonth = displayMonth,
+                            selectedDate = viewModel.selectedDate.value,
+                            onDateSelected = { date ->
+                                if (date >= LocalDate.now()) {
+                                    viewModel.selectDate(date)
+                                }
+                            }
+                        )
                     }
-            )
+                }
+            }
+
+            // RIGHT COLUMN: Time Slots (40%)
+            Column(
+                modifier = Modifier.weight(0.4f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                Text(
+                    text = (if (language == "en") "SELECT THE TIME" else "समय चुनें").toUpperCase(Locale.current),
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Black,
+                        letterSpacing = 2.sp,
+                        color = HospitalColors.Carob
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+
+                if (viewModel.selectedDate.value == null) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp)
+                            .background(Color.White.copy(alpha = 0.5f), RoundedCornerShape(24.dp)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("Please select a date first", color = HospitalColors.Carob.copy(alpha = 0.5f))
+                    }
+                } else {
+                    // Time slot grid (2 columns)
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        timeSlots.chunked(2).forEach { rowSlots ->
+                            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                rowSlots.forEach { slot ->
+                                    TimeSlotButton(
+                                        slot = slot,
+                                        isSelected = viewModel.selectedTimeSlot.value == slot,
+                                        onClick = { viewModel.selectTimeSlot(slot) },
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                }
+                                if (rowSlots.size == 1) Spacer(modifier = Modifier.weight(1f))
+                            }
+                        }
+                    }
+                }
+            }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        // BUTTONS
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterHorizontally)
+        ) {
+            ClinicalButton(
+                text = if (language == "en") "BACK" else "वापस",
+                onClick = onBack,
+                modifier = Modifier.width(200.dp).height(56.dp),
+                containerColor = Color.Black
+            )
 
-        // Calendar Grid
-        CalendarGrid(
-            yearMonth = displayMonth,
-            onDateSelected = { date ->
-                viewModel.selectDate(date)
-                val speech = if (language == "en")
-                    "Date selected: $date. Please select a time slot."
-                else
-                    "तारीख चुनी गई: $date। कृपया एक समय स्लॉट चुनें।"
-                robot?.speak(TtsRequest.create(speech = speech, isShowOnConversationLayer = false))
-            }
-        )
+            ClinicalButton(
+                text = if (language == "en") "NEXT" else "अगला",
+                onClick = { viewModel.goToNextStep() },
+                modifier = Modifier.width(200.dp).height(56.dp),
+                enabled = viewModel.selectedDate.value != null && viewModel.selectedTimeSlot.value != null,
+                containerColor = HospitalColors.Chai
+            )
+        }
     }
 }
 
-/**
- * Calendar Grid Component
- */
+@Composable
+fun MonthNavigationButton(
+    direction: String,
+    onClick: () -> Unit
+) {
+    val icon = if (direction == "prev") Icons.Default.ChevronLeft else Icons.Default.ChevronRight
+
+    Surface(
+        modifier = Modifier
+            .size(44.dp)
+            .shadow(
+                elevation = 4.dp,
+                shape = CircleShape,
+                ambientColor = HospitalColors.Carob.copy(alpha = 0.1f)
+            )
+            .clip(CircleShape)
+            .clickable(
+                indication = rememberRipple(bounded = true),
+                interactionSource = remember { MutableInteractionSource() }
+            ) { onClick() },
+        shape = CircleShape,
+        color = HospitalColors.Vanilla,
+        border = BorderStroke(2.dp, HospitalColors.Chai.copy(alpha = 0.15f))
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Icon(icon, "Navigate", tint = HospitalColors.Chai, modifier = Modifier.size(24.dp))
+        }
+    }
+}
+
+@Composable
+fun TimeSlotButton(
+    slot: TimeSlot,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val bgColor by animateColorAsState(
+        targetValue = if (isSelected) HospitalColors.Chai else Color.White,
+        label = "slot_bg"
+    )
+    val textColor by animateColorAsState(
+        targetValue = if (isSelected) Color.White else HospitalColors.Carob,
+        label = "slot_text"
+    )
+
+    Surface(
+        modifier = modifier
+            .height(80.dp) // Matched to calendar day height if needed
+            .clip(RoundedCornerShape(12.dp))
+            .clickable(enabled = slot.available) { onClick() },
+        shape = RoundedCornerShape(12.dp),
+        color = if (slot.available) bgColor else Color.LightGray.copy(alpha = 0.3f),
+        border = if (slot.available && !isSelected) BorderStroke(1.dp, HospitalColors.Chai.copy(alpha = 0.1f)) else null
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Text(
+                text = slot.startTime,
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = if (slot.available) textColor else Color.Gray,
+                    fontSize = 20.sp
+                )
+            )
+        }
+    }
+}
+
 @Composable
 fun CalendarGrid(
     yearMonth: YearMonth,
+    selectedDate: LocalDate?,
     onDateSelected: (LocalDate) -> Unit
 ) {
     val firstDay = yearMonth.atDay(1)
     val daysInMonth = yearMonth.lengthOfMonth()
-    val firstDayOfWeek = firstDay.dayOfWeek.value % 7
+    val firstDayOfWeek = firstDay.dayOfWeek.value - 1
     val today = LocalDate.now()
 
-    Column(modifier = Modifier.fillMaxWidth()) {
-        // Days of week header
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // WEEKDAY HEADERS
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun").forEach { day ->
+            listOf("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN").forEach { day ->
                 Text(
                     text = day,
-                    color = Color.White.copy(alpha = 0.5f),
-                    fontSize = 12.sp,
-                    modifier = Modifier.weight(1f),
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                        color = HospitalColors.Carob.copy(alpha = 0.5f),
+                        fontSize = 12.sp,
+                        letterSpacing = 1.sp
+                    ),
+                    modifier = Modifier.width(82.dp), // Matched to new box width
+                    textAlign = TextAlign.Center
                 )
             }
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Calendar days
+        // CALENDAR DAYS
         var dayCounter = 1
         repeat((daysInMonth + firstDayOfWeek + 6) / 7) { week ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 repeat(7) { dayOfWeek ->
                     if (week == 0 && dayOfWeek < firstDayOfWeek || dayCounter > daysInMonth) {
-                        Box(modifier = Modifier.weight(1f))
+                        Spacer(modifier = Modifier.size(width = 82.dp, height = 72.dp))
                     } else {
                         val date = yearMonth.atDay(dayCounter)
+                        val isSelected = date == selectedDate
                         val isToday = date == today
                         val isPast = date.isBefore(today)
 
-                        Surface(
-                            modifier = Modifier
-                                .weight(1f)
-                                .aspectRatio(1f)
-                                .clickable(enabled = !isPast) {
-                                    onDateSelected(date)
-                                },
-                            shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
-                            color = when {
-                                isToday -> Color(0xFF00D9FF)
-                                isPast -> Color.White.copy(alpha = 0.1f)
-                                else -> Color.White.copy(alpha = 0.08f)
-                            }
-                        ) {
-                            Text(
-                                text = dayCounter.toString(),
-                                color = if (isPast) Color.White.copy(alpha = 0.3f) else Color.White,
-                                fontSize = 14.sp,
-                                fontWeight = if (isToday) FontWeight.Bold else FontWeight.Normal,
-                                modifier = Modifier.fillMaxSize(),
-                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                            )
-                        }
+                        CalendarDayButton(
+                            day = dayCounter,
+                            isSelected = isSelected,
+                            isToday = isToday,
+                            isPast = isPast,
+                            onClick = { onDateSelected(date) }
+                        )
+
                         dayCounter++
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }
 
-/**
- * Step 3: Select Time Slot
- */
 @Composable
-fun StepSelectTime(
-    viewModel: AppointmentViewModel,
-    language: String,
-    robot: Robot?,
-    timeSlots: List<TimeSlot>
+fun CalendarDayButton(
+    day: Int,
+    isSelected: Boolean,
+    isToday: Boolean,
+    isPast: Boolean,
+    onClick: () -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = if (language == "en") "Step 3: Select Time" else "चरण 3: समय चुनें",
-            color = Color.White,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-        )
+    val bgColor by animateColorAsState(
+        targetValue = if (isSelected) HospitalColors.Chai else Color.Transparent,
+        label = "day_bg"
+    )
+    val textColor by animateColorAsState(
+        targetValue = if (isSelected) Color.White else HospitalColors.Carob,
+        label = "day_text"
+    )
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Text(
-            text = if (language == "en")
-                "Available Time Slots:"
-            else
-                "उपलब्ध समय स्लॉट:",
-            color = Color.White,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            timeSlots.forEach { slot ->
-                TimeSlotButton(
-                    timeSlot = slot,
-                    language = language,
-                    onSelect = {
-                        viewModel.selectTimeSlot(slot)
-                        val speech = if (language == "en")
-                            "Time selected: ${slot.startTime}. Please enter your details."
-                        else
-                            "समय चुना गया: ${slot.startTime}। कृपया अपने विवरण दर्ज करें।"
-                        robot?.speak(TtsRequest.create(speech = speech, isShowOnConversationLayer = false))
-                    }
-                )
-            }
-        }
-    }
-}
-
-/**
- * Time Slot Button Component
- */
-@Composable
-fun TimeSlotButton(
-    timeSlot: TimeSlot,
-    language: String,
-    onSelect: () -> Unit
-) {
     Surface(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp)
-            .clickable(enabled = timeSlot.available, onClick = onSelect),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
-        color = when {
-            !timeSlot.available -> Color.White.copy(alpha = 0.05f)
-            else -> Color.White.copy(alpha = 0.1f)
-        }
+            .size(width = 82.dp, height = 72.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .clickable(enabled = !isPast) { onClick() },
+        shape = RoundedCornerShape(12.dp),
+        color = bgColor,
+        border = if (isToday && !isSelected) BorderStroke(2.dp, HospitalColors.Chai) else null
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        Box(contentAlignment = Alignment.Center) {
             Text(
-                text = "${timeSlot.startTime} - ${timeSlot.endTime}",
-                color = if (timeSlot.available) Color.White else Color.White.copy(alpha = 0.3f),
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium
-            )
-
-            Text(
-                text = if (timeSlot.available)
-                    if (language == "en") "Available" else "उपलब्ध"
-                else
-                    if (language == "en") "Booked" else "बुक किया गया",
-                color = if (timeSlot.available) Color(0xFF00FF41) else Color(0xFFDC2626),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold
+                text = day.toString(),
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = if (isSelected || isToday) FontWeight.Black else FontWeight.Medium,
+                    color = if (isPast) Color.Gray.copy(alpha = 0.5f) else textColor,
+                    fontSize = 20.sp
+                )
             )
         }
     }
 }
 
-/**
- * Step 4: Patient Details
- */
 @Composable
 fun StepPatientDetails(
     viewModel: AppointmentViewModel,
     language: String,
-    robot: Robot?
+    robot: Robot?,
+    onBack: () -> Unit
 ) {
-    LaunchedEffect(Unit) {
-        val speech = if (language == "en")
-            "Please enter your name and phone number."
-        else
-            "कृपया अपना नाम और फोन नंबर दर्ज करें।"
-        robot?.speak(TtsRequest.create(speech = speech, isShowOnConversationLayer = false))
-    }
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = if (language == "en") "Step 4: Your Details" else "चरण 4: आपके विवरण",
-            color = Color.White,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Name Input
-        Text(
-            text = if (language == "en") "Full Name:" else "पूरा नाम:",
-            color = Color.White,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
-            color = Color.White.copy(alpha = 0.08f),
-            border = if (viewModel.nameError.value != null) 
-                androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFDC2626)) 
-                else null
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 40.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(80.dp)
+    ) {
+        // FORM CONTAINER
+        Column(
+            modifier = Modifier.widthIn(max = 850.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            TextField(
+            ClinicalTextField(
                 value = viewModel.patientName.value,
                 onValueChange = { viewModel.setPatientName(it) },
-                modifier = Modifier.fillMaxSize(),
-                singleLine = true,
-                textStyle = LocalTextStyle.current.copy(color = Color.White, fontSize = 14.sp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    cursorColor = Color.White
-                )
+                label = if (language == "en") "Full Name" else "पूरा नाम",
+                leadingIcon = Icons.Default.Person,
+                modifier = Modifier.height(120.dp),
+                robot = robot
             )
-        }
 
-        if (viewModel.nameError.value != null) {
-            Text(
-                text = viewModel.nameError.value!!,
-                color = Color(0xFFDC2626),
-                fontSize = 11.sp,
-                modifier = Modifier.padding(top = 4.dp, start = 4.dp)
+            ClinicalTextField(
+                value = viewModel.patientAge.value,
+                onValueChange = { viewModel.setPatientAge(it) },
+                label = if (language == "en") "Age" else "आयु",
+                leadingIcon = Icons.Default.Cake,
+                modifier = Modifier.height(120.dp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                robot = robot
             )
-        }
 
-        Spacer(modifier = Modifier.height(20.dp))
-
-        // Phone Input
-        Text(
-            text = if (language == "en") "Phone Number:" else "फोन नंबर:",
-            color = Color.White,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
-            color = Color.White.copy(alpha = 0.08f),
-            border = if (viewModel.phoneError.value != null) 
-                androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFDC2626)) 
-                else null
-        ) {
-            TextField(
+            ClinicalTextField(
                 value = viewModel.patientPhone.value,
-                onValueChange = { 
-                    if (it.length <= 10 && it.all { char -> char.isDigit() }) {
-                        viewModel.setPatientPhone(it)
+                onValueChange = { viewModel.setPatientPhone(it) },
+                label = if (language == "en") "Mobile Number" else "मोबाइल नंबर",
+                leadingIcon = Icons.Default.Phone,
+                modifier = Modifier.height(120.dp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                robot = robot
+            )
+
+            // GENDER
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(
+                    text = (if (language == "en") "SELECT GENDER" else "लिंग चुनें").toUpperCase(Locale.current),
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = HospitalColors.DeepSlate.copy(alpha = 0.7f),
+                        fontSize = 16.sp
+                    )
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    val genders = if (language == "en") listOf("Male", "Female", "Other") else listOf("पुरुष", "महिला", "अन्य")
+                    genders.forEach { gender ->
+                        GenderToggleButton(
+                            label = gender,
+                            isSelected = viewModel.patientGender.value == gender,
+                            onClick = { viewModel.setPatientGender(gender) },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+            }
+        }
+
+        // VALIDATION MESSAGE
+        if (viewModel.validationError.value.isNotEmpty()) {
+            Text(
+                text = viewModel.validationError.value,
+                color = Color.Red,
+                style = MaterialTheme.typography.bodySmall,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        // BUTTONS
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
+        ) {
+            ClinicalButton(
+                text = if (language == "en") "BACK" else "वापस",
+                onClick = onBack,
+                modifier = Modifier.width(200.dp).height(56.dp),
+                containerColor = Color.Black
+            )
+
+            val isFormValid = viewModel.patientName.value.isNotBlank() &&
+                    viewModel.patientAge.value.isNotBlank() &&
+                    viewModel.patientPhone.value.length == 10 &&
+                    viewModel.patientGender.value.isNotBlank()
+
+            ClinicalButton(
+                text = if (language == "en") "CONFIRM BOOKING" else "बुकिंग की पुष्टि करें",
+                onClick = {
+                    if (viewModel.confirmDetails()) {
+                        val speech = if (language == "en")
+                            "Appointment confirmed! Your token is ${viewModel.appointmentToken.value}"
+                        else
+                            "अपॉइंटमेंट की पुष्टि हो गई है! आपका टोकन ${viewModel.appointmentToken.value} है"
+                        robot?.speak(TtsRequest.create(speech = speech, isShowOnConversationLayer = false))
                     }
                 },
-                modifier = Modifier.fillMaxSize(),
-                singleLine = true,
-                textStyle = LocalTextStyle.current.copy(color = Color.White, fontSize = 14.sp),
-                keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
-                    keyboardType = androidx.compose.ui.text.input.KeyboardType.Number
-                ),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    cursorColor = Color.White
-                )
-            )
-        }
-
-        if (viewModel.phoneError.value != null) {
-            Text(
-                text = viewModel.phoneError.value!!,
-                color = Color(0xFFDC2626),
-                fontSize = 11.sp,
-                modifier = Modifier.padding(top = 4.dp, start = 4.dp)
+                modifier = Modifier.width(200.dp).height(56.dp),
+                containerColor = HospitalColors.SuccessGreen,
+                enabled = isFormValid
             )
         }
     }
 }
 
-/**
- * Step 5: Confirmation with Token
- */
+@Composable
+fun GenderToggleButton(
+    label: String,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val bgColor by animateColorAsState(
+        targetValue = if (isSelected) Color(0xFF2563EB) else Color.White,
+        label = "gender_bg",
+        animationSpec = tween(durationMillis = 300)
+    )
+    val textColor by animateColorAsState(
+        targetValue = if (isSelected) Color.White else HospitalColors.Carob,
+        label = "gender_text",
+        animationSpec = tween(durationMillis = 300)
+    )
+    val elevation by animateFloatAsState(
+        targetValue = if (isSelected) 8.dp.value else 2.dp.value,
+        label = "gender_elevation"
+    )
+
+    Surface(
+        modifier = modifier
+            .height(84.dp)
+            .shadow(
+                elevation = elevation.dp,
+                shape = RoundedCornerShape(12.dp),
+                ambientColor = HospitalColors.Carob.copy(alpha = 0.1f)
+            )
+            .clip(RoundedCornerShape(12.dp))
+            .clickable(
+                indication = rememberRipple(bounded = true),
+                interactionSource = remember { MutableInteractionSource() }
+            ) { onClick() },
+        shape = RoundedCornerShape(12.dp),
+        color = bgColor,
+        border = BorderStroke(
+            width = if (isSelected) 2.dp else 1.dp,
+            color = if (isSelected) Color(0xFF2563EB) else HospitalColors.Chai.copy(alpha = 0.1f)
+        )
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Text(
+                text = label.toUpperCase(Locale.current),
+                color = textColor,
+                style = MaterialTheme.typography.labelLarge.copy(
+                    fontWeight = FontWeight.Black,
+                    fontSize = 18.sp,
+                    letterSpacing = 0.5.sp
+                )
+            )
+        }
+    }
+}
+
 @Composable
 fun StepConfirmation(
     viewModel: AppointmentViewModel,
@@ -701,379 +1138,182 @@ fun StepConfirmation(
     robot: Robot?,
     onHome: () -> Unit
 ) {
+    var visible by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        visible = true
+    }
+
+    AnimatedVisibility(
+        visible = visible,
+        enter = fadeIn(animationSpec = tween(600)) + expandVertically(animationSpec = tween(600))
+    ) {
+        ConfirmationSummary(
+            viewModel = viewModel,
+            language = language,
+            robot = robot,
+            onHome = onHome
+        )
+    }
+}
+
+@Composable
+fun ConfirmationSummary(
+    viewModel: AppointmentViewModel,
+    language: String,
+    robot: Robot?,
+    onHome: () -> Unit
+) {
     Column(
         modifier = Modifier
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .fillMaxWidth()
+            .padding(bottom = 40.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(32.dp)
     ) {
-        // Success Icon
+        // SUCCESS ICON
         Icon(
             imageVector = Icons.Default.CheckCircle,
             contentDescription = null,
-            tint = Color(0xFF00FF41),
+            tint = HospitalColors.SuccessGreen,
             modifier = Modifier.size(80.dp)
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
-
         Text(
-            text = if (language == "en") "Appointment Confirmed!" else "अपॉइंटमेंट की पुष्टि हुई!",
-            color = Color.White,
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            text = (if (language == "en") "BOOKING SUCCESSFUL" else "बुकिंग सफल रही").toUpperCase(Locale.current),
+            style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Black),
+            color = HospitalColors.SuccessGreen
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Appointment Token (Prominent Display)
+        // TOKEN CARD
         Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
-            color = Color(0xFF00D9FF).copy(alpha = 0.2f)
+            modifier = Modifier.width(360.dp),
+            shape = RoundedCornerShape(24.dp),
+            color = HospitalColors.RoyalBlue,
+            shadowElevation = 8.dp
         ) {
             Column(
-                modifier = Modifier
-                    .padding(24.dp)
-                    .fillMaxWidth(),
+                modifier = Modifier.padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = if (language == "en") "Token Number" else "टोकन नंबर",
-                    color = Color(0xFF00D9FF),
-                    fontSize = 14.sp
+                    text = if (language == "en") "APPOINTMENT TOKEN" else "अपॉइंटमेंट टोकन",
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White.copy(alpha = 0.8f),
+                        fontSize = 16.sp
+                    )
                 )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = viewModel.appointmentToken.value,
-                    color = Color.White,
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = if (language == "en")
-                        "Please take a picture of this screen"
-                    else
-                        "कृपया इस स्क्रीन की तस्वीर लें",
-                    color = Color.White.copy(alpha = 0.7f),
-                    fontSize = 12.sp,
-                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.Black,
+                        letterSpacing = 1.sp,
+                        fontSize = 40.sp
+                    ),
+                    color = Color.White
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Appointment Summary
+        // SUMMARY CARD
         Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
-            color = Color.White.copy(alpha = 0.08f)
+            modifier = Modifier.fillMaxWidth(0.8f),
+            shape = RoundedCornerShape(24.dp),
+            color = Color.White,
+            shadowElevation = 2.dp
         ) {
-            Column(modifier = Modifier.padding(20.dp)) {
-                AppointmentSummaryRow(
-                    label = if (language == "en") "Doctor:" else "डॉक्टर:",
-                    value = viewModel.selectedDoctor.value?.name ?: "-"
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                AppointmentSummaryRow(
-                    label = if (language == "en") "Department:" else "विभाग:",
-                    value = viewModel.selectedDoctor.value?.department ?: "-"
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                AppointmentSummaryRow(
-                    label = if (language == "en") "Date:" else "तारीख:",
-                    value = viewModel.selectedDate.value?.toString() ?: "-"
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                AppointmentSummaryRow(
-                    label = if (language == "en") "Time:" else "समय:",
-                    value = viewModel.selectedTimeSlot.value?.startTime ?: "-"
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                AppointmentSummaryRow(
-                    label = if (language == "en") "Patient:" else "रोगी:",
-                    value = viewModel.patientName.value
-                )
+            Column(modifier = Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                SummaryRow(label = if (language == "en") "Doctor" else "डॉक्टर", value = viewModel.selectedDoctor.value?.name ?: "")
+                SummaryRow(label = if (language == "en") "Date" else "तारीख", value = viewModel.selectedDate.value.toString())
+                SummaryRow(label = if (language == "en") "Time" else "समय", value = viewModel.selectedTimeSlot.value?.startTime ?: "")
+                SummaryRow(label = if (language == "en") "Patient" else "मरीज", value = viewModel.patientName.value)
             }
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Action Buttons
+        // BUTTONS
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
         ) {
-            Button(
-                onClick = {
-                    val cabin = viewModel.selectedDoctor.value?.cabin ?: ""
-                    val speech = if (language == "en")
-                        "Taking you to doctor's cabin $cabin. Please follow me."
-                    else
-                        "आपको डॉक्टर की कैबिन $cabin में ले जा रहे हैं। कृपया मेरा अनुसरण करें।"
-                    robot?.speak(TtsRequest.create(speech = speech, isShowOnConversationLayer = false))
-                    
-                    if (cabin.isNotBlank()) {
-                        robot?.goTo(cabin)
-                    } else {
-                        viewModel.selectedDoctor.value?.let { doctor ->
-                            robot?.goTo(doctor.name)
-                        }
-                    }
-                },
-                modifier = Modifier
-                    .weight(1f)
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF00D9FF)
-                )
-            ) {
-                Text(
-                    text = if (language == "en") "Navigate to Doctor" else "डॉक्टर के पास नेविगेट करें",
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            Button(
-                onClick = {
-                    robot?.speak(TtsRequest.create(
-                        speech = if (language == "en") "Returning to home." else "घर लौट रहे हैं।",
-                        isShowOnConversationLayer = false
-                    ))
-                    onHome()
-                },
-                modifier = Modifier
-                    .weight(1f)
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFB100FF)
-                )
-            ) {
-                Text(
-                    text = if (language == "en") "Return to Home" else "घर लौटें",
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            ClinicalButton(
+                text = if (language == "en") "CANCEL" else "रद्द करें",
+                onClick = { viewModel.resetBooking(); onHome() },
+                modifier = Modifier.width(180.dp).height(64.dp),
+                containerColor = HospitalColors.ErrorRed
+            )
+            ClinicalButton(
+                text = if (language == "en") "EDIT" else "संपादित करें",
+                onClick = { viewModel.editAppointment() },
+                modifier = Modifier.width(180.dp).height(64.dp),
+                containerColor = Color.Black
+            )
+            ClinicalButton(
+                text = if (language == "en") "HOME" else "होम",
+                onClick = { viewModel.resetBooking(); onHome() },
+                modifier = Modifier.width(200.dp).height(64.dp),
+                containerColor = HospitalColors.Chai
+            )
         }
     }
 }
 
-/**
- * Appointment Summary Row
- */
 @Composable
-fun AppointmentSummaryRow(
+fun SummaryRow(
     label: String,
     value: String
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = label,
-            color = Color.White.copy(alpha = 0.6f),
-            fontSize = 12.sp
+            style = MaterialTheme.typography.bodyMedium.copy(
+                color = HospitalColors.DeepSlate.copy(alpha = 0.6f),
+                fontWeight = FontWeight.Medium,
+                fontSize = 18.sp
+            )
         )
-
         Text(
             text = value,
-            color = Color.White,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold
+            style = MaterialTheme.typography.bodyLarge.copy(
+                fontSize = 20.sp
+            ),
+            color = HospitalColors.DeepSlate,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.End
         )
     }
 }
 
 /**
- * Header Component
- */
-@Composable
-fun AppointmentHeader(
-    currentStep: Int,
-    language: String,
-    onLanguageToggle: () -> Unit,
-    onBackPress: () -> Unit
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // Back Button
-        Icon(
-            imageVector = Icons.Default.ArrowBack,
-            contentDescription = "Back",
-            tint = Color.White,
-            modifier = Modifier
-                .size(28.dp)
-                .clickable(onClick = onBackPress)
-        )
-
-        // Title
-        Text(
-            text = if (language == "en") "Step $currentStep: Book Appointment" else "चरण $currentStep: अपॉइंटमेंट बुक करें",
-            color = Color.White,
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold
-        )
-
-        // Language Toggle
-        Row(
-            modifier = Modifier.clickable(onClick = onLanguageToggle),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Language,
-                contentDescription = "Language",
-                tint = Color.White,
-                modifier = Modifier.size(20.dp)
-            )
-
-            Text(
-                text = if (language == "en") "EN" else "HI",
-                color = Color.White,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
-    }
-}
-
-/**
- * Progress Bar Component
+ * Modern Segmented Progress Bar (Horizontal slide transition)
+ * - 4 equal steps with active blue, inactive light gray
+ * - Smooth color animation
  */
 @Composable
 fun AppointmentProgressBar(currentStep: Int) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(4.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+            .width(400.dp)
+            .height(6.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        repeat(5) { step ->
+        repeat(4) { step ->
+            val isActive = (step + 1) <= currentStep
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .height(4.dp)
+                    .fillMaxHeight()
                     .background(
-                        color = if (step < currentStep)
-                            Color(0xFF00D9FF)
-                        else
-                            Color.White.copy(alpha = 0.2f),
-                        shape = androidx.compose.foundation.shape.RoundedCornerShape(2.dp)
+                        color = if (isActive) Color(0xFF2563EB) else Color.LightGray.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(3.dp)
                     )
             )
         }
     }
 }
-
-/**
- * Navigation Buttons
- */
-@Composable
-fun AppointmentNavigationButtons(
-    viewModel: AppointmentViewModel,
-    currentLanguage: String,
-    canProceed: Boolean,
-    robot: Robot?
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        // Back Button
-        if (viewModel.currentStep.value > 1) {
-            Button(
-                onClick = { viewModel.goToPreviousStep() },
-                modifier = Modifier
-                    .weight(1f)
-                    .height(48.dp),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = Color.White
-                )
-            ) {
-                Text(if (currentLanguage == "en") "Back" else "वापस")
-            }
-        }
-
-        // Next Button
-        Button(
-            onClick = {
-                if (viewModel.currentStep.value == 4) {
-                    if (viewModel.confirmDetails()) {
-                        viewModel.submitAppointment { success, message ->
-                            if (!success) {
-                                // Handle error - could use a toast or snackbar
-                                android.util.Log.e("Appointment", message)
-                            } else {
-                                robot?.speak(TtsRequest.create(
-                                    speech = if (currentLanguage == "en") 
-                                        "Appointment confirmed! Your token is ${viewModel.appointmentToken.value}" 
-                                        else "अपॉइंटमेंट की पुष्टि हुई! आपका टोकन ${viewModel.appointmentToken.value} है",
-                                    isShowOnConversationLayer = false
-                                ))
-                            }
-                        }
-                    }
-                } else {
-                    // Other steps move forward normally (handled by selecting items usually)
-                }
-            },
-            enabled = canProceed,
-            modifier = Modifier
-                .weight(1f)
-                .height(48.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF00D9FF),
-                disabledContainerColor = Color.White.copy(alpha = 0.1f)
-            )
-        ) {
-            Text(
-                text = if (currentLanguage == "en") "Next" else "अगला",
-                color = if (canProceed) Color.Black else Color.White.copy(alpha = 0.3f),
-                fontWeight = FontWeight.Bold
-            )
-        }
-    }
-}
-
-/**
- * Check if user can proceed to next step
- */
-fun canProceedToNextStep(viewModel: AppointmentViewModel): Boolean {
-    return when (viewModel.currentStep.value) {
-        1 -> viewModel.selectedDoctor.value != null
-        2 -> viewModel.selectedDate.value != null
-        3 -> viewModel.selectedTimeSlot.value != null
-        4 -> viewModel.patientName.value.isNotEmpty() &&
-             viewModel.patientPhone.value.isNotEmpty() &&
-             viewModel.patientPhone.value.length >= 10
-        else -> false
-    }
-}
-

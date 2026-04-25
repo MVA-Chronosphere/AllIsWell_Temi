@@ -10,7 +10,8 @@ class SpeechLogicTest {
         val department: String,
         val specialization: String = "",
         val aboutBio: String = "",
-        val cabin: String = ""
+        val cabin: String = "",
+        val gender: String = "unspecified" // "male", "female", "other", "unspecified"
     )
 
     @Test

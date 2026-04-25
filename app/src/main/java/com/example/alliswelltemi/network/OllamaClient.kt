@@ -18,17 +18,17 @@ object OllamaClient {
     // IMPORTANT: For Temi robot on local network, use the Ollama server IP
     // Default: http://localhost:11434/ (change to your actual server IP)
     // For emulator/testing: http://10.0.2.2:11434/
-    private const val BASE_URL = "http://10.1.90.21:11434/"
+    private const val BASE_URL = "http://10.1.90.213:11434/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.HEADERS
+        level = HttpLoggingInterceptor.Level.BODY
     }
 
     private val httpClient = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
-        .connectTimeout(60, TimeUnit.SECONDS)  // Long timeout for LLM generation
-        .readTimeout(120, TimeUnit.SECONDS)    // LLM may take time to generate
-        .writeTimeout(60, TimeUnit.SECONDS)
+        .connectTimeout(15, TimeUnit.SECONDS)  // Reduced from 60s - faster failure detection
+        .readTimeout(30, TimeUnit.SECONDS)     // Reduced from 120s - reasonable for local network
+        .writeTimeout(15, TimeUnit.SECONDS)    // Reduced from 60s
         .build()
 
     val api: OllamaApiService by lazy {
@@ -57,9 +57,20 @@ object OllamaClient {
         return kotlinx.coroutines.flow.flow {
             try {
                 val response = api.generateStream(request.copy(stream = true))
-                val responseBody = response.body()
+                
+                if (!response.isSuccessful) {
+                    val errorBody = response.errorBody()?.string()
+                    android.util.Log.e("OllamaClient", "API Error (${response.code()}): $errorBody")
+                    throw Exception("Ollama API Error: ${response.code()} - $errorBody")
+                }
 
-                responseBody?.use { body ->
+                val responseBody = response.body()
+                if (responseBody == null) {
+                    android.util.Log.e("OllamaClient", "Response body is null")
+                    throw Exception("Ollama Response body is null")
+                }
+
+                responseBody.use { body ->
                     val source = body.source()
                     while (!source.exhausted()) {
                         val line = source.readUtf8Line()

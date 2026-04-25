@@ -7,12 +7,25 @@ import com.google.gson.annotations.SerializedName
  * Represents a request to the Ollama API for text generation
  */
 data class OllamaRequest(
-    val model: String = "llama3:8b",
+    val model: String = "llama3",
     val prompt: String,
     val stream: Boolean = false,
-    val temperature: Double = 0.7,
-    val top_k: Int = 40,
-    val top_p: Double = 0.9
+    val options: OllamaOptions = OllamaOptions()
+)
+
+/**
+ * Ollama Options for generation
+ * PERFORMANCE OPTIMIZED for fast response with quality control
+ */
+data class OllamaOptions(
+    val temperature: Double = 0.7,           // Balanced creativity
+    val top_k: Int = 40,                     // Token selection diversity
+    val top_p: Double = 0.9,                 // Nucleus sampling
+    val num_predict: Int = 150,              // CRITICAL: Limit response length for speed (150 tokens ≈ 2-3 sentences)
+    val num_ctx: Int = 2048,                 // Context window size (smaller = faster)
+    val num_thread: Int = 4,                 // CPU threads for parallel processing
+    val repeat_penalty: Double = 1.1,        // Prevent repetition
+    val stop: List<String> = listOf("\n\n", "User:", "Question:")  // Stop sequences to end generation early
 )
 
 /**

@@ -8,6 +8,16 @@ import android.util.Log
  * Provides semantic understanding and context-aware responses
  */
 object DoctorRAGService {
+            /**
+             * Helper to get gender-appropriate pronouns for a doctor
+             */
+            private fun getPronouns(gender: String): Triple<String, String, String> {
+                return when (gender.lowercase()) {
+                    "male" -> Triple("he", "his", "him")
+                    "female" -> Triple("she", "her", "her")
+                    else -> Triple("they", "their", "them")
+                }
+            }
     private val tag = "DoctorRAGService"
 
     /**
@@ -61,21 +71,22 @@ object DoctorRAGService {
      */
     fun getResponseForDoctor(doctor: Doctor, queryType: String = "general"): String {
         val name = if (doctor.name.startsWith("Dr.", ignoreCase = true)) doctor.name else "Dr. ${doctor.name}"
+        val (pronoun, possessive, objective) = getPronouns(doctor.gender)
         return when (queryType.lowercase()) {
             "location", "cabin", "where" -> {
-                "Found doctor: $name. They are currently seeing patients in cabin ${doctor.cabin} here at All Is Well hospital."
+                "Found doctor: $name. $pronoun.capitalize() is currently seeing patients in cabin ${doctor.cabin} here at All Is Well hospital."
             }
             "department", "specialty" -> {
-                "Found doctor: $name. They are one of our top experts in ${doctor.department} here at All Is Well."
+                "Found doctor: $name. $pronoun.capitalize() is one of our top experts in ${doctor.department} here at All Is Well."
             }
             "experience", "years", "bio" -> {
-                "Found doctor: $name. They are a highly awarded specialist at our hospital with a focus on ${doctor.specialization}. ${doctor.aboutBio.split(". ").take(1).joinToString("")}"
+                "Found doctor: $name. $pronoun.capitalize() is a highly awarded specialist at our hospital with a focus on ${doctor.specialization}. ${doctor.aboutBio.split(". ").take(1).joinToString("")}"
             }
             "full", "info", "details" -> {
-                "Found doctor: $name. A distinguished member of our ${doctor.department} team at All Is Well, they are recognized for their expertise in ${doctor.specialization}. You can find them in cabin ${doctor.cabin}."
+                "Found doctor: $name. A distinguished member of our ${doctor.department} team at All Is Well, $pronoun is recognized for $possessive expertise in ${doctor.specialization}. You can find $objective in cabin ${doctor.cabin}."
             }
             else -> {
-                "Found doctor: $name. They are currently practicing at All Is Well hospital as an expert in ${doctor.department}."
+                "Found doctor: $name. $pronoun.capitalize() is currently practicing at All Is Well hospital as an expert in ${doctor.department}."
             }
         }
     }
@@ -118,7 +129,8 @@ object DoctorRAGService {
             searchResults.size == 1 -> {
                 val doc = searchResults.first()
                 val name = if (doc.name.startsWith("Dr.", ignoreCase = true)) doc.name else "Dr. ${doc.name}"
-                "Found doctor: $name. They are a dedicated specialist in ${doc.department}. ${doc.aboutBio}"
+                val (pronoun, _, _) = getPronouns(doc.gender)
+                "Found doctor: $name. $pronoun.capitalize() is a dedicated specialist in ${doc.department}. ${doc.aboutBio}"
             }
             else -> {
                 val names = searchResults.take(3).joinToString(", ") { doc ->
@@ -153,14 +165,15 @@ object DoctorRAGService {
      */
     fun generateDetailedResponse(doctor: Doctor): String {
         val displayName = if (doctor.name.startsWith("Dr.", ignoreCase = true)) doctor.name else "Dr. ${doctor.name}"
+        val (pronoun, possessive, objective) = getPronouns(doctor.gender)
         return buildString {
             append("Found doctor: $displayName. ")
-            append("They are currently practicing here at All Is Well hospital. ")
-            
+            append("$pronoun.capitalize() is currently practicing here at All Is Well hospital. ")
+
             if (doctor.specialization.isNotBlank()) {
-                append("They are an award-winning expert specializing in ${doctor.specialization}. ")
+                append("$pronoun.capitalize() is an award-winning expert specializing in ${doctor.specialization}. ")
             } else if (doctor.department.isNotBlank()) {
-                append("They are a leading specialist in our ${doctor.department} department. ")
+                append("$pronoun.capitalize() is a leading specialist in our ${doctor.department} department. ")
             }
             
             if (doctor.aboutBio.isNotBlank()) {
@@ -174,14 +187,14 @@ object DoctorRAGService {
                     .take(2) // Take only first 2 sentences to keep it under 30s
                     .joinToString(". ")
                 
-                append("They are highly recognized for their contributions: $cleanBio. ")
+                append("$pronoun.capitalize() is highly recognized for $possessive contributions: $cleanBio. ")
             }
 
             if (doctor.cabin.isNotBlank()) {
-                append("You can find them at cabin ${doctor.cabin}. ")
+                append("You can find $objective at cabin ${doctor.cabin}. ")
             }
             
-            append("We are proud to have them on our team.")
+            append("We are proud to have $objective on our team.")
         }.trim()
     }
 }

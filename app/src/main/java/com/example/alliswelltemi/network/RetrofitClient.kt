@@ -8,19 +8,28 @@ import java.util.concurrent.TimeUnit
 
 /**
  * Retrofit Client for Strapi CMS API
+ * PERFORMANCE OPTIMIZED: Connection pooling + reduced timeouts
  */
 object RetrofitClient {
     private const val BASE_URL = "https://aiwcms.chronosphere.in/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
+        level = HttpLoggingInterceptor.Level.BASIC  // Changed from BODY to BASIC for less logging overhead
     }
 
     private val httpClient = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
+        .connectTimeout(10, TimeUnit.SECONDS)  // Reduced from 30s - faster failure detection
+        .readTimeout(15, TimeUnit.SECONDS)     // Reduced from 30s - typical API response time
+        .writeTimeout(10, TimeUnit.SECONDS)    // Reduced from 30s
+        .retryOnConnectionFailure(true)        // Auto-retry on connection failures
+        .connectionPool(
+            okhttp3.ConnectionPool(
+                maxIdleConnections = 5,
+                keepAliveDuration = 5,
+                timeUnit = TimeUnit.MINUTES
+            )
+        )  // Reuse connections for faster subsequent requests
         .build()
 
     val apiService: StrapiApiService by lazy {

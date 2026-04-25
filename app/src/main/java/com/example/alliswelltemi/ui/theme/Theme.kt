@@ -7,38 +7,33 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-// Dark Theme Colors for Temi
-private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFF00D9FF),
-    onPrimary = Color(0xFF0B1220),
-    secondary = Color(0xFFB100FF),
-    onSecondary = Color(0xFF0B1220),
-    tertiary = Color(0xFF00FF41),
-    onTertiary = Color(0xFF0B1220),
-    background = Color(0xFF0B1220),
-    onBackground = Color(0xFFFFFFFF),
-    surface = Color(0xFF1A2332),
-    onSurface = Color(0xFFE0E0E0),
-    surfaceVariant = Color(0xFF242E3F),
-    onSurfaceVariant = Color(0xFFA0A0A0),
-    error = Color(0xFFFF006E),
-    onError = Color(0xFF0B1220)
-)
+// ============================================
+// NEW MATCHA/ALMOND COLOR PALETTE (FINAL)
+// ============================================
+val Matcha = Color(0xFF809671)          // Primary accent, Card A, Active state
+val Almond = Color(0xFFE5E0D8)          // Main background (light)
+val Pistache = Color(0xFFB3B792)        // Card B, Borders
+val Chai = Color(0xFFD2AB80)            // Primary buttons, secondary accent
+val Carob = Color(0xFF725C3A)           // Text, headings
+val Vanilla = Color(0xFFE5D2B8)         // Secondary surfaces, toggle background
+val White = Color(0xFFFFFFFF)           // White text on dark cards
 
-// Light Theme Colors (fallback)
+// Light Theme - Hospital Premium Design
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF1E3A8A),
-    onPrimary = Color(0xFFFFFFFF),
-    secondary = Color(0xFF7B1FA2),
-    onSecondary = Color(0xFFFFFFFF),
-    tertiary = Color(0xFF00897B),
-    onTertiary = Color(0xFFFFFFFF),
-    background = Color(0xFFF9FAFB),
-    onBackground = Color(0xFF1F2937),
-    surface = Color(0xFFFFFFFF),
-    onSurface = Color(0xFF1F2937),
-    error = Color(0xFFDC2626),
-    onError = Color(0xFFFFFFFF)
+    primary = Matcha,
+    onPrimary = White,
+    secondary = Chai,
+    onSecondary = White,
+    tertiary = Pistache,
+    onTertiary = Carob,
+    background = Almond,
+    onBackground = Carob,
+    surface = Vanilla,
+    onSurface = Carob,
+    surfaceVariant = Pistache,
+    onSurfaceVariant = Carob,
+    error = Color(0xFFC85A54),
+    onError = White
 )
 
 @Composable
@@ -46,7 +41,7 @@ fun TemiTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val colorScheme = LightColorScheme  // Always use light theme for hospital app
 
     MaterialTheme(
         colorScheme = colorScheme,

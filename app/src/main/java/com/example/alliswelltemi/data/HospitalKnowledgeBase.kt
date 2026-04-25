@@ -30,6 +30,14 @@ object HospitalKnowledgeBase {
             language = "en"
         ),
         KnowledgeBaseQA(
+            id = "qa_1_hi",
+            question = "अस्पताल का नाम क्या है?",
+            answer = "ऑल इज़ वेल हॉस्पिटल एक आधुनिक मल्टी-स्पेशलिटी स्वास्थ्य संस्थान है, जो बुरहानपुर, मध्य प्रदेश में स्थित है। इसके संस्थापक और चेयरमैन श्री आनंद प्रकाश चौकसे हैं। अस्पताल 2019 में स्थापित किया गया था, जिसका उद्देश्य उच्च गुणवत्ता, नैतिक और रोगी-केंद्रित चिकित्सा सेवा प्रदान करना है। ऑल इज़ वेल हॉस्पिटल का मिशन करुणा और ईमानदारी के साथ सुलभ, किफायती और उन्नत स्वास्थ्य सेवाएं प्रदान करना है।",
+            keywords = listOf("अस्पताल", "नाम", "ऑल इज़ वेल", "बुरहानपुर", "चौकसे", "मिशन", "सेवा", "स्वास्थ्य", "मध्य प्रदेश"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
             id = "qa_2",
             question = "Do you have insurance facilities?",
             answer = "The hospital provides cashless and reimbursement facilities through a wide range of trusted health insurance providers to ensure convenient and hassle-free treatment for patients. The accepted insurance companies include Star Health Insurance, Care Health Insurance, Paramount Health Services, IFFCO-Tokio General Insurance, Digit Insurance, Aditya Birla Health Insurance, SBI General Insurance, ICICI Lombard, FHPL (Family Health Plan Limited), MDIndia Healthcare Services, Niva Bupa Health Insurance.",
@@ -2471,4 +2479,3 @@ object HospitalKnowledgeBase {
         return search(userQuery, limit = 1).firstOrNull()
     }
 }
-
