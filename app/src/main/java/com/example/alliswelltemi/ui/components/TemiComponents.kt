@@ -836,7 +836,8 @@ fun SegmentedToggleControl(
 @Composable
 fun TemiNavBar(
     currentLanguage: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onLogoClick: () -> Unit = {}
 ) {
     // Logo
     val logoPainter = painterResource(id = com.example.alliswelltemi.R.drawable.hospital_logo)
@@ -871,11 +872,13 @@ fun TemiNavBar(
             Modifier.fillMaxSize().padding(horizontal = 24.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Logo left
+            // Logo left (now clickable)
             Image(
                 painter = logoPainter,
                 contentDescription = "Hospital Logo",
-                modifier = Modifier.size(192.dp)
+                modifier = Modifier
+                    .size(192.dp)
+                    .clickable(onClick = onLogoClick)
             )
             Spacer(Modifier.width(32.dp))
             // Quote center

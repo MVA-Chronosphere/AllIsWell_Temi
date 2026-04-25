@@ -18,7 +18,7 @@ object OllamaClient {
     // IMPORTANT: For Temi robot on local network, use the Ollama server IP
     // Default: http://localhost:11434/ (change to your actual server IP)
     // For emulator/testing: http://10.0.2.2:11434/
-    private const val BASE_URL = "http://10.1.90.159:11434/"
+    private const val BASE_URL = "http://192.168.1.82:11434/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY

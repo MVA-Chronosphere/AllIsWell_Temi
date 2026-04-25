@@ -171,7 +171,10 @@ fun NavigationScreen(
         }
     }
 
-    TemiNavBar(currentLanguage = currentLanguage)
+    TemiNavBar(
+        currentLanguage = currentLanguage,
+        onLogoClick = { onBackPress() } // Go to home/main on logo click
+    )
 }
 
 

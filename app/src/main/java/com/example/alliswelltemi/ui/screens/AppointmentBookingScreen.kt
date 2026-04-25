@@ -108,7 +108,10 @@ fun AppointmentBookingScreen(
 
     // --- Insert TemiNavBar at the top ---
     Column(modifier = Modifier.fillMaxSize()) {
-        TemiNavBar(currentLanguage = currentLanguage)
+        TemiNavBar(
+            currentLanguage = currentLanguage,
+            onLogoClick = { onBackPress() } // Go to home/main on logo click
+        )
 
         Column(
             modifier = Modifier
@@ -153,16 +156,6 @@ fun AppointmentBookingScreen(
                 }
 
                 Spacer(modifier = Modifier.width(24.dp))
-
-                // HOSPITAL LOGO
-                Image(
-                    painter = painterResource(id = R.drawable.hospital_logo),
-                    contentDescription = "Hospital Logo",
-                    modifier = Modifier
-                        .height(100.dp)
-                        .wrapContentWidth(),
-                    alignment = Alignment.CenterStart
-                )
 
                 // CENTERED TITLE
                 Text(

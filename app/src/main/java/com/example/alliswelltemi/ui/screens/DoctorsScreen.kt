@@ -91,7 +91,10 @@ fun DoctorsScreen(
 
     // --- Insert TemiNavBar at the top ---
     Column(modifier = Modifier.fillMaxSize()) {
-        TemiNavBar(currentLanguage = currentLanguage)
+        TemiNavBar(
+            currentLanguage = currentLanguage,
+            onLogoClick = { onBackPress() } // Go to home/main on logo click
+        )
 
         // Main content below the unified nav bar
         Box(modifier = Modifier.fillMaxSize()) {
