@@ -14,7 +14,7 @@ object RetrofitClient {
     private const val BASE_URL = "https://aiwcms.chronosphere.in/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BASIC  // Changed from BODY to BASIC for less logging overhead
+        level = HttpLoggingInterceptor.Level.BODY  // Increased to BODY for detailed debugging of API responses
     }
 
     private val httpClient = OkHttpClient.Builder()

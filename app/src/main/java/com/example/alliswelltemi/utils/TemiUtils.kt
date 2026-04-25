@@ -19,6 +19,10 @@ object TemiTTSManager {
                         val utteranceId = "english_${System.currentTimeMillis()}"
                         // Use Indian English locale for better Indian name pronunciation
                         tts?.language = Locale("en", "IN")
+
+                        // Set speech rate for consistent pacing
+                        tts?.setSpeechRate(1.0f)
+
                         val result = tts?.speak(text, queueMode, null, utteranceId)
                         if (result == TextToSpeech.ERROR) {
                             Log.e("TemiTTSManager", "Error calling tts.speak for: $text")
@@ -91,12 +95,37 @@ object TemiTTSManager {
             Log.w("TemiTTSManager", "speakHindi called before initialization")
             return
         }
+
+        // Normalize punctuation to reduce pauses in Hindi TTS
+        val normalizedText = normalizePunctuationForHindi(text)
+
         val utteranceId = "hindi_${System.currentTimeMillis()}"
         tts?.language = Locale("hi", "IN")
-        val result = tts?.speak(text, queueMode, null, utteranceId)
+
+        // Set faster speech rate to minimize pause duration
+        tts?.setSpeechRate(1.1f) // Slightly faster to reduce pause impact
+
+        val result = tts?.speak(normalizedText, queueMode, null, utteranceId)
         if (result == TextToSpeech.ERROR) {
             Log.e("TemiTTSManager", "Error calling tts.speak for: $text")
         }
+    }
+
+    /**
+     * Normalize punctuation in Hindi text to reduce TTS pause durations
+     */
+    private fun normalizePunctuationForHindi(text: String): String {
+        return text
+            // Replace multiple exclamation marks with single one
+            .replace(Regex("!+"), "!")
+            // Replace exclamation followed by space with comma (shorter pause)
+            .replace("! ", ", ")
+            // Replace period followed by space with comma (shorter pause) ONLY within sentences
+            .replace(Regex("\\. (?![A-Z])"), ", ")
+            // Keep sentence-ending periods (followed by capital letter or end of string)
+            // but reduce consecutive spaces
+            .replace(Regex("\\s+"), " ")
+            .trim()
     }
 
     fun stop() {

@@ -151,10 +151,10 @@ object DoctorRAGService {
         val doctorCount = doctors.size
 
         return when {
-            doctorCount == 0 -> "Welcome to All Is Well Hospital! I'm Temi. I'm here to assist you in any way I can."
-            doctorCount == 1 -> "Welcome! I'm Temi. We have a dedicated specialist available today to provide you with excellent care."
-            deptCount == 1 -> "Welcome to All Is Well Hospital! I'm Temi. We have $doctorCount wonderful specialists in our ${doctors.first().department} department ready to help you."
-            else -> "Hello and welcome to All Is Well Hospital! I'm Temi. We're proud to have $doctorCount expert specialists across $deptCount departments here to care for you today."
+            doctorCount == 0 -> "Welcome to All Is Well Hospital! I'm Chronexa. I'm here to assist you in any way I can."
+            doctorCount == 1 -> "Welcome! I'm Chronexa. We have a dedicated specialist available today to provide you with excellent care."
+            deptCount == 1 -> "Welcome to All Is Well Hospital! I'm Chronexa. We have $doctorCount wonderful specialists in our ${doctors.first().department} department ready to help you."
+            else -> "Hello and welcome to All Is Well Hospital! I'm Chronexa. We're proud to have $doctorCount expert specialists across $deptCount departments here to care for you today."
         }
     }
 

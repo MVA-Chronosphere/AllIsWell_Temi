@@ -182,254 +182,6 @@ object HospitalKnowledgeBase {
             language = "en"
         ),
         KnowledgeBaseQA(
-            id = "qa_20",
-            question = "Dr. Pravin R. Borde",
-            answer = "Speciality: Consultant Neuro and Spine Surgery",
-            keywords = listOf("spine", "neuro", "speciality", "consultant", "surgery", "pravin", "borde"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_21",
-            question = "Dr. Divyesh Lad",
-            answer = "Speciality: Consultant General Medicine",
-            keywords = listOf("divyesh", "speciality", "consultant", "medicine", "general", "lad"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_22",
-            question = "Dr. Prashant Khairnar",
-            answer = "Speciality: Consultant Urologist & Andrologist, Deputy Medical Superintendent",
-            keywords = listOf("urologist", "prashant", "speciality", "deputy", "consultant", "medical", "khairnar", "andrologist", "superintendent"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_23",
-            question = "Dr. Ravnik R. Bansod",
-            answer = "Speciality: Fellowship in Conventional & Robotics Assisted Joint Replacement Surgery (FRJRS)",
-            keywords = listOf("fellowship", "conventional", "replacement", "speciality", "assisted", "ravnik", "joint", "surgery", "bansod", "robotics"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_24",
-            question = "Dr. Lokendra Singh Thakur",
-            answer = "Speciality: Consultant Interventional Cardiologist",
-            keywords = listOf("cardiologist", "speciality", "lokendra", "thakur", "interventional", "consultant", "singh"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_25",
-            question = "Dr. Basheeruddin Ansari",
-            answer = "Speciality: Consultant Interventional Cardiologist",
-            keywords = listOf("basheeruddin", "cardiologist", "speciality", "interventional", "consultant", "ansari"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_26",
-            question = "Dr. Gaurav Singh Pardesi",
-            answer = "Speciality: Consultant General & Minimal Access Surgery",
-            keywords = listOf("access", "speciality", "consultant", "surgery", "minimal", "pardesi", "general", "singh", "gaurav"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_27",
-            question = "Dr. Kimaya Sali Medshikar",
-            answer = "Speciality: Consultant Obstetrician & Gynaecologist",
-            keywords = listOf("gynaecologist", "kimaya", "medshikar", "speciality", "consultant", "obstetrician", "sali"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_28",
-            question = "Dr. Monish Gupta",
-            answer = "Speciality: Consultant Obstetrician, Gynaecologist & Genetics Specialist",
-            keywords = listOf("gynaecologist", "speciality", "gupta", "genetics", "specialist", "consultant", "obstetrician", "monish"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_29",
-            question = "Dr. Apurva yadav",
-            answer = "Speciality: Consultant Ophthalmologist & Cataract Surgeon",
-            keywords = listOf("surgeon", "apurva", "speciality", "yadav", "cataract", "consultant", "ophthalmologist"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_30",
-            question = "Dr. Shubham Verma",
-            answer = "Speciality: Pulmonary Medicine & Critical Care",
-            keywords = listOf("critical", "speciality", "shubham", "medicine", "care", "pulmonary", "verma"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_31",
-            question = "Dr. Rashi Gupta",
-            answer = "Speciality: Consultant Pathologist",
-            keywords = listOf("pathologist", "speciality", "gupta", "rashi", "consultant"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_32",
-            question = "Dr. Harshada Bhangale",
-            answer = "Speciality: Consultant Pathologist",
-            keywords = listOf("bhangale", "pathologist", "speciality", "consultant", "harshada"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_33",
-            question = "Dr. Peeyush Suryawanshi",
-            answer = "Speciality: Consultant Pediatrician & Neonatologist",
-            keywords = listOf("speciality", "consultant", "neonatologist", "peeyush", "suryawanshi", "pediatrician"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_34",
-            question = "Dr. Rakesh Mahawar",
-            answer = "Speciality: Radiation Oncology",
-            keywords = listOf("speciality", "oncology", "rakesh", "mahawar", "radiation"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_35",
-            question = "Dr. Deepak K. Bhojwani",
-            answer = "Speciality: Consultant Oncologist",
-            keywords = listOf("deepak", "speciality", "bhojwani", "consultant", "oncologist"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_36",
-            question = "Dr. Bhushan Chopde",
-            answer = "Speciality: Consultant Gastroenterology & Hepatology",
-            keywords = listOf("gastroenterology", "speciality", "consultant", "hepatology", "bhushan", "chopde"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_37",
-            question = "Dr.Nikita Andhalkar",
-            answer = "Speciality: Dermatologist and Venereologist",
-            keywords = listOf("speciality", "andhalkar", "drnikita", "venereologist", "dermatologist"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_38",
-            question = "Dr. Anita chouksey",
-            answer = "Speciality: Sr. Consultant Nephrologist (Shalby Hospital, Indore)",
-            keywords = listOf("indore", "anita", "nephrologist", "hospital", "chouksey", "speciality", "consultant", "shalby"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_39",
-            question = "Dr. Rupali Marathe",
-            answer = "Speciality: BPT, MPT (Orthopedics)",
-            keywords = listOf("marathe", "bpt", "speciality", "rupali", "mpt", "orthopedics"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_40",
-            question = "Dr. Tanishk shroff",
-            answer = "Speciality: BDS, DENTAL SURGEON",
-            keywords = listOf("surgeon", "bds", "dental", "speciality", "tanishk", "shroff"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_41",
-            question = "Dr. Hiteshi Bais",
-            answer = "Speciality: Consultant - Anesthesiologist",
-            keywords = listOf("anesthesiologist", "speciality", "consultant", "hiteshi", "bais"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_42",
-            question = "Dr. Chimu Chinte Chopde",
-            answer = "Speciality: Endocrinology",
-            keywords = listOf("speciality", "chimu", "chinte", "endocrinology", "chopde"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_43",
-            question = "Dr. Kapil Chourasiya",
-            answer = "Speciality: Clinical Nutrition & Dietetics",
-            keywords = listOf("dietetics", "clinical", "speciality", "nutrition", "chourasiya", "kapil"),
-            category = "hospital_info",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_44",
-            question = "Dr. Arpit Daulal Mahajan",
-            answer = "Speciality: Consultant Radiologist",
-            keywords = listOf("daulal", "speciality", "arpit", "consultant", "mahajan", "radiologist"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_45",
-            question = "Dr. Abhishek sharma",
-            answer = "Speciality: Consultant Cosmetic & Plastic Surgeon, Micro-Vascular Surgery (TMC MUMBAI)",
-            keywords = listOf("surgeon", "abhishek", "cosmetic", "speciality", "sharma", "microvascular", "tmc", "consultant", "surgery", "mumbai"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_46",
-            question = "Dr. yash Mahajan",
-            answer = "Speciality: Psychiatry",
-            keywords = listOf("psychiatry", "speciality", "mahajan", "yash"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_47",
-            question = "Dr. Prithviraj Madan Gomsale",
-            answer = "Speciality: Consultant Urologist & General Surgeon",
-            keywords = listOf("surgeon", "prithviraj", "speciality", "urologist", "consultant", "madan", "general", "gomsale"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_48",
-            question = "Dr. Abhey Joshi",
-            answer = "Speciality: Sr. Consultant Nephrologist (Shalby Hospital, Indore)",
-            keywords = listOf("indore", "hospital", "nephrologist", "abhey", "speciality", "joshi", "consultant", "shalby"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_49",
-            question = "Dr. Neeraj S. Doijad",
-            answer = "Speciality: Radiodiagnosis / Radiology",
-            keywords = listOf("radiodiagnosis", "speciality", "neeraj", "radiology", "doijad"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_50",
-            question = "Dr. Shashank Suresh Karale",
-            answer = "Speciality: Emergency Medicine",
-            keywords = listOf("shashank", "speciality", "suresh", "medicine", "emergency", "karale"),
-            category = "general",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
             id = "qa_51",
             question = "What is Hospital's Email?",
             answer = "You can reach the hospital via email at frontdesk@alliswellhospital.com. This email address is monitored by the hospital's administrative team and can be used for general inquiries, appointment requests, health package details, feedback, or non-urgent medical coordination.",
@@ -2038,262 +1790,6 @@ object HospitalKnowledgeBase {
             language = "en"
         ),
         KnowledgeBaseQA(
-            id = "qa_253",
-            question = "Where is Dr. Pravin R. Borde's cabin?",
-            answer = "Doctor Pravin R. Borde's cabin is in OPD, Go straight next to the reception and follow the signs",
-            keywords = listOf("cabin", "bordes", "signs", "reception", "next", "follow", "straight", "pravin", "doctor", "where"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_254",
-            question = "Where is Dr. Divyesh Lad's cabin?",
-            answer = "Doctor Divyesh Lad's cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("cabin", "divyesh", "signs", "reception", "next", "follow", "straight", "doctor", "lads", "where"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_255",
-            question = "Where is Dr. Prashant Khairnar's cabin?",
-            answer = "Doctor Prashant Khairnar's cabin is on the First floor.",
-            keywords = listOf("floor", "cabin", "prashant", "first", "doctor", "where", "khairnars"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_256",
-            question = "Where is Dr. Prithviraj Madan Gomsale's cabin?",
-            answer = "Doctor Prithviraj Madan Gomsale's cabin is on the First floor.",
-            keywords = listOf("floor", "cabin", "gomsales", "prithviraj", "madan", "first", "doctor", "where"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_257",
-            question = "Where is Dr. Ravnik R. Bansod's cabin?",
-            answer = "Doctor Ravnik R. Bansod's cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("cabin", "signs", "reception", "next", "ravnik", "follow", "straight", "doctor", "bansods", "where"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_258",
-            question = "Where is Dr. Lokendra Singh Thakur's cabin?",
-            answer = "Doctor Lokendra Singh Thakur's cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("cabin", "signs", "reception", "next", "lokendra", "follow", "straight", "thakurs", "doctor", "singh"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_259",
-            question = "Where is Dr. Basheeruddin Ansari's cabin?",
-            answer = "Doctor  Basheeruddin Ansari's  cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("ansaris", "basheeruddin", "cabin", "signs", "reception", "next", "follow", "straight", "doctor", "where"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_260",
-            question = "Where is Dr. Gaurav Singh Pardesi's cabin?",
-            answer = "Doctor  Gaurav Singh Pardesi's cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("pardesis", "cabin", "signs", "reception", "next", "follow", "straight", "doctor", "singh", "gaurav"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_261",
-            question = "Where is Dr. Kimaya Sali Medshikar's cabin?",
-            answer = "Doctor Kimaya Sali Medshikar's cabin is on the First floor.",
-            keywords = listOf("floor", "cabin", "kimaya", "first", "sali", "doctor", "medshikars", "where"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_262",
-            question = "Where is Dr. Monish Gupta's cabin?",
-            answer = "Doctor Monish Gupta's cabin is on the First floor.",
-            keywords = listOf("floor", "guptas", "cabin", "first", "doctor", "where", "monish"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_263",
-            question = "Where is Dr. Apurva Yadav's cabin?",
-            answer = "Doctor Apurva Yadav's cabin is behind the Pharmacy.",
-            keywords = listOf("cabin", "apurva", "yadavs", "doctor", "pharmacy", "behind", "where"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_264",
-            question = "Where is Dr. Shubham Verma's cabin?",
-            answer = "Doctor  Shubham Verma's cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("cabin", "signs", "reception", "next", "follow", "vermas", "shubham", "straight", "doctor", "where"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_265",
-            question = "Where is Dr. Rashi Gupta's cabin?",
-            answer = "Doctor Rashi gupta's cabin is in the Pathology department, Go left next to the reception and and follow the signs.",
-            keywords = listOf("guptas", "cabin", "signs", "left", "reception", "next", "department", "rashi", "follow", "pathology"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_266",
-            question = "Where is Dr. Harshada Bhangale's cabin?",
-            answer = "Doctor Harshada Bhangale's cabin is in the Pathology department, Go left next to the reception and and follow the signs.",
-            keywords = listOf("bhangales", "cabin", "signs", "left", "reception", "next", "where", "department", "follow", "pathology"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_267",
-            question = "Where is Dr. Peeyush Suryawanshi's cabin?",
-            answer = "Doctor Peeyush Suryawanshi's cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("cabin", "signs", "reception", "next", "where", "follow", "suryawanshis", "straight", "doctor", "peeyush"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_268",
-            question = "Where is Dr. Rakesh Mahawar's cabin?",
-            answer = "Doctor Rakesh Mahawar's cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("mahawars", "cabin", "signs", "reception", "next", "rakesh", "follow", "straight", "doctor", "where"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_269",
-            question = "Where is Dr. Deepak K. Bhojwani's cabin?",
-            answer = "Doctor Deepak K. Bhojwani's cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("cabin", "signs", "deepak", "next", "reception", "follow", "straight", "bhojwanis", "doctor", "where"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_270",
-            question = "Where is Dr. Bhushan Chopde's cabin?",
-            answer = "Doctor Bhushan Chopde's  cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("cabin", "signs", "reception", "next", "follow", "straight", "chopdes", "doctor", "bhushan", "where"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_271",
-            question = "Where is Dr. Nikita Andhalkar's cabin?",
-            answer = "Doctor Nikita Andhalkar's cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("cabin", "signs", "reception", "next", "follow", "straight", "nikita", "doctor", "where", "andhalkars"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_272",
-            question = "Where is Dr. Anita Chouksey's cabin?",
-            answer = "Doctor Anita Chouksey's cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("cabin", "anita", "signs", "reception", "next", "follow", "straight", "choukseys", "doctor", "where"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_273",
-            question = "Where is Dr. Rupali Marathe's cabin?",
-            answer = "Doctor Rupali Marathe's cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("marathes", "cabin", "signs", "reception", "next", "rupali", "follow", "straight", "doctor", "where"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_274",
-            question = "Where is Dr. Tanishk Shroff's cabin?",
-            answer = "Doctor Tanishk Shroff's cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("cabin", "signs", "reception", "next", "shroffs", "follow", "straight", "tanishk", "doctor", "where"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_275",
-            question = "Where is Dr. Hiteshi Bais's cabin?",
-            answer = "Doctor Hiteshi Bais's cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("cabin", "signs", "reception", "next", "baiss", "follow", "straight", "hiteshi", "doctor", "where"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_276",
-            question = "Where is Dr. Chimu Chinte Chopde's cabin?",
-            answer = "Doctor Chimu Chinte Chopde's cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("cabin", "signs", "reception", "next", "chimu", "straight", "follow", "chopdes", "doctor", "chinte"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_277",
-            question = "Where is Dr. Kapil Chourasiya's cabin?",
-            answer = "Doctor Kapil Chourasiya's cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("cabin", "signs", "reception", "next", "follow", "straight", "kapil", "doctor", "where", "chourasiyas"),
-            category = "hospital_info",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_278",
-            question = "Where is Dr. Arpit Daulal Mahajan's cabin?",
-            answer = "Doctor Arpit Daulal Mahajan's cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("cabin", "signs", "reception", "next", "daulal", "mahajans", "arpit", "follow", "straight", "doctor"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_279",
-            question = "Where is Dr. Abhishek Sharma's cabin?",
-            answer = "Doctor Abhishek Sharma's cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("sharmas", "cabin", "abhishek", "signs", "reception", "next", "follow", "straight", "doctor", "where"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_280",
-            question = "Where is Dr. Yash Mahajan's cabin?",
-            answer = "Doctor Yash Mahajan's cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("cabin", "yash", "signs", "reception", "next", "mahajans", "follow", "straight", "doctor", "where"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_281",
-            question = "Where is Dr. Abhey Joshi's cabin?",
-            answer = "Doctor Abhey Joshi's cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("cabin", "signs", "reception", "joshis", "abhey", "next", "follow", "straight", "doctor", "where"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_282",
-            question = "Where is Dr. Neeraj S. Doijad's cabin?",
-            answer = "Doctor Neeraj S. Doijad's cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("cabin", "signs", "reception", "next", "neeraj", "straight", "follow", "doijads", "doctor", "where"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_283",
-            question = "Where is Dr. Shashank Suresh Karale's cabin?",
-            answer = "Doctor Shashank Suresh Karale's  cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("karales", "cabin", "signs", "reception", "shashank", "next", "suresh", "follow", "straight", "doctor"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
-            id = "qa_284",
-            question = "Where is Dr. Madhur M. Maniyar's cabin?",
-            answer = "Doctor Madhur M. Maniyar's cabin is in OPD, Go straight next to the reception and follow the signs.",
-            keywords = listOf("cabin", "signs", "reception", "next", "maniyars", "madhur", "follow", "straight", "doctor", "where"),
-            category = "facilities",
-            language = "en"
-        ),
-        KnowledgeBaseQA(
             id = "qa_285",
             question = "Where is the doctor's consultation room?",
             answer = "Consultation rooms are assigned by specialty and schedule. For your doctor's exact location, please check with reception—they'll guide you right away.",
@@ -2395,46 +1891,93 @@ object HospitalKnowledgeBase {
             
             android.util.Log.d("HospitalKnowledgeBase", "Injecting doctor: $doctorName (${doctor.department})")
 
-            // Q&A 1: Direct doctor name query
+            // Extract keywords from name (first name, last name, full name)
+            val nameKeywords = mutableListOf<String>()
+            val nameParts = doctor.name.replace("Dr.", "").replace("Dr", "").trim().split(" ")
+            nameKeywords.addAll(nameParts.map { it.lowercase() })
+            nameKeywords.add(doctor.name.lowercase())
+
+            // Extract keywords from bio
+            val bioKeywords = doctor.aboutBio.lowercase()
+                .split(" ")
+                .filter { it.length > 4 && !it.matches(Regex(".*[0-9].*")) } // Words longer than 4 chars, no numbers
+                .distinct()
+                .take(10) // Top 10 bio keywords
+
+            // Q&A 1: Direct doctor name query with COMPLETE details
             dynamicDoctorQAs.add(
                 KnowledgeBaseQA(
                     id = "dynamic_doc_${doctor.id}_name",
                     question = "Who is $doctorName?",
-                    answer = "Speciality: $doctorName is a ${ doctor.specialization ?: doctor.department} specialist. " +
+                    answer = "Doctor Name: $doctorName. " +
+                            "Department: ${doctor.department}. " +
+                            "Specialization: ${doctor.specialization ?: "General"}. " +
                             "Experience: ${doctor.yearsOfExperience} years. " +
-                            "Location: Cabin ${doctor.cabin}. " +
-                            "Bio: ${doctor.aboutBio}",
+                            "Cabin Location: Cabin ${doctor.cabin}. " +
+                            "About: ${doctor.aboutBio}",
                     keywords = listOf(
                         doctor.name.lowercase(),
                         doctor.specialization?.lowercase() ?: "",
                         doctor.department.lowercase(),
                         "doctor",
-                        "specialist"
-                    ).filter { it.isNotEmpty() },
-                    category = "general",
-                    language = "en"
-                )
-            )
-            
-            // Q&A 2: Department query
-            dynamicDoctorQAs.add(
-                KnowledgeBaseQA(
-                    id = "dynamic_doc_${doctor.id}_dept",
-                    question = "Is there a ${doctor.department} specialist?",
-                    answer = "$doctorName is available for ${doctor.department}. " +
-                            "Specialization: ${doctor.specialization}. " +
-                            "Experience: ${doctor.yearsOfExperience} years. " +
-                            "Cabin: ${doctor.cabin}",
-                    keywords = listOf(
-                        doctor.department.lowercase(),
                         "specialist",
-                        "doctor",
-                        doctor.specialization?.lowercase() ?: ""
-                    ).filter { it.isNotEmpty() },
+                        "cabin",
+                        doctor.cabin.lowercase(),
+                        doctor.department.lowercase() // Added as primary keyword
+                    ).plus(nameKeywords).plus(bioKeywords).filter { it.isNotEmpty() }.distinct(),
                     category = "departments",
                     language = "en"
                 )
             )
+            
+            // Q&A 2: Department query with COMPLETE details
+            dynamicDoctorQAs.add(
+                KnowledgeBaseQA(
+                    id = "dynamic_doc_${doctor.id}_dept",
+                    question = "Is there a ${doctor.department} specialist?",
+                    answer = "$doctorName specializes in ${doctor.department}. " +
+                            "Department: ${doctor.department}. " +
+                            "Specialization: ${doctor.specialization ?: "General"}. " +
+                            "Experience: ${doctor.yearsOfExperience} years of experience. " +
+                            "Cabin: ${doctor.cabin}. " +
+                            "About: ${doctor.aboutBio}",
+                    keywords = listOf(
+                        doctor.department.lowercase(),
+                        "specialist",
+                        "doctor",
+                        "department",
+                        doctor.specialization?.lowercase() ?: "",
+                        "experience",
+                        doctor.cabin.lowercase()
+                    ).plus(nameKeywords).filter { it.isNotEmpty() }.distinct(),
+                    category = "departments",
+                    language = "en"
+                )
+            )
+
+            // Q&A 3: Specialization query (if different from department)
+            if (doctor.specialization.isNotBlank() && !doctor.specialization.equals(doctor.department, ignoreCase = true)) {
+                dynamicDoctorQAs.add(
+                    KnowledgeBaseQA(
+                        id = "dynamic_doc_${doctor.id}_spec",
+                        question = "Who specializes in ${doctor.specialization}?",
+                        answer = "$doctorName specializes in ${doctor.specialization}. " +
+                                "Department: ${doctor.department}. " +
+                                "Experience: ${doctor.yearsOfExperience} years. " +
+                                "Cabin: ${doctor.cabin}. " +
+                                "Details: ${doctor.aboutBio}",
+                        keywords = listOf(
+                            doctor.specialization.lowercase(),
+                            doctor.department.lowercase(),
+                            "specialist",
+                            "specialization",
+                            doctor.name.lowercase()
+                        ).plus(nameKeywords).filter { it.isNotEmpty() }.distinct(),
+                        category = "departments",
+                        language = "en"
+                    )
+                )
+            }
         }
         
         android.util.Log.d("HospitalKnowledgeBase", "Successfully injected ${dynamicDoctorQAs.size} dynamic doctor Q&As from ${doctors.size} doctors")
@@ -2442,20 +1985,45 @@ object HospitalKnowledgeBase {
 
     /**
      * Search knowledge base for relevant Q&As
+     * ENHANCED: Better matching for doctor queries with partial matches and answer text search
      * Returns top N results sorted by relevance (includes dynamic doctor Q&As)
      */
     fun search(userQuery: String, limit: Int = 3): List<KnowledgeBaseQA> {
         val lowerQuery = userQuery.lowercase()
+        val queryWords = lowerQuery.split(" ").filter { it.length > 2 } // Words longer than 2 chars
 
         // Combine static and dynamic Q&As
         val allQAs = qaDatabase + dynamicDoctorQAs
 
-        // Score each QA pair based on keyword matches
+        // Score each QA pair based on multiple matching criteria
         val results = allQAs.map { qa ->
-            val matchCount = qa.keywords.count { keyword ->
+            var score = 0
+            
+            // 1. Exact keyword matches (highest score)
+            score += qa.keywords.count { keyword ->
                 lowerQuery.contains(keyword)
+            } * 3
+            
+            // 2. Partial word matches in keywords (medium score)
+            score += qa.keywords.count { keyword ->
+                queryWords.any { word -> keyword.contains(word) || word.contains(keyword) }
             }
-            qa to matchCount
+            
+            // 3. Question text contains query words (good score for doctor name matching)
+            val questionLower = qa.question.lowercase()
+            score += queryWords.count { word -> questionLower.contains(word) } * 2
+            
+            // 4. Answer text contains query words (helps with department/specialization matching)
+            val answerLower = qa.answer.lowercase()
+            score += queryWords.count { word -> answerLower.contains(word) }
+            
+            // Priority Boost: If it's a dynamic doctor entry, add a significant boost
+            // to ensure it outranks static hospital info for same-keyword matches
+            if (score > 0 && qa.id.startsWith("dynamic_doc_")) {
+                score += 10 // Significant boost to prioritize Strapi doctor data
+            }
+            
+            qa to score
         }
             .filter { it.second > 0 }  // Only include matches
             .sortedByDescending { it.second }  // Sort by relevance

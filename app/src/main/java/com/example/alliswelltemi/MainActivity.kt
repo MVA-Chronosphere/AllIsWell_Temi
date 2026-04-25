@@ -129,9 +129,14 @@ class MainActivity : ComponentActivity(),
                         // Update orchestrator with fresh doctor list
                         orchestrator = SpeechOrchestrator(doctors)
 
+                        // CRITICAL: Inject dynamic doctor Q&As into knowledge base
+                        // This synchronizes Strapi doctor data with the RAG knowledge base
+                        com.example.alliswelltemi.data.HospitalKnowledgeBase.injectDoctorQAs(doctors)
+                        android.util.Log.i("TemiMain", "✅ Knowledge base synchronized with ${doctors.size} doctors from Strapi")
+
                         val currentTime = System.currentTimeMillis()
                         if (currentTime - lastToastTime > 3000) {
-                            android.widget.Toast.makeText(this@MainActivity, "✓ ${doctors.size} doctors loaded", android.widget.Toast.LENGTH_SHORT).show()
+                            android.widget.Toast.makeText(this@MainActivity, "✓ ${doctors.size} doctors loaded & synced", android.widget.Toast.LENGTH_SHORT).show()
                             lastToastTime = currentTime
                         }
                     }
@@ -297,11 +302,9 @@ class MainActivity : ComponentActivity(),
                 )
                 android.util.Log.d("OLLAMA_FIX", "Ollama streaming request created")
 
-                // PERFORMANCE FIX: Collect streaming response and speak IMMEDIATELY when we have enough
+                // Collect streaming response and speak COMPLETE response at once
                 val fullResponse = StringBuilder()
                 var firstChunkTime: Long? = null
-                var hasSpokenFirstPart = false
-                val sentenceBuffer = StringBuilder()
 
                 OllamaClient.generateStreaming(ollamaRequest).collect { chunk ->
                     if (firstChunkTime == null) {
@@ -311,30 +314,14 @@ class MainActivity : ComponentActivity(),
                     }
 
                     fullResponse.append(chunk)
-                    sentenceBuffer.append(chunk)
-
-                    // Speak as soon as we have a complete sentence (ends with . ! ?)
-                    if (!hasSpokenFirstPart && sentenceBuffer.length > 20) {
-                        val text = sentenceBuffer.toString()
-                        if (text.matches(Regex(".*[.!?]\\s*"))) {
-                            hasSpokenFirstPart = true
-                            val speakText = text.trim()
-                            android.util.Log.d("OLLAMA_PERF", "🔊 Speaking first part early (${speakText.length} chars)")
-
-                            // CRITICAL FIX: Temporarily allow speaking during conversation lock
-                            withContext(Dispatchers.Main) {
-                                safeSpeakDuringStreaming(speakText)
-                            }
-                            sentenceBuffer.clear()
-                        }
-                    }
                 }
 
-                val finalResponse = fullResponse.toString()
+                val finalResponse = fullResponse.toString().trim()
                 val elapsedMs = System.currentTimeMillis() - gptRequestStartTime
 
                 android.util.Log.d("OLLAMA_FIX", "========== OLLAMA RESPONSE RECEIVED ==========")
                 android.util.Log.d("OLLAMA_FIX", "Response received after ${elapsedMs}ms")
+                android.util.Log.d("OLLAMA_FIX", "Complete response (${finalResponse.length} chars): $finalResponse")
 
                 // Step 4: Save to conversation context
                 val lastQuestion = if (cleanedPrompt.contains("User: ")) {
@@ -344,17 +331,16 @@ class MainActivity : ComponentActivity(),
                 }
                 conversationContext.addTurn(lastQuestion, finalResponse)
 
-                // RELEASE conversation lock AFTER streaming completes
+                // RELEASE conversation lock and speak COMPLETE response
                 withContext(Dispatchers.Main) {
                     isGptProcessing = false
                     isConversationActive = false
                     conversationActiveState.value = false
                     android.util.Log.d("OLLAMA_FIX", "Conversation lock RELEASED")
 
-                    // Only speak if we haven't already started speaking
-                    if (!hasSpokenFirstPart) {
-                        safeSpeak(finalResponse)
-                    }
+                    // Speak the FULL response at once
+                    android.util.Log.d("OLLAMA_PERF", "🔊 Speaking complete response (${finalResponse.length} chars)")
+                    safeSpeak(finalResponse)
                     handler.post(inactivityRunnable)
                 }
 
@@ -380,9 +366,17 @@ class MainActivity : ComponentActivity(),
         robot?.finishConversation()
         resetInactivityTimer()
 
+        // Check if doctors are currently loading OR if list is empty (fully loaded but no data)
         val doctors = doctorsViewModel.doctors.value
+        val isLoadingDoctors = doctorsViewModel.isLoading.value
+
+        if (isLoadingDoctors) {
+            safeSpeak("Doctors list is still loading. Please wait a moment.")
+            return
+        }
+
         if (doctors.isEmpty()) {
-            safeSpeak("Doctors list is still loading. Please try again.")
+            safeSpeak("Doctor information is currently unavailable. Please try again later.")
             return
         }
 
@@ -450,34 +444,64 @@ class MainActivity : ComponentActivity(),
         try {
             if (robot == null || message.isBlank() || isConversationActive) return
 
-            val cleanedMessage = message
-                .replace(NEWLINE_REGEX, ". ")
-                .replace(SPACE_REGEX, " ")
-                .replace(":", ". ")
-                .replace("Dr.", "Doctor", ignoreCase = true)
-                .replace(SYMBOL_REGEX, "")
-                .trim()
+            // Detect language FIRST before cleaning
+            val detectedLanguage = if (com.example.alliswelltemi.utils.isHindi(message)) "hi" else "en"
 
-            // Detect language automatically for better TTS matching
-            val detectedLanguage = if (com.example.alliswelltemi.utils.isHindi(cleanedMessage)) "hi" else "en"
-
-            val sentences = cleanedMessage.split(Regex("(?<=[.!?])\\s+"))
-                .map { it.trim() }
-                .filter { it.isNotBlank() }
-
-            if (sentences.isEmpty()) return
-
-            val chunks = mutableListOf<String>()
-            var currentChunk = ""
-            for (sentence in sentences) {
-                if (currentChunk.isEmpty()) currentChunk = sentence
-                else if (currentChunk.length + sentence.length < 400) currentChunk += " " + sentence
-                else {
-                    chunks.add(currentChunk)
-                    currentChunk = sentence
-                }
+            // OPTIMIZED: Clean message differently based on language
+            val cleanedMessage = if (detectedLanguage == "hi") {
+                // Hindi: Minimal punctuation changes, rely on TTS normalization
+                message
+                    .replace(NEWLINE_REGEX, " ")         // Convert newlines to space
+                    .replace(Regex("!+"), "")            // Remove exclamation marks completely
+                    .replace(Regex("\\.{2,}"), "")       // Remove multiple periods
+                    .replace(":", "")                     // Remove colons
+                    .replace(";", "")                     // Remove semicolons
+                    .replace(SPACE_REGEX, " ")           // Normalize whitespace
+                    .replace("Dr.", "Doctor", ignoreCase = true)
+                    .replace(SYMBOL_REGEX, "")
+                    .trim()
+            } else {
+                // English: Use comma replacement for smoother flow
+                message
+                    .replace(NEWLINE_REGEX, " ")         // Convert newlines to space
+                    .replace(Regex("[.!]+"), ",")        // Replace periods/exclamations with comma (less pause)
+                    .replace(Regex(",\\s*,+"), ",")      // Remove duplicate commas
+                    .replace(":", ",")                    // Replace colons with comma
+                    .replace(";", ",")                    // Replace semicolons with comma
+                    .replace(SPACE_REGEX, " ")           // Normalize whitespace
+                    .replace("Dr.", "Doctor", ignoreCase = true)
+                    .replace(SYMBOL_REGEX, "")
+                    .replace(Regex(",\\s*$"), "")        // Remove trailing comma
+                    .trim()
             }
-            if (currentChunk.isNotEmpty()) chunks.add(currentChunk)
+
+            // For Hindi, don't split - speak as one chunk (TTS handles pauses)
+            // For English, split on commas for better pacing
+            val chunks = if (detectedLanguage == "hi") {
+                listOf(cleanedMessage)  // Hindi: speak entire message at once
+            } else {
+                // English: split on commas and chunk intelligently
+                val sentences = cleanedMessage.split(Regex("(?<=[,])\\s+"))
+                    .map { it.trim() }
+                    .filter { it.isNotBlank() }
+
+                if (sentences.isEmpty()) return
+
+                val result = mutableListOf<String>()
+                var currentChunk = ""
+                for (sentence in sentences) {
+                    if (currentChunk.isEmpty()) currentChunk = sentence
+                    else if (currentChunk.length + sentence.length < 400) currentChunk += " " + sentence
+                    else {
+                        result.add(currentChunk)
+                        currentChunk = sentence
+                    }
+                }
+                if (currentChunk.isNotEmpty()) result.add(currentChunk)
+                result
+            }
+
+            if (chunks.isEmpty()) return
 
             isRobotSpeaking.set(true)
             
@@ -505,23 +529,45 @@ class MainActivity : ComponentActivity(),
     /**
      * PERFORMANCE FIX: Speak during streaming without conversation lock blocking
      * Used for early streaming responses to provide instant feedback
+     * OPTIMIZED: Reduced punctuation gaps for smoother TTS
      */
     private fun safeSpeakDuringStreaming(message: String) {
         try {
             if (robot == null || message.isBlank()) return
 
-            val cleanedMessage = message
-                .replace(NEWLINE_REGEX, ". ")
-                .replace(SPACE_REGEX, " ")
-                .replace(":", ". ")
-                .replace("Dr.", "Doctor", ignoreCase = true)
-                .replace(SYMBOL_REGEX, "")
-                .trim()
+            // Detect language FIRST before cleaning
+            val detectedLanguage = if (com.example.alliswelltemi.utils.isHindi(message)) "hi" else "en"
+
+            // OPTIMIZED: Clean message differently based on language
+            val cleanedMessage = if (detectedLanguage == "hi") {
+                // Hindi: Minimal punctuation changes, rely on TTS normalization
+                message
+                    .replace(NEWLINE_REGEX, " ")         // Convert newlines to space
+                    .replace(Regex("!+"), "")            // Remove exclamation marks completely
+                    .replace(Regex("\\.{2,}"), "")       // Remove multiple periods
+                    .replace(":", "")                     // Remove colons
+                    .replace(";", "")                     // Remove semicolons
+                    .replace(SPACE_REGEX, " ")           // Normalize whitespace
+                    .replace("Dr.", "Doctor", ignoreCase = true)
+                    .replace(SYMBOL_REGEX, "")
+                    .trim()
+            } else {
+                // English: Use comma replacement for smoother flow
+                message
+                    .replace(NEWLINE_REGEX, " ")         // Convert newlines to space
+                    .replace(Regex("[.!]+"), ",")        // Replace periods/exclamations with comma (less pause)
+                    .replace(Regex(",\\s*,+"), ",")      // Remove duplicate commas
+                    .replace(":", ",")                    // Replace colons with comma
+                    .replace(";", ",")                    // Replace semicolons with comma
+                    .replace(SPACE_REGEX, " ")           // Normalize whitespace
+                    .replace("Dr.", "Doctor", ignoreCase = true)
+                    .replace(SYMBOL_REGEX, "")
+                    .replace(Regex(",\\s*$"), "")        // Remove trailing comma
+                    .trim()
+            }
 
             android.util.Log.d("OLLAMA_PERF", "💬 Speaking during stream: '$cleanedMessage'")
 
-            // Detect language automatically for better TTS matching
-            val detectedLanguage = if (com.example.alliswelltemi.utils.isHindi(cleanedMessage)) "hi" else "en"
 
             isRobotSpeaking.set(true)
 

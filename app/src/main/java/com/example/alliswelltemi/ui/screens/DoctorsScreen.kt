@@ -121,35 +121,70 @@ fun DoctorsScreen(
                         .fillMaxWidth(),
                     label = "content_crossfade"
                 ) { tab ->
-                    if (isLoading) {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            CircularProgressIndicator(color = HospitalColors.RoyalBlue)
+                    when {
+                        isLoading -> {
+                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                CircularProgressIndicator(color = HospitalColors.RoyalBlue)
+                            }
                         }
-                    } else if (error != null) {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text(text = error!!, color = Color.Red)
-                                Button(onClick = { viewModel.retry() }) {
-                                    Text("Retry")
+                        error != null -> {
+                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                                ) {
+                                    Text(
+                                        text = error!!,
+                                        color = Color.Red,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        textAlign = TextAlign.Center
+                                    )
+                                    Button(onClick = { viewModel.retry() }) {
+                                        Text("Retry")
+                                    }
                                 }
                             }
                         }
-                    } else {
-                        when (tab) {
-                            DoctorsTab.BY_DOCTOR -> {
-                                DoctorsGrid(
-                                    doctors = viewModel.filteredDoctors,
-                                    onDoctorClick = { doctor ->
-                                        viewModel.selectDoctorForNavigation(doctor)
+                        doctors.isEmpty() -> {
+                            // Empty state - no doctors loaded yet or API returned empty
+                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                                ) {
+                                    Text(
+                                        text = "No doctors available",
+                                        style = MaterialTheme.typography.headlineSmall,
+                                        color = HospitalColors.DeepSlate
+                                    )
+                                    Text(
+                                        text = "Please check back later or try refreshing",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = HospitalColors.DeepSlate.copy(alpha = 0.7f)
+                                    )
+                                    Button(onClick = { viewModel.retry() }) {
+                                        Text("Refresh")
                                     }
-                                )
+                                }
                             }
-                            DoctorsTab.BY_DEPARTMENT -> {
-                                DepartmentsGrid(
-                                    departments = departments,
-                                    selectedDept = selectedDept,
-                                    onDeptClick = { viewModel.filterByDepartment(it) }
-                                )
+                        }
+                        else -> {
+                            when (tab) {
+                                DoctorsTab.BY_DOCTOR -> {
+                                    DoctorsGrid(
+                                        doctors = viewModel.filteredDoctors,
+                                        onDoctorClick = { doctor ->
+                                            viewModel.selectDoctorForNavigation(doctor)
+                                        }
+                                    )
+                                }
+                                DoctorsTab.BY_DEPARTMENT -> {
+                                    DepartmentsGrid(
+                                        departments = departments,
+                                        selectedDept = selectedDept,
+                                        onDeptClick = { viewModel.filterByDepartment(it) }
+                                    )
+                                }
                             }
                         }
                     }

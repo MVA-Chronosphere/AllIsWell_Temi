@@ -93,7 +93,7 @@ fun TemiMainScreen(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "I am Temi, your medical assistant. How can I help you?",
+                        text = "I am Chronexa, your medical assistant. How can I help you?",
                         style = MaterialTheme.typography.displayMedium.copy(
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Medium,

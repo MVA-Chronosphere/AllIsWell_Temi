@@ -71,13 +71,16 @@ data class DoctorDocument(
 ) {
     fun toDomain(): Doctor? {
         // Handle Strapi v4 (attributes) and v5 (flat)
-        val doctorName = name ?: attributes?.name ?: ""
-        if (doctorName.isBlank()) return null
+        val doctorName = (name ?: attributes?.name ?: "").trim()
+        if (doctorName.isBlank()) {
+            android.util.Log.w("DoctorDocument", "Skipping doctor with blank name: id=$id")
+            return null
+        }
 
-        val docSpecialty = specialty ?: attributes?.specialty ?: attributes?.specialization ?: ""
-        val docAbout = about ?: attributes?.about ?: attributes?.aboutBio ?: ""
+        val docSpecialty = (specialty ?: attributes?.specialty ?: attributes?.specialization ?: "").trim()
+        val docAbout = (about ?: attributes?.about ?: attributes?.aboutBio ?: "").trim()
         val docExpYears = experienceYears ?: attributes?.experienceYears ?: attributes?.yearsOfExperience ?: 0
-        val docLocation = location ?: attributes?.location ?: attributes?.cabin ?: ""
+        val docLocation = (location ?: attributes?.location ?: attributes?.cabin ?: "").trim()
 
         val imageData = profileImage ?: attributes?.profileImage
         val imageUrl = when (imageData) {
@@ -91,7 +94,7 @@ data class DoctorDocument(
 
         return Doctor(
             id = id?.toString() ?: documentId ?: "",
-            name = doctorName.trim(),
+            name = doctorName,  // Already trimmed above
             department = docSpecialty, // Mapping specialty to department for now
             yearsOfExperience = docExpYears,
             aboutBio = docAbout,

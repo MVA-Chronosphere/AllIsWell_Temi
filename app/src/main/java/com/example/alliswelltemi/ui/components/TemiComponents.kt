@@ -148,7 +148,7 @@ fun TemiGreetingSection(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
-            text = "Hello! I'm Temi",
+            text = "Hello! I'm Chronexa",
             fontSize = 40.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFFFFFFFF),

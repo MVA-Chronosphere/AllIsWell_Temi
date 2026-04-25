@@ -347,7 +347,7 @@ class VoiceInteractionManager(
             
             Patient Query: "$userInput"
             
-            Respond as Temi hospital assistant (2-3 sentences max):
+            Respond as Chronexa hospital assistant (2-3 sentences max):
             """.trimIndent()
         }
 
@@ -358,6 +358,7 @@ class VoiceInteractionManager(
     /**
      * Clean LLM response for text-to-speech
      * Removes markdown, special characters, and formats for natural reading
+     * OPTIMIZED: Reduces punctuation gaps for smoother TTS
      */
     private fun cleanResponseForSpeech(text: String): String {
         return text
@@ -366,9 +367,13 @@ class VoiceInteractionManager(
             .replace(Regex("\\*"), "")               // Remove italic markers
             .replace(Regex("\\[([^]]+)]\\([^)]+\\)"), "$1")  // Convert markdown links
             .replace(Regex("[{}\\[\\]_|`~^]"), "")  // Remove special chars
-            .replace(Regex("\\n+"), ". ")            // Convert newlines to period + space
+            .replace(Regex("\\n+"), " ")             // Convert newlines to space (not period)
+            .replace(Regex("[.!]+"), ",")            // Replace periods and exclamations with comma (less pause)
+            .replace(Regex(",\\s*,+"), ",")          // Remove duplicate commas
+            .replace(":", ",")                        // Replace colons with comma
+            .replace(";", ",")                        // Replace semicolons with comma
             .replace(Regex("\\s+"), " ")             // Normalize whitespace
-            .replace(":", ". ")                       // Replace colons
+            .replace(Regex(",\\s*$"), "")            // Remove trailing comma
             .trim()
             .take(500)  // Cap at 500 chars for reasonable TTS duration
     }

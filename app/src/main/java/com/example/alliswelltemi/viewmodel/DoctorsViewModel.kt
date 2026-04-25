@@ -21,7 +21,7 @@ class DoctorsViewModel(private val context: Context? = null) : ViewModel() {
     private val _doctors = mutableStateOf<List<Doctor>>(emptyList())
     val doctors: State<List<Doctor>> = _doctors
 
-    private val _isLoading = mutableStateOf(false)
+    private val _isLoading = mutableStateOf(true)  // Start as true since we fetch in init
     val isLoading: State<Boolean> = _isLoading
 
     private val _error = mutableStateOf<String?>(null)
@@ -99,6 +99,7 @@ class DoctorsViewModel(private val context: Context? = null) : ViewModel() {
                     android.util.Log.d("DoctorsViewModel", "⚡ Loaded ${cachedDoctors.size} doctors from cache (instant)")
                     _doctors.value = cachedDoctors
                     extractDepartments(cachedDoctors)
+                    _isLoading.value = false  // Stop loading indicator when cache is loaded
 
                     // Still fetch in background to update cache
                     fetchDoctors(forceRefresh = false, silent = true)
@@ -133,9 +134,12 @@ class DoctorsViewModel(private val context: Context? = null) : ViewModel() {
                     RetrofitClient.apiService.getDoctors()
                 }
 
+                android.util.Log.d("DoctorsViewModel", "📡 API Response: data size = ${response.data?.size ?: 0}, meta = ${response.meta}")
+
                 val doctorList = withContext(Dispatchers.Default) {
                     response.data?.mapNotNull { doctorDoc ->
                         try {
+                            android.util.Log.v("DoctorsViewModel", "Parsing doctor: id=${doctorDoc.id}, name=${doctorDoc.name}")
                             doctorDoc.toDomain()
                         } catch (e: Exception) {
                             android.util.Log.w("DoctorsViewModel", "Failed to parse doctor: ${e.message}")
@@ -147,13 +151,14 @@ class DoctorsViewModel(private val context: Context? = null) : ViewModel() {
                 val elapsedMs = System.currentTimeMillis() - startTime
                 android.util.Log.d("DoctorsViewModel", "⚡ Fetched ${doctorList.size} doctors in ${elapsedMs}ms")
 
-                if (doctorList.isEmpty()) {
-                    _error.value = "No doctors found. Please try again later."
-                    return@launch
-                }
-
+                // Update doctors list even if empty (allows UI to show empty state properly)
                 _doctors.value = doctorList
                 extractDepartments(doctorList)
+                
+                if (doctorList.isEmpty()) {
+                    android.util.Log.w("DoctorsViewModel", "⚠️ API returned empty doctor list")
+                    // Don't set error here - let UI handle empty state
+                }
 
                 // PERFORMANCE: Save to cache for next time
                 withContext(Dispatchers.IO) {
