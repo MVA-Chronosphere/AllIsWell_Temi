@@ -120,14 +120,18 @@ object RagContextBuilder {
             relevantDoctors.joinToString("\n") { doctor ->
                 val name = if (doctor.name.startsWith("Dr", ignoreCase = true)) doctor.name else "Dr. ${doctor.name}"
                 buildString {
-                    append("$name: ")
-                    // PRIORITIZE specialization over department if available
+                    append("$name | ")
+
+                    // CRITICAL: Use specialization as PRIMARY field if available
                     if (doctor.specialization.isNotBlank() && !doctor.specialization.equals(doctor.department, ignoreCase = true)) {
-                        append("Specialization=${doctor.specialization}, ")
+                        append("SPECIALTY: ${doctor.specialization}")
+                        append(" | Department: ${doctor.department}")
+                    } else {
+                        append("SPECIALTY: ${doctor.department}")
                     }
-                    append("Department=${doctor.department}, ")
-                    append("Cabin=${doctor.cabin}")
-                    if (doctor.aboutBio.isNotBlank()) append(", Details: ${doctor.aboutBio.take(120)}")
+
+                    append(" | Cabin: ${doctor.cabin}")
+                    if (doctor.aboutBio.isNotBlank()) append(" | Bio: ${doctor.aboutBio.take(100)}")
                 }
             }
         } else if (isFollowUp) {
@@ -165,14 +169,18 @@ object RagContextBuilder {
                 val name = if (doctor.name.startsWith("Dr", ignoreCase = true))
                     doctor.name else "Dr. ${doctor.name}"
                 buildString {
-                    append("$name: ")
-                    // PRIORITIZE specialization over department if available
+                    append("$name | ")
+
+                    // CRITICAL: Use specialization as PRIMARY field if available
                     if (doctor.specialization.isNotBlank() && !doctor.specialization.equals(doctor.department, ignoreCase = true)) {
-                        append("Specialization=${doctor.specialization}, ")
+                        append("SPECIALTY: ${doctor.specialization}")
+                        append(" | Department: ${doctor.department}")
+                    } else {
+                        append("SPECIALTY: ${doctor.department}")
                     }
-                    append("Department=${doctor.department}, ")
-                    append("Cabin=${doctor.cabin}")
-                    if (doctor.aboutBio.isNotBlank()) append(", Details: ${doctor.aboutBio.take(120)}")
+
+                    append(" | Cabin: ${doctor.cabin}")
+                    if (doctor.aboutBio.isNotBlank()) append(" | Bio: ${doctor.aboutBio.take(100)}")
                 }
             }
         } else {

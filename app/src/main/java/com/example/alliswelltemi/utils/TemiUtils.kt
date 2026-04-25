@@ -102,8 +102,8 @@ object TemiTTSManager {
         val utteranceId = "hindi_${System.currentTimeMillis()}"
         tts?.language = Locale("hi", "IN")
 
-        // Set faster speech rate to minimize pause duration
-        tts?.setSpeechRate(1.1f) // Slightly faster to reduce pause impact
+        // Set slower speech rate for Hindi (decreased by 25%)
+        tts?.setSpeechRate(0.825f) // 25% slower for improved clarity
 
         val result = tts?.speak(normalizedText, queueMode, null, utteranceId)
         if (result == TextToSpeech.ERROR) {

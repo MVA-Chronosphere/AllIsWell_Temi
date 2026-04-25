@@ -1904,17 +1904,24 @@ object HospitalKnowledgeBase {
                 .distinct()
                 .take(10) // Top 10 bio keywords
 
-            // Q&A 1: Direct doctor name query with COMPLETE details
+            // Q&A 1: Direct doctor name query with COMPLETE details - SPECIALTY FIRST
+            val primarySpecialty = if (doctor.specialization.isNotBlank() &&
+                                      !doctor.specialization.equals(doctor.department, ignoreCase = true)) {
+                doctor.specialization
+            } else {
+                doctor.department
+            }
+
             dynamicDoctorQAs.add(
                 KnowledgeBaseQA(
                     id = "dynamic_doc_${doctor.id}_name",
                     question = "Who is $doctorName?",
-                    answer = "Doctor Name: $doctorName. " +
+                    answer = "$doctorName is a $primarySpecialty. " +
+                            "PRIMARY SPECIALTY: $primarySpecialty. " +
                             "Department: ${doctor.department}. " +
-                            "Specialization: ${doctor.specialization ?: "General"}. " +
                             "Experience: ${doctor.yearsOfExperience} years. " +
-                            "Cabin Location: Cabin ${doctor.cabin}. " +
-                            "About: ${doctor.aboutBio}",
+                            "Cabin: ${doctor.cabin}. " +
+                            "Details: ${doctor.aboutBio}",
                     keywords = listOf(
                         doctor.name.lowercase(),
                         doctor.specialization?.lowercase() ?: "",
@@ -1930,15 +1937,14 @@ object HospitalKnowledgeBase {
                 )
             )
             
-            // Q&A 2: Department query with COMPLETE details
+            // Q&A 2: Department query with COMPLETE details - SPECIALTY FIRST
             dynamicDoctorQAs.add(
                 KnowledgeBaseQA(
                     id = "dynamic_doc_${doctor.id}_dept",
                     question = "Is there a ${doctor.department} specialist?",
-                    answer = "$doctorName specializes in ${doctor.department}. " +
+                    answer = "$doctorName - PRIMARY SPECIALTY: $primarySpecialty. " +
                             "Department: ${doctor.department}. " +
-                            "Specialization: ${doctor.specialization ?: "General"}. " +
-                            "Experience: ${doctor.yearsOfExperience} years of experience. " +
+                            "Experience: ${doctor.yearsOfExperience} years. " +
                             "Cabin: ${doctor.cabin}. " +
                             "About: ${doctor.aboutBio}",
                     keywords = listOf(
@@ -1955,13 +1961,13 @@ object HospitalKnowledgeBase {
                 )
             )
 
-            // Q&A 3: Specialization query (if different from department)
+            // Q&A 3: Specialization query (if different from department) - SPECIALTY FIRST
             if (doctor.specialization.isNotBlank() && !doctor.specialization.equals(doctor.department, ignoreCase = true)) {
                 dynamicDoctorQAs.add(
                     KnowledgeBaseQA(
                         id = "dynamic_doc_${doctor.id}_spec",
                         question = "Who specializes in ${doctor.specialization}?",
-                        answer = "$doctorName specializes in ${doctor.specialization}. " +
+                        answer = "$doctorName - PRIMARY SPECIALTY: ${doctor.specialization}. " +
                                 "Department: ${doctor.department}. " +
                                 "Experience: ${doctor.yearsOfExperience} years. " +
                                 "Cabin: ${doctor.cabin}. " +
@@ -1984,13 +1990,283 @@ object HospitalKnowledgeBase {
     }
 
     /**
+     * Comprehensive Hindi/Romanized keyword mappings for cross-language matching
+     * Maps Hindi words and romanized Hinglish to English equivalents
+     * Covers: Facilities, Locations, Medical Terms, Departments, Common Words
+     */
+    private val hindiToEnglishKeywords = mapOf(
+        // === FACILITIES & LOCATIONS ===
+        "फार्मेसी" to "pharmacy",
+        "फार्मसी" to "pharmacy",
+        "pharmasy" to "pharmacy",
+        "farmacie" to "pharmacy",
+        "दवाखाना" to "pharmacy",
+        "दवा" to "medicine",
+        "दवाई" to "medicine",
+        "पैथोलॉजी" to "pathology",
+        "लैब" to "lab",
+        "laboratory" to "lab",
+        "प्रयोगशाला" to "lab",
+        "आइसीयू" to "icu",
+        "आईसीयू" to "icu",
+        "icu" to "icu",
+        "बिलिंग" to "billing",
+        "बिल" to "billing",
+        "काउंटर" to "counter",
+        "रिसेप्शन" to "reception",
+        "reception" to "reception",
+        "स्वागत" to "reception",
+        "ओपीडी" to "opd",
+        "opd" to "opd",
+        "बाह्य" to "opd",
+        "आपातकालीन" to "emergency",
+        "emergency" to "emergency",
+        "इमरजेंसी" to "emergency",
+        "कमरा" to "room",
+        "room" to "room",
+        "वार्ड" to "ward",
+        "ward" to "ward",
+        "बेड" to "bed",
+        "bed" to "bed",
+        "फ्लोर" to "floor",
+        "floor" to "floor",
+        "तल" to "floor",
+        "basement" to "basement",
+        "बेसमेंट" to "basement",
+        "ground" to "ground",
+        "ग्राउंड" to "ground",
+        "भूतल" to "ground",
+        
+        // === DIRECTIONAL WORDS - EXPANDED ===
+        "कहाँ" to "where",
+        "कहां" to "where",
+        "किधर" to "where",
+        "कहा" to "where",
+        "kedhar" to "where",
+        "kidhar" to "where",
+        "kahan" to "where",
+        "kahaan" to "where",
+        "कैसे" to "how",
+        "kaise" to "how",
+        "kyse" to "how",
+        "जाना" to "go",
+        "जाओ" to "go",
+        "जाएं" to "go",
+        "jana" to "go",
+        "jao" to "go",
+        "hai" to "is",
+        "है" to "is",
+        "hei" to "is",
+        "hey" to "is",
+        "पास" to "near",
+        "near" to "near",
+        "नज़दीक" to "near",
+        "दूर" to "far",
+        "far" to "far",
+        "आगे" to "front",
+        "front" to "front",
+        "पीछे" to "back",
+        "back" to "back",
+        "बाएं" to "left",
+        "left" to "left",
+        "दाएं" to "right",
+        "right" to "right",
+        "ऊपर" to "upper",
+        "upper" to "upper",
+        "नीचे" to "lower",
+        "lower" to "lower",
+        
+        // === MEDICAL PROFESSIONALS ===
+        "डॉक्टर" to "doctor",
+        "डाक्टर" to "doctor",
+        "doctor" to "doctor",
+        "docter" to "doctor",
+        "daktar" to "doctor",
+        "चिकित्सक" to "doctor",
+        "विशेषज्ञ" to "specialist",
+        "specialist" to "specialist",
+        "सलाहकार" to "consultant",
+        "consultant" to "consultant",
+        "सर्जन" to "surgeon",
+        "surgeon" to "surgeon",
+        "नर्स" to "nurse",
+        "nurse" to "nurse",
+        
+        // === DEPARTMENTS & SPECIALIZATIONS ===
+        "हृदय" to "heart",
+        "heart" to "heart",
+        "cardiology" to "cardiology",
+        "कार्डियोलॉजी" to "cardiology",
+        "हृदयरोग" to "cardiology",
+        "मस्तिष्क" to "brain",
+        "brain" to "brain",
+        "neurology" to "neurology",
+        "न्यूरोलॉजी" to "neurology",
+        "मस्तिष्करोग" to "neurology",
+        "हड्डी" to "bone",
+        "bone" to "bone",
+        "orthopedics" to "orthopedics",
+        "ऑर्थोपेडिक्स" to "orthopedics",
+        "हड्डीरोग" to "orthopedics",
+        "त्वचा" to "skin",
+        "skin" to "skin",
+        "dermatology" to "dermatology",
+        "डर्मेटोलॉजी" to "dermatology",
+        "त्वचारोग" to "dermatology",
+        "बच्चे" to "children",
+        "children" to "children",
+        "pediatrics" to "pediatrics",
+        "पीडियाट्रिक्स" to "pediatrics",
+        "बालरोग" to "pediatrics",
+        "आंख" to "eye",
+        "eye" to "eye",
+        "eyes" to "eye",
+        "नेत्र" to "eye",
+        "ophthalmology" to "ophthalmology",
+        "ऑप्थेल्मोलॉजी" to "ophthalmology",
+        "नेत्ररोग" to "ophthalmology",
+        "दांत" to "dental",
+        "dental" to "dental",
+        "dentist" to "dental",
+        "दंत" to "dental",
+        "surgery" to "surgery",
+        "सर्जरी" to "surgery",
+        "शल्यचिकित्सा" to "surgery",
+        "स्त्री" to "gynecology",
+        "gynecology" to "gynecology",
+        "गायनेकोलॉजी" to "gynecology",
+        "मनोरोग" to "psychiatry",
+        "psychiatry" to "psychiatry",
+        "साइकियाट्री" to "psychiatry",
+        
+        // === COMMON MEDICAL TERMS ===
+        "अस्पताल" to "hospital",
+        "hospital" to "hospital",
+        "अपॉइंटमेंट" to "appointment",
+        "appointment" to "appointment",
+        "समय" to "time",
+        "time" to "time",
+        "तारीख" to "date",
+        "date" to "date",
+        "मरीज" to "patient",
+        "patient" to "patient",
+        "रोगी" to "patient",
+        "इलाज" to "treatment",
+        "treatment" to "treatment",
+        "उपचार" to "treatment",
+        "जांच" to "test",
+        "test" to "test",
+        "परीक्षण" to "test",
+        "रिपोर्ट" to "report",
+        "report" to "report",
+        "शुल्क" to "fee",
+        "fee" to "fee",
+        "फीस" to "fee",
+        "खर्च" to "cost",
+        "cost" to "cost",
+        "कीमत" to "price",
+        "price" to "price",
+        
+        // === COMMON QUESTIONS/WORDS ===
+        "क्या" to "what",
+        "what" to "what",
+        "kya" to "what",
+        "कौन" to "who",
+        "who" to "who",
+        "kaun" to "who",
+        "कब" to "when",
+        "when" to "when",
+        "kab" to "when",
+        "क्यों" to "why",
+        "why" to "why",
+        "kyon" to "why",
+        "कितना" to "how much",
+        "howmuch" to "how much",
+        "kitna" to "how much",
+        "मुझे" to "me",
+        "me" to "me",
+        "mujhe" to "me",
+        "चाहिए" to "need",
+        "need" to "need",
+        "chahiye" to "need",
+        "बताओ" to "tell",
+        "tell" to "tell",
+        "batao" to "tell",
+        "बताइए" to "tell",
+        "बुक" to "book",
+        "book" to "book",
+        "booking" to "book",
+        "उपलब्ध" to "available",
+        "available" to "available",
+        "खुला" to "open",
+        "open" to "open",
+        "बंद" to "closed",
+        "closed" to "closed",
+        "हाँ" to "yes",
+        "yes" to "yes",
+        "हां" to "yes",
+        "नहीं" to "no",
+        "no" to "no",
+        "nahin" to "no",
+        
+        // === FACILITIES SERVICES ===
+        "x-ray" to "xray",
+        "xray" to "xray",
+        "एक्स-रे" to "xray",
+        "एक्सरे" to "xray",
+        "mri" to "mri",
+        "एमआरआई" to "mri",
+        "ct" to "ct",
+        "सीटी" to "ct",
+        "scan" to "scan",
+        "स्कैन" to "scan",
+        "ultrasound" to "ultrasound",
+        "अल्ट्रासाउंड" to "ultrasound",
+        "blood" to "blood",
+        "खून" to "blood",
+        "रक्त" to "blood",
+        "collection" to "collection",
+        "संग्रह" to "collection",
+        
+        // === DEPARTMENTS ===
+        "विभाग" to "department",
+        "department" to "department",
+        "vibhag" to "department",
+        "केबिन" to "cabin",
+        "cabin" to "cabin",
+        "kabin" to "cabin"
+    )
+    
+    /**
+     * Normalize query by translating Hindi/Hinglish terms to English for better matching
+     */
+    private fun normalizeQueryForSearch(query: String): String {
+        var normalized = query.lowercase()
+        
+        // Replace Hindi/Hinglish keywords with English equivalents
+        hindiToEnglishKeywords.forEach { (hindi, english) ->
+            normalized = normalized.replace(hindi, " $english ")
+        }
+        
+        return normalized.trim()
+    }
+
+    /**
      * Search knowledge base for relevant Q&As
      * ENHANCED: Better matching for doctor queries with partial matches and answer text search
+     * NOW SUPPORTS HINDI QUERIES via keyword translation
      * Returns top N results sorted by relevance (includes dynamic doctor Q&As)
      */
     fun search(userQuery: String, limit: Int = 3): List<KnowledgeBaseQA> {
         val lowerQuery = userQuery.lowercase()
-        val queryWords = lowerQuery.split(" ").filter { it.length > 2 } // Words longer than 2 chars
+        
+        // Normalize query to translate Hindi/Hinglish to English for better matching
+        val normalizedQuery = normalizeQueryForSearch(lowerQuery)
+        
+        android.util.Log.d("HospitalKnowledgeBase", "KB Search - Original: '$lowerQuery'")
+        android.util.Log.d("HospitalKnowledgeBase", "KB Search - Normalized: '$normalizedQuery'")
+        
+        val queryWords = normalizedQuery.split(" ").filter { it.length > 2 } // Words longer than 2 chars
 
         // Combine static and dynamic Q&As
         val allQAs = qaDatabase + dynamicDoctorQAs
@@ -2001,7 +2277,7 @@ object HospitalKnowledgeBase {
             
             // 1. Exact keyword matches (highest score)
             score += qa.keywords.count { keyword ->
-                lowerQuery.contains(keyword)
+                normalizedQuery.contains(keyword)
             } * 3
             
             // 2. Partial word matches in keywords (medium score)
