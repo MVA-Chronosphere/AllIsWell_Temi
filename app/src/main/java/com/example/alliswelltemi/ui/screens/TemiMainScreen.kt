@@ -65,7 +65,8 @@ fun TemiMainScreen(
                 .width(1000.dp)
                 .fillMaxHeight()
         ) {
-            GlobalStatusBar()
+            var currentLanguage by remember { mutableStateOf("en") } // Replace with actual language state if lifted
+            TemiNavBar(currentLanguage = currentLanguage)
 
             Column(
                 modifier = Modifier

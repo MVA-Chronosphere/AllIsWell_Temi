@@ -53,7 +53,8 @@ fun DoctorsScreen(
     robot: Robot?,
     viewModel: DoctorsViewModel,
     onBackPress: () -> Unit,
-    onSelectDoctor: (Doctor) -> Unit
+    onSelectDoctor: (Doctor) -> Unit,
+    currentLanguage: String = "en"
 ) {
     val doctors by viewModel.doctors
     val isLoading by viewModel.isLoading
@@ -88,13 +89,16 @@ fun DoctorsScreen(
         }
     }
 
-    TemiScreenScaffold(
-        title = "Doctors & Departments",
-        onBackClick = onBackPress
-    ) { contentMod ->
+    // --- Insert TemiNavBar at the top ---
+    Column(modifier = Modifier.fillMaxSize()) {
+        TemiNavBar(currentLanguage = currentLanguage)
+
+        // Main content below the unified nav bar
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
-                modifier = contentMod,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 0.dp), // No extra top padding needed
                 verticalArrangement = Arrangement.spacedBy(32.dp)
             ) {
                 // Toggle Segmented Control
@@ -105,8 +109,8 @@ fun DoctorsScreen(
                     SegmentedToggleControl(
                         modifier = Modifier.width(440.dp),
                         selectedIndex = if (selectedTab == DoctorsTab.BY_DOCTOR) 0 else 1,
-                        onTabChange = { 
-                            selectedTab = if (it == 0) DoctorsTab.BY_DOCTOR else DoctorsTab.BY_DEPARTMENT 
+                        onTabChange = {
+                            selectedTab = if (it == 0) DoctorsTab.BY_DOCTOR else DoctorsTab.BY_DEPARTMENT
                         },
                         options = listOf("BY DOCTOR", "BY DEPARTMENT")
                     )
@@ -241,7 +245,7 @@ private fun DepartmentsGrid(
         // "All" option
         item {
             InfoCard(
-                title = "All Departments",
+                title = "  Departments",
                 subtitle = "Comprehensive Healthcare for Everyone",
                 icon = Icons.Outlined.Business,
                 isSelected = selectedDept == null,

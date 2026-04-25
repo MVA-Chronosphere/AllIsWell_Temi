@@ -81,6 +81,7 @@ fun NavigationScreen(
 
     // Tab state for content switching
     var selectedTab by remember { mutableStateOf(NavigationTab.MOST_USED) }
+    var currentLanguage by remember { mutableStateOf("en") } // Replace with actual language state if lifted
 
     LaunchedEffect(selectedLocation) {
         selectedLocation?.let { location ->
@@ -169,6 +170,8 @@ fun NavigationScreen(
             )
         }
     }
+
+    TemiNavBar(currentLanguage = currentLanguage)
 }
 
 

@@ -114,4 +114,12 @@
     <string name="female_hi">महिला</string>
     <string name="other">Other</string>
     <string name="other_hi">अन्य</string>
+
+    <!-- Daily Quotes for NavBar (bilingual) -->
+    <string name="quote_1">Health is the greatest wealth.</string>
+    <string name="quote_1_hi">स्वास्थ्य ही सबसे बड़ी संपत्ति है।</string>
+    <string name="quote_2">Every day is a new beginning.</string>
+    <string name="quote_2_hi">हर दिन एक नई शुरुआत है।</string>
+    <string name="quote_3">Caring for you is our priority.</string>
+    <string name="quote_3_hi">आपकी देखभाल हमारी प्राथमिकता है।</string>
 </resources>

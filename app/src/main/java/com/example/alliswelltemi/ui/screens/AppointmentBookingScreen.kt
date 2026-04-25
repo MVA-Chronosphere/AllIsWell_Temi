@@ -106,146 +106,151 @@ fun AppointmentBookingScreen(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFEDE7D8))
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.Top
-    ) {
-        // GLOBAL HEADER
-        Row(
+    // --- Insert TemiNavBar at the top ---
+    Column(modifier = Modifier.fillMaxSize()) {
+        TemiNavBar(currentLanguage = currentLanguage)
+
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 40.dp, vertical = 24.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxSize()
+                .background(Color(0xFFEDE7D8))
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Top
         ) {
-            // BACK BUTTON (Circular, soft shadow)
-            Surface(
+            // GLOBAL HEADER
+            Row(
                 modifier = Modifier
-                    .size(48.dp)
-                    .shadow(elevation = 4.dp, shape = CircleShape)
-                    .clip(CircleShape)
-                    .clickable {
-                        if (viewModel.currentStep.value > 1) {
-                            viewModel.goToPreviousStep()
-                        } else {
-                            viewModel.resetBooking()
-                            onBackPress()
-                        }
-                    },
-                color = Color.White,
-                shape = CircleShape
+                    .fillMaxWidth()
+                    .padding(horizontal = 40.dp, vertical = 24.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Back",
-                        tint = HospitalColors.Carob,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.width(24.dp))
-
-            // HOSPITAL LOGO
-            Image(
-                painter = painterResource(id = R.drawable.hospital_logo),
-                contentDescription = "Hospital Logo",
-                modifier = Modifier
-                    .height(100.dp)
-                    .wrapContentWidth(),
-                alignment = Alignment.CenterStart
-            )
-
-            // CENTERED TITLE
-            Text(
-                text = (if (currentLanguage == "en") "BOOK APPOINTMENT" else "अपॉइंटमेंट बुक करें").toUpperCase(Locale.current),
-                style = MaterialTheme.typography.titleLarge.copy(
-                    fontWeight = FontWeight.Black,
-                    fontSize = 30.sp,
-                    letterSpacing = 1.sp
-                ),
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center,
-                color = HospitalColors.Carob
-            )
-            
-            // Placeholder to balance title
-            Spacer(modifier = Modifier.width(72.dp))
-        }
-
-        // PROGRESS BAR
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-            AppointmentProgressBar(currentStep = viewModel.currentStep.value)
-        }
-
-        Spacer(modifier = Modifier.height(40.dp))
-
-        // MAIN CONTENT CONTAINER
-        Box(
-            modifier = Modifier
-                .widthIn(max = 1100.dp)
-                .fillMaxWidth(0.95f)
-                .align(Alignment.CenterHorizontally),
-            contentAlignment = Alignment.TopCenter
-        ) {
-            if (viewModel.isLoading.value || isDoctorsLoading) {
-                CircularProgressIndicator(
-                    color = HospitalColors.Chai,
-                    modifier = Modifier.size(64.dp)
-                )
-            } else if (doctorsError != null && doctorsFromApi.isEmpty()) {
-                ErrorState(error = doctorsError, onRetry = { doctorsViewModel.refresh() })
-            } else {
-                AnimatedContent(
-                    targetState = viewModel.currentStep.value,
-                    label = "step_transition",
-                    transitionSpec = {
-                        slideInHorizontally(initialOffsetX = { it }) togetherWith
-                        slideOutHorizontally(targetOffsetX = { -it })
-                    }
-                ) { step ->
-                    when (step) {
-                        1 -> StepSelectDoctor(
-                            viewModel = viewModel,
-                            language = currentLanguage,
-                            robot = robot,
-                            departments = departments,
-                            allDoctorsFromApi = doctorsFromApi,
-                            onBack = {
+                // BACK BUTTON (Circular, soft shadow)
+                Surface(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .shadow(elevation = 4.dp, shape = CircleShape)
+                        .clip(CircleShape)
+                        .clickable {
+                            if (viewModel.currentStep.value > 1) {
+                                viewModel.goToPreviousStep()
+                            } else {
                                 viewModel.resetBooking()
                                 onBackPress()
                             }
+                        },
+                    color = Color.White,
+                    shape = CircleShape
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = HospitalColors.Carob,
+                            modifier = Modifier.size(24.dp)
                         )
-                        2 -> StepSelectDateAndTime(
-                            viewModel = viewModel,
-                            language = currentLanguage,
-                            robot = robot,
-                            timeSlots = viewModel.availableTimeSlots.value,
-                            onBack = { viewModel.goToPreviousStep() }
-                        )
-                        3 -> StepPatientDetails(
-                            viewModel = viewModel,
-                            language = currentLanguage,
-                            robot = robot,
-                            onBack = { viewModel.goToPreviousStep() }
-                        )
-                        4 -> StepConfirmation(
-                            viewModel = viewModel,
-                            language = currentLanguage,
-                            robot = robot,
-                            onHome = onBackPress
-                        )
-                        else -> Unit
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(24.dp))
+
+                // HOSPITAL LOGO
+                Image(
+                    painter = painterResource(id = R.drawable.hospital_logo),
+                    contentDescription = "Hospital Logo",
+                    modifier = Modifier
+                        .height(100.dp)
+                        .wrapContentWidth(),
+                    alignment = Alignment.CenterStart
+                )
+
+                // CENTERED TITLE
+                Text(
+                    text = (if (currentLanguage == "en") "BOOK APPOINTMENT" else "अपॉइंटमेंट बुक करें").toUpperCase(Locale.current),
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Black,
+                        fontSize = 30.sp,
+                        letterSpacing = 1.sp
+                    ),
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center,
+                    color = HospitalColors.Carob
+                )
+
+                // Placeholder to balance title
+                Spacer(modifier = Modifier.width(72.dp))
+            }
+
+            // PROGRESS BAR
+            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                AppointmentProgressBar(currentStep = viewModel.currentStep.value)
+            }
+
+            Spacer(modifier = Modifier.height(40.dp))
+
+            // MAIN CONTENT CONTAINER
+            Box(
+                modifier = Modifier
+                    .widthIn(max = 1100.dp)
+                    .fillMaxWidth(0.95f)
+                    .align(Alignment.CenterHorizontally),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                if (viewModel.isLoading.value || isDoctorsLoading) {
+                    CircularProgressIndicator(
+                        color = HospitalColors.Chai,
+                        modifier = Modifier.size(64.dp)
+                    )
+                } else if (doctorsError != null && doctorsFromApi.isEmpty()) {
+                    ErrorState(error = doctorsError, onRetry = { doctorsViewModel.refresh() })
+                } else {
+                    AnimatedContent(
+                        targetState = viewModel.currentStep.value,
+                        label = "step_transition",
+                        transitionSpec = {
+                            slideInHorizontally(initialOffsetX = { it }) togetherWith
+                            slideOutHorizontally(targetOffsetX = { -it })
+                        }
+                    ) { step ->
+                        when (step) {
+                            1 -> StepSelectDoctor(
+                                viewModel = viewModel,
+                                language = currentLanguage,
+                                robot = robot,
+                                departments = departments,
+                                allDoctorsFromApi = doctorsFromApi,
+                                onBack = {
+                                    viewModel.resetBooking()
+                                    onBackPress()
+                                }
+                            )
+                            2 -> StepSelectDateAndTime(
+                                viewModel = viewModel,
+                                language = currentLanguage,
+                                robot = robot,
+                                timeSlots = viewModel.availableTimeSlots.value,
+                                onBack = { viewModel.goToPreviousStep() }
+                            )
+                            3 -> StepPatientDetails(
+                                viewModel = viewModel,
+                                language = currentLanguage,
+                                robot = robot,
+                                onBack = { viewModel.goToPreviousStep() }
+                            )
+                            4 -> StepConfirmation(
+                                viewModel = viewModel,
+                                language = currentLanguage,
+                                robot = robot,
+                                onHome = onBackPress
+                            )
+                            else -> Unit
+                        }
                     }
                 }
             }
-        }
 
-        Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(40.dp))
+        }
     }
 }
 

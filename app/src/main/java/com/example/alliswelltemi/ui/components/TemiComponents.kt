@@ -6,6 +6,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
+    import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -29,6 +30,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -38,6 +41,9 @@ import androidx.compose.ui.unit.sp
 import com.example.alliswelltemi.ui.theme.HospitalColors
 import com.robotemi.sdk.Robot
 import com.robotemi.sdk.TtsRequest
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import kotlinx.coroutines.delay
 
 /**
  * Header Component - Hospital name, greeting, and language selector
@@ -824,4 +830,71 @@ fun SegmentedToggleControl(
     }
 }
 
+/**
+ * Reusable Navigation Bar - Logo, Daily Quote, and Live Date/Time
+ */
+@Composable
+fun TemiNavBar(
+    currentLanguage: String,
+    modifier: Modifier = Modifier
+) {
+    // Logo
+    val logoPainter = painterResource(id = com.example.alliswelltemi.R.drawable.hospital_logo)
 
+    // Daily quote selection (simple: rotate by day of year)
+    val quotes: List<Pair<Int, Int>> = listOf(
+        Pair(com.example.alliswelltemi.R.string.quote_1, com.example.alliswelltemi.R.string.quote_1_hi),
+        Pair(com.example.alliswelltemi.R.string.quote_2, com.example.alliswelltemi.R.string.quote_2_hi),
+        Pair(com.example.alliswelltemi.R.string.quote_3, com.example.alliswelltemi.R.string.quote_3_hi)
+    )
+    val dayOfYear = LocalDateTime.now().dayOfYear
+    val quoteIdx = dayOfYear % quotes.size
+    val quoteRes = if (currentLanguage == "hi") quotes[quoteIdx].second else quotes[quoteIdx].first
+    val quote = stringResource(id = quoteRes)
+
+    // Date/time state
+    var dateTime by remember { mutableStateOf("") }
+    LaunchedEffect(Unit) {
+        while (true) {
+            val now = LocalDateTime.now()
+            dateTime = now.format(DateTimeFormatter.ofPattern("dd MMM yyyy | HH:mm"))
+            delay(1000)
+        }
+    }
+
+    Surface(
+        color = MaterialTheme.colorScheme.background,
+        shadowElevation = 4.dp,
+        modifier = modifier.fillMaxWidth().height(72.dp)
+    ) {
+        Row(
+            Modifier.fillMaxSize().padding(horizontal = 24.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Logo left
+            Image(
+                painter = logoPainter,
+                contentDescription = "Hospital Logo",
+                modifier = Modifier.size(192.dp)
+            )
+            Spacer(Modifier.width(32.dp))
+            // Quote center
+            Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                Text(
+                    text = quote,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center
+                )
+            }
+            // Date/time right
+            Text(
+                text = dateTime,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = 16.sp,
+                modifier = Modifier.align(Alignment.CenterVertically)
+            )
+        }
+    }
+}
