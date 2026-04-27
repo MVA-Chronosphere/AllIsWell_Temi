@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -54,7 +55,8 @@ fun DoctorsScreen(
     viewModel: DoctorsViewModel,
     onBackPress: () -> Unit,
     onSelectDoctor: (Doctor) -> Unit,
-    currentLanguage: String = "en"
+    currentLanguage: String = "en",
+    selectedDoctorId: String? = null
 ) {
     val doctors by viewModel.doctors
     val isLoading by viewModel.isLoading
@@ -63,6 +65,11 @@ fun DoctorsScreen(
     val error by viewModel.error
     val selectedDoctorForNav by viewModel.selectedDoctorForNav
     val isNavigating by viewModel.isNavigating
+
+    // Scroll to or highlight the selected doctor if selectedDoctorId is provided
+    val selectedDoctorIndex = remember(selectedDoctorId, doctors) {
+        selectedDoctorId?.let { id -> doctors.indexOfFirst { it.id == id } }.takeIf { it != null && it >= 0 }
+    }
 
     // Tab state for content switching
     var selectedTab by remember { mutableStateOf(DoctorsTab.BY_DOCTOR) }
@@ -120,82 +127,83 @@ fun DoctorsScreen(
                 }
 
                 // Content switching
-                Crossfade(
-                    targetState = selectedTab,
-                    animationSpec = tween(400, easing = EaseInOutCubic),
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
-                    label = "content_crossfade"
-                ) { tab ->
-                    when {
-                        isLoading -> {
-                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                CircularProgressIndicator(color = HospitalColors.RoyalBlue)
-                            }
-                        }
-                        error != null -> {
-                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                                ) {
-                                    Text(
-                                        text = error!!,
-                                        color = Color.Red,
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        textAlign = TextAlign.Center
-                                    )
-                                    Button(onClick = { viewModel.retry() }) {
-                                        Text("Retry")
-                                    }
-                                }
-                            }
-                        }
-                        doctors.isEmpty() -> {
-                            // Empty state - no doctors loaded yet or API returned empty
-                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                                ) {
-                                    Text(
-                                        text = "No doctors available",
-                                        style = MaterialTheme.typography.headlineSmall,
-                                        color = HospitalColors.DeepSlate
-                                    )
-                                    Text(
-                                        text = "Please check back later or try refreshing",
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = HospitalColors.DeepSlate.copy(alpha = 0.7f)
-                                    )
-                                    Button(onClick = { viewModel.retry() }) {
-                                        Text("Refresh")
-                                    }
-                                }
-                            }
-                        }
-                        else -> {
-                            when (tab) {
-                                DoctorsTab.BY_DOCTOR -> {
-                                    DoctorsGrid(
-                                        doctors = viewModel.filteredDoctors,
-                                        onDoctorClick = { doctor ->
-                                            viewModel.selectDoctorForNavigation(doctor)
+                            Crossfade(
+                                targetState = selectedTab,
+                                animationSpec = tween(400, easing = EaseInOutCubic),
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth(),
+                                label = "content_crossfade"
+                            ) { tab ->
+                                when {
+                                    isLoading -> {
+                                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                            CircularProgressIndicator(color = HospitalColors.RoyalBlue)
                                         }
-                                    )
-                                }
-                                DoctorsTab.BY_DEPARTMENT -> {
-                                    DepartmentsGrid(
-                                        departments = departments,
-                                        selectedDept = selectedDept,
-                                        onDeptClick = { viewModel.filterByDepartment(it) }
-                                    )
+                                    }
+                                    error != null -> {
+                                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                            Column(
+                                                horizontalAlignment = Alignment.CenterHorizontally,
+                                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                                            ) {
+                                                Text(
+                                                    text = error!!,
+                                                    color = Color.Red,
+                                                    style = MaterialTheme.typography.bodyLarge,
+                                                    textAlign = TextAlign.Center
+                                                )
+                                                Button(onClick = { viewModel.retry() }) {
+                                                    Text("Retry")
+                                                }
+                                            }
+                                        }
+                                    }
+                                    doctors.isEmpty() -> {
+                                        // Empty state - no doctors loaded yet or API returned empty
+                                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                            Column(
+                                                horizontalAlignment = Alignment.CenterHorizontally,
+                                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                                            ) {
+                                                Text(
+                                                    text = "No doctors available",
+                                                    style = MaterialTheme.typography.headlineSmall,
+                                                    color = HospitalColors.DeepSlate
+                                                )
+                                                Text(
+                                                    text = "Please check back later or try refreshing",
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    color = HospitalColors.DeepSlate.copy(alpha = 0.7f)
+                                                )
+                                                Button(onClick = { viewModel.retry() }) {
+                                                    Text("Refresh")
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else -> {
+                                        when (tab) {
+                                            DoctorsTab.BY_DOCTOR -> {
+                                                DoctorsGrid(
+                                                    doctors = viewModel.filteredDoctors,
+                                                    onDoctorClick = { doctor ->
+                                                        viewModel.selectDoctorForNavigation(doctor)
+                                                    },
+                                                    selectedDoctorIndex = selectedDoctorIndex
+                                                )
+                                            }
+                                            DoctorsTab.BY_DEPARTMENT -> {
+                                                DepartmentsGrid(
+                                                    departments = departments,
+                                                    selectedDept = selectedDept,
+                                                    onDeptClick = { viewModel.filterByDepartment(it) }
+                                                )
+                                            }
+                                        }
+                                    }
                                 }
                             }
-                        }
-                    }
-                }
             }
 
             // Navigation overlay
@@ -211,23 +219,36 @@ fun DoctorsScreen(
 @Composable
 private fun DoctorsGrid(
     doctors: List<Doctor>,
-    onDoctorClick: (Doctor) -> Unit
+    onDoctorClick: (Doctor) -> Unit,
+    selectedDoctorIndex: Int? = null
 ) {
+    val listState = rememberLazyGridState()
+
+    // Scroll to selected doctor if index is provided
+    LaunchedEffect(selectedDoctorIndex) {
+        if (selectedDoctorIndex != null && selectedDoctorIndex >= 0) {
+            listState.scrollToItem(selectedDoctorIndex)
+        }
+    }
+
     LazyVerticalGrid(
+        state = listState,
         columns = GridCells.Fixed(3),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(bottom = 100.dp, start = 24.dp, end = 24.dp)
     ) {
-        itemsIndexed(doctors) { _, doctor ->
-            InfoCard(
-                title = doctor.name,
-                subtitle = doctor.specialization,
-                imageUrl = doctor.profileImageUrl,
-                icon = Icons.Outlined.Person,
-                onClick = { onDoctorClick(doctor) }
-            )
+        itemsIndexed(doctors) { idx, doctor ->
+            val isSelected = selectedDoctorIndex != null && idx == selectedDoctorIndex
+             InfoCard(
+                 title = doctor.name,
+                 subtitle = doctor.specialization,
+                 imageUrl = doctor.profileImageUrl,
+                 icon = Icons.Outlined.Person,
+                 isSelected = isSelected,
+                 onClick = { onDoctorClick(doctor) }
+             )
         }
     }
 }

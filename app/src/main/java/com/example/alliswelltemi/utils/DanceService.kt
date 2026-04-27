@@ -60,7 +60,6 @@ object DanceService {
     suspend fun performDance(
         robot: Robot?,
         danceMove: DanceMove,
-        context: Context?,
         language: String = "en-US",
         onComplete: (() -> Unit)? = null
     ) {
@@ -81,9 +80,7 @@ object DanceService {
 
         try {
             // Initial greeting
-            context?.let {
-                speakWithLanguage(it, "Let me show you my dance moves!", language, robot)
-            }
+            speakWithLanguage("Let me show you my dance moves!", language, robot)
             delay(500)
 
             // Execute each move in sequence
@@ -105,9 +102,7 @@ object DanceService {
 
                 // Speak if this move has speech
                 move.speech?.let {
-                    context?.let { ctx ->
-                        speakWithLanguage(ctx, it, language, robot)
-                    }
+                    speakWithLanguage(it, language, robot)
                 }
 
                 // Wait for this move's duration
@@ -119,9 +114,7 @@ object DanceService {
             resetToNeutral(robot)
 
             // Closing speech
-            context?.let {
-                speakWithLanguage(it, "Thanks for watching! Did you enjoy my moves?", language, robot)
-            }
+            speakWithLanguage("Thanks for watching! Did you enjoy my moves?", language, robot)
 
             onComplete?.invoke()
 

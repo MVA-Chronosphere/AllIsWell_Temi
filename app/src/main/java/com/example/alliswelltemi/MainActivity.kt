@@ -69,6 +69,9 @@ class MainActivity : ComponentActivity(),
         maxContextLength = 2000
     )
 
+    // Maintain last question context for follow-up
+    private var lastQuestionContext: String? = null
+
     // CRITICAL: SINGLE GLOBAL STATE - ensures ONLY ONE GPT conversation at a time
     // Treat as MUTEX LOCK - no parallel operations allowed
     @Volatile
@@ -86,17 +89,17 @@ class MainActivity : ComponentActivity(),
                 // NEVER reset activity during active GPT conversation or while speaking
                 if (!isRobotSpeaking.get() && !isConversationActive && !isGptProcessing) {
                     android.util.Log.i("TemiLifecycle", "Inactivity timeout reached, returning to main screen and clearing context")
-                    
                     if (currentScreen.value != "main") {
                         currentScreen.value = "main"
                     }
-                    
                     // CLEAR Conversation Memory after 30s of inactivity
                     conversationContext.clearHistory()
+                    conversationContext.resetSessionTimer()
                 } else {
                     // If active, postpone check instead of just stopping
                     android.util.Log.d("TemiLifecycle", "Inactivity timeout reached but system is busy (speaking=$isRobotSpeaking, active=$isConversationActive, processing=$isGptProcessing). Postponing clear.")
                     lastInteractionTime = System.currentTimeMillis() // Reset timer to give another full window
+                    conversationContext.resetSessionTimer()
                 }
             }
             handler.postDelayed(this, 5000) // Check every 5 seconds
@@ -173,7 +176,8 @@ class MainActivity : ComponentActivity(),
                                 robot = currentRobot,
                                 viewModel = doctorsViewModel,
                                 onBackPress = { currentScreen.value = "main" },
-                                onSelectDoctor = { currentScreen.value = "appointment" }
+                                onSelectDoctor = { currentScreen.value = "appointment" },
+                                selectedDoctorId = selectedDoctorIdForScreen
                             )
                         }
                         else -> {
@@ -217,6 +221,7 @@ class MainActivity : ComponentActivity(),
     override fun onUserInteraction() {
         super.onUserInteraction()
         lastInteractionTime = System.currentTimeMillis()
+        conversationContext.resetSessionTimer()
     }
 
     companion object {
@@ -367,6 +372,21 @@ class MainActivity : ComponentActivity(),
         lastProcessedText = text
         robot?.finishConversation()
         resetInactivityTimer()
+        conversationContext.resetSessionTimer()
+
+        // Intent detection
+        val intentType = com.example.alliswelltemi.utils.TemiUtils.detectIntent(text)
+        android.util.Log.d("INTENT_DETECTION", "Detected intent: $intentType for input: '$text'")
+
+        // Maintain context for follow-up questions
+        if (intentType == "QUESTION") {
+            lastQuestionContext = text
+        } else if (intentType == "COMMAND") {
+            lastQuestionContext = null // Clear context on command
+        } else if (intentType == "UNKNOWN" && lastQuestionContext != null) {
+            // If input is ambiguous but we have a previous question, treat as follow-up
+            android.util.Log.d("INTENT_DETECTION", "Treating as follow-up to: $lastQuestionContext")
+        }
 
         // Check if doctors are currently loading OR if list is empty (fully loaded but no data)
         val doctors = doctorsViewModel.doctors.value
@@ -396,7 +416,6 @@ class MainActivity : ComponentActivity(),
                                 DanceService.performDance(
                                     robot = robot,
                                     danceMove = danceMove,
-                                    context = this@MainActivity,
                                     language = "en"
                                 ) { }
                             } catch (e: Exception) {
@@ -427,9 +446,10 @@ class MainActivity : ComponentActivity(),
 
                 val prompt = withContext(Dispatchers.Default) {
                     RagContextBuilder.buildOllamaPrompt(
-                        query = text, 
+                        query = text,
                         doctors = doctors,
                         historyContext = conversationContext.getContextString()
+                        // Removed previousQuestion argument, as it does not exist in the function signature
                     )
                 }
 
@@ -622,4 +642,6 @@ class MainActivity : ComponentActivity(),
         handler.removeCallbacks(inactivityRunnable)
         handler.post(inactivityRunnable)
     }
+
+    private var selectedDoctorIdForScreen: String? = null
 }

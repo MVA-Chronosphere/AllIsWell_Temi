@@ -1,4 +1,3 @@
-
 package com.example.alliswelltemi.utils
 
 import com.robotemi.sdk.Robot
@@ -39,5 +38,25 @@ object TemiUtils {
         if (this == null) return
         val ttsLanguage = if (language == "hi") TtsRequest.Language.HI_IN else TtsRequest.Language.EN_US
         this.speak(TtsRequest.create(speech = text, isShowOnConversationLayer = false, language = ttsLanguage))
+    }
+
+    /**
+     * Intent detection for voice input: returns "COMMAND" or "QUESTION" or "UNKNOWN".
+     * COMMAND: navigation, sequence, action (go, take me, navigate, start, stop, follow, etc)
+     * QUESTION: what, where, how, who, when, why, can you, could you, etc
+     */
+    fun detectIntent(text: String): String {
+        val lower = text.trim().lowercase()
+        val commandKeywords = listOf(
+            "go to", "take me", "navigate", "start", "stop", "follow", "bring", "move to", "show me the way", "lead me", "find", "book", "rate", "dance"
+        )
+        val questionKeywords = listOf(
+            "what", "where", "how", "who", "when", "why", "can you", "could you", "would you", "is it", "are you", "do you", "does it", "should i", "tell me", "explain"
+        )
+        if (commandKeywords.any { lower.startsWith(it) || lower.contains(it) }) return "COMMAND"
+        if (questionKeywords.any { lower.startsWith(it) || lower.contains(it) }) return "QUESTION"
+        // Heuristic: ends with ?
+        if (lower.endsWith("?")) return "QUESTION"
+        return "UNKNOWN"
     }
 }

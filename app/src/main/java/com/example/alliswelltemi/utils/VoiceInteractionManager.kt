@@ -398,8 +398,7 @@ class VoiceInteractionManager(
             
             // Auto-detect language if text contains Hindi characters
             val speakLang = if (isHindi(text)) "hi" else language
-            
-            speakWithLanguage(context, text, speakLang, robot)
+            speakWithLanguage(text, speakLang, robot)
             updateState(VoiceState.IDLE)
         } catch (e: Exception) {
             Log.e(TAG, "Error speaking response", e)
