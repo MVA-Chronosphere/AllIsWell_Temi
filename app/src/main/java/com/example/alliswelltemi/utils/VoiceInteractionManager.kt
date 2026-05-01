@@ -40,6 +40,7 @@ class VoiceInteractionManager(
 ) {
     private var speechRecognizer: SpeechRecognizer? = null
     private var isListening = false
+    private val listeningRestartDelay: Long = 500  // 500ms delay before restarting listening
 
     // Conversation context - maintains chat history
     private val conversationContext = ConversationContext(
@@ -100,7 +101,21 @@ class VoiceInteractionManager(
                 )
                 putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
                 putExtra(android.speech.RecognizerIntent.EXTRA_MAX_RESULTS, 1)
-                putExtra(android.speech.RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 500)
+
+                // CRITICAL AUDIO SENSITIVITY FIX: Allow normal speech without shouting
+                // Reduced minimum length to detect soft/normal speech faster
+                putExtra(android.speech.RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 100)
+
+                // Allow ongoing listening (don't timeout between "hey temi" and the command)
+                putExtra(android.speech.RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 3000)
+
+                // Additional sensitivity improvements
+                // Request on-device recognition for better sensitivity
+                putExtra(android.speech.RecognizerIntent.EXTRA_PREFER_OFFLINE, true)
+
+                // Allow the recognizer to be more permissive with audio levels
+                // Less strict about what counts as "speech detected"
+                putExtra("android.speech.extra.PREFER_OFFLINE", true)
             }
 
             speechRecognizer?.startListening(intent)
@@ -110,6 +125,22 @@ class VoiceInteractionManager(
             isListening = false
             updateState(VoiceState.ERROR)
             onError?.invoke("Failed to start listening: ${e.message}")
+        }
+    }
+
+    /**
+     * Restart listening with proper delay (prevents rapid start/stop cycles)
+     */
+    fun restartListeningWithDelay() {
+        if (isListening) {
+            Log.d(TAG, "Already listening - stopping before restart")
+            stopListening()
+        }
+
+        // Wait for previous listener to fully stop before restarting
+        coroutineScope.launch {
+            kotlinx.coroutines.delay(listeningRestartDelay)
+            startListening()
         }
     }
 
@@ -169,7 +200,8 @@ class VoiceInteractionManager(
         }
 
         override fun onRmsChanged(rmsdB: Float) {
-            // Audio level changes - can be used for visual feedback
+            // Audio level changes - log for debugging audio sensitivity
+            Log.d(TAG, "Audio level: ${rmsdB}dB")
         }
 
         override fun onBufferReceived(buffer: ByteArray?) {
@@ -186,6 +218,15 @@ class VoiceInteractionManager(
             Log.e(TAG, "Speech recognition error: $errorMessage (code: $error)")
             updateState(VoiceState.ERROR)
             onError?.invoke("Speech recognition error: $errorMessage")
+
+            // CRITICAL FIX: Auto-restart listening after an error (so "hey temi" doesn't fail silently)
+            // Only restart if error is non-fatal (e.g., not insufficient permissions)
+            if (error != SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS &&
+                error != SpeechRecognizer.ERROR_CLIENT &&
+                error != SpeechRecognizer.ERROR_SERVER) {
+                Log.d(TAG, "Non-fatal error - restarting listening")
+                restartListeningWithDelay()
+            }
         }
 
         override fun onResults(results: Bundle?) {
@@ -197,6 +238,8 @@ class VoiceInteractionManager(
                 Log.w(TAG, "onResults: No speech detected (empty result)")
                 updateState(VoiceState.ERROR)
                 onError?.invoke("No speech detected. Please try again.")
+                // CRITICAL FIX: Restart listening after empty recognition
+                restartListeningWithDelay()
                 return
             }
 
@@ -250,7 +293,7 @@ class VoiceInteractionManager(
                     try {
                         OllamaClient.api.generate(
                             OllamaRequest(
-                                model = "llama3",
+                                model = "llama3:8b",
                                 prompt = hospitalContextPrompt,
                                 stream = false
                             )

@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  * Represents a request to the Ollama API for text generation
  */
 data class OllamaRequest(
-    val model: String = "llama3",
+    val model: String = "llama3:8b",
     val prompt: String,
     val stream: Boolean = false,
     val options: OllamaOptions = OllamaOptions()

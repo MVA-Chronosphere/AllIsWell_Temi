@@ -1,8 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
+    <!-- Allow HTTP ONLY for local development/Ollama -->
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="false">localhost</domain>
-        <domain includeSubdomains="true">192.168.1.82</domain>
+        <!-- Ollama server at 10.1.90.159 -->
         <domain includeSubdomains="true">10.1.90.159</domain>
+
+        <!-- Local Ollama server (typical network) -->
+        <domain includeSubdomains="true">192.168.1.82</domain>
+
+        <!-- Local development -->
+        <domain includeSubdomains="true">localhost</domain>
+        <domain includeSubdomains="true">127.0.0.1</domain>
+
+        <!-- Android emulator special address -->
+        <domain includeSubdomains="true">10.0.2.2</domain>
+    </domain-config>
+
+    <!-- All other domains must use HTTPS -->
+    <domain-config>
+        <domain includeSubdomains="true">aiwcms.chronosphere.in</domain>
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </domain-config>
+
+    <!-- Default: HTTPS only -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">.</domain>
     </domain-config>
 </network-security-config>
+
+

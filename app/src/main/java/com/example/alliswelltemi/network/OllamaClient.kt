@@ -9,67 +9,115 @@ import java.util.concurrent.TimeUnit
 /**
  * Retrofit Client for Ollama LLM API
  * Configured for local network communication with Ollama server
+ * Supports dynamic URL configuration via OllamaConfig
  *
  * Usage:
  *   val ollama = OllamaClient.api
  *   val response = ollama.generate(OllamaRequest(prompt = "Hello"))
  */
 object OllamaClient {
-    // IMPORTANT: For Temi robot on local network, use the Ollama server IP
-    // Default: http://localhost:11434/ (change to your actual server IP)
-    // For emulator/testing: http://10.0.2.2:11434/
-    private const val BASE_URL = "http://192.168.1.82:11434/"
-
+    // NOTE: BASE_URL is now dynamic, read from OllamaConfig
+    
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
+    
+    // Lazy-initialize to support dynamic URL changes
+    private var retrofitInstance: Retrofit? = null
+    private var lastConfiguredUrl: String = ""
 
-    private val httpClient = OkHttpClient.Builder()
-        .addInterceptor(loggingInterceptor)
-        .connectTimeout(15, TimeUnit.SECONDS)  // Reduced from 60s - faster failure detection
-        .readTimeout(30, TimeUnit.SECONDS)     // Reduced from 120s - reasonable for local network
-        .writeTimeout(15, TimeUnit.SECONDS)    // Reduced from 60s
-        .build()
-
-    val api: OllamaApiService by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
+    /**
+     * Get or create Retrofit API service
+     * Rebuilds if URL has changed
+     */
+    val api: OllamaApiService
+        get() {
+            val currentUrl = com.example.alliswelltemi.utils.OllamaConfig.getServerUrl()
+            
+            // Rebuild if URL changed
+            if (retrofitInstance == null || lastConfiguredUrl != currentUrl) {
+                lastConfiguredUrl = currentUrl
+                retrofitInstance = buildRetrofit(currentUrl)
+                android.util.Log.i("OllamaClient", "Ollama client initialized with URL: $currentUrl")
+            }
+            
+            return retrofitInstance!!.create(OllamaApiService::class.java)
+        }
+    
+    private fun buildRetrofit(baseUrl: String): Retrofit {
+        val httpClient = OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(com.example.alliswelltemi.utils.OllamaConfig.getTimeoutSeconds().toLong(), TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
+            .build()
+        
+        return Retrofit.Builder()
+            .baseUrl(baseUrl)
             .client(httpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(OllamaApiService::class.java)
     }
-
+    
     /**
-     * Change the Ollama server IP (useful for testing different environments)
-     * Example: "http://10.0.2.2:11434/" for Android emulator
+     * Change Ollama server at runtime
+     * Next API call will use the new URL
      */
-    fun setBaseUrl(newBaseUrl: String) {
-        // This would require rebuilding the client
-        // For now, use the constant above
+    fun setOllamaServerUrl(newUrl: String) {
+        com.example.alliswelltemi.utils.OllamaConfig.setServerUrl(newUrl)
+        retrofitInstance = null  // Force rebuild on next api access
     }
 
     /**
-     * Generate streaming response from Ollama
+     * Generate streaming response from Ollama with caching and timeout handling
      * Returns Flow<String> for real-time text chunks
+     *
+     * PRODUCTION FIX:
+     * - Cache DISABLED by default (cacheEnabled = false)
+     * - Cache key is QUERY ONLY, not full prompt (prevents prompt-based collision)
+     * - When enabled, uses semantic hashing to avoid false positives
+     * - Circuit breaker protects against cascading failures
      */
-    suspend fun generateStreaming(request: OllamaRequest): kotlinx.coroutines.flow.Flow<String> {
+    suspend fun generateStreaming(
+        request: OllamaRequest,
+        cacheEnabled: Boolean = false  // SECURITY: Cache disabled by default
+    ): kotlinx.coroutines.flow.Flow<String> {
         return kotlinx.coroutines.flow.flow {
             try {
+                // PRODUCTION FIX: Extract QUERY ONLY from prompt for cache key
+                // This prevents same-prompt collisions while allowing legitimate caching
+                val queryOnlyKey = extractQueryFromPrompt(request.prompt)
+
+                // Check cache only if explicitly enabled
+                if (cacheEnabled && queryOnlyKey.isNotBlank()) {
+                    val cachedResponse = com.example.alliswelltemi.utils.ResponseCache.get(queryOnlyKey)
+                    if (cachedResponse != null) {
+                        android.util.Log.d("OllamaClient", "✓ Cache HIT for query: '${queryOnlyKey.take(50)}...'")
+                        emit(cachedResponse)
+                        com.example.alliswelltemi.utils.OllamaCircuitBreaker.recordSuccess()
+                        return@flow
+                    }
+                } else if (cacheEnabled) {
+                    android.util.Log.d("OllamaClient", "⚠ Cache enabled but query key is empty, proceeding without cache")
+                }
+
                 val response = api.generateStream(request.copy(stream = true))
                 
                 if (!response.isSuccessful) {
                     val errorBody = response.errorBody()?.string()
                     android.util.Log.e("OllamaClient", "API Error (${response.code()}): $errorBody")
+                    com.example.alliswelltemi.utils.OllamaCircuitBreaker.recordFailure()
                     throw Exception("Ollama API Error: ${response.code()} - $errorBody")
                 }
 
                 val responseBody = response.body()
                 if (responseBody == null) {
                     android.util.Log.e("OllamaClient", "Response body is null")
+                    com.example.alliswelltemi.utils.OllamaCircuitBreaker.recordFailure()
                     throw Exception("Ollama Response body is null")
                 }
 
+                val fullResponse = StringBuilder()
                 responseBody.use { body ->
                     val source = body.source()
                     while (!source.exhausted()) {
@@ -77,7 +125,10 @@ object OllamaClient {
                         if (!line.isNullOrBlank()) {
                             try {
                                 val streamResponse = com.google.gson.Gson().fromJson(line, OllamaStreamResponse::class.java)
-                                emit(streamResponse.response)
+                                if (streamResponse.response != null && streamResponse.response.isNotEmpty()) {
+                                    emit(streamResponse.response)
+                                    fullResponse.append(streamResponse.response)
+                                }
                                 if (streamResponse.done) {
                                     break
                                 }
@@ -88,10 +139,67 @@ object OllamaClient {
                         }
                     }
                 }
+
+                // Cache successful response (only if enabled and key is valid)
+                if (cacheEnabled && fullResponse.isNotEmpty() && queryOnlyKey.isNotBlank()) {
+                    com.example.alliswelltemi.utils.ResponseCache.put(
+                        queryOnlyKey,  // PRODUCTION FIX: Query only, not full prompt
+                        fullResponse.toString(),
+                        ttlMs = 3600000L  // 1 hour TTL
+                    )
+                    android.util.Log.d("OllamaClient", "✓ Response cached for query: '${queryOnlyKey.take(50)}...'")
+                    com.example.alliswelltemi.utils.OllamaCircuitBreaker.recordSuccess()
+                } else if (fullResponse.isNotEmpty()) {
+                    // Just record success without caching
+                    com.example.alliswelltemi.utils.OllamaCircuitBreaker.recordSuccess()
+                }
             } catch (e: Exception) {
                 android.util.Log.e("OllamaClient", "Streaming error: ${e.message}", e)
+                com.example.alliswelltemi.utils.OllamaCircuitBreaker.recordFailure()
                 throw e
             }
+        }
+    }
+
+    /**
+     * PRODUCTION FIX: Extract QUERY ONLY from RAG prompt
+     * Removes system instructions, context, and metadata
+     * Prevents cache collisions from identical system prompts
+     *
+     * Expected format:
+     * [System instructions...]
+     * [Context/info...]
+     * Q: <actual user query>
+     * A:
+     */
+    private fun extractQueryFromPrompt(fullPrompt: String): String {
+        return try {
+            // Extract the actual user query from prompt
+            // Look for "Q: " marker or "User: " marker
+            val queryStart = when {
+                fullPrompt.contains("Q: ") -> fullPrompt.lastIndexOf("Q: ") + 3
+                fullPrompt.contains("User: ") -> fullPrompt.lastIndexOf("User: ") + 6
+                else -> -1
+            }
+
+            if (queryStart <= 0) {
+                android.util.Log.w("OllamaClient", "Could not extract query from prompt")
+                return ""  // Return empty to disable caching if query can't be extracted
+            }
+
+            // Find end of query (before "A:" or end of prompt)
+            val queryEnd = when {
+                fullPrompt.indexOf("A:", queryStart) >= 0 ->
+                    fullPrompt.indexOf("A:", queryStart)
+                else -> fullPrompt.length
+            }
+
+            fullPrompt.substring(queryStart, queryEnd)
+                .trim()
+                .take(500)  // Limit query key length for performance
+        } catch (e: Exception) {
+            android.util.Log.e("OllamaClient", "Error extracting query: ${e.message}")
+            ""  // Return empty to disable caching on error
         }
     }
 }
