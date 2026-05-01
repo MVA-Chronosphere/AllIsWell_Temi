@@ -18,7 +18,7 @@ class ConversationContext(
 ) {
     private val conversationHistory = mutableListOf<ConversationTurn>()
     private var lastInteractionTime = System.currentTimeMillis()
-    private val SESSION_TIMEOUT = 30 * 1000L // 30 seconds session timeout
+    private val SESSION_TIMEOUT = 5 * 60 * 1000L // 5 minutes session timeout (increased from 30s)
     private val TAG = "ConversationContext"
 
     /**

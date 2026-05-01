@@ -6,7 +6,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
-    import androidx.compose.foundation.Image
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -44,6 +44,11 @@ import com.robotemi.sdk.TtsRequest
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlinx.coroutines.delay
+import androidx.compose.ui.viewinterop.AndroidView
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import androidx.compose.ui.platform.LocalContext
+import androidx.webkit.WebViewAssetLoader
 
 /**
  * Header Component - Hospital name, greeting, and language selector
@@ -901,3 +906,174 @@ fun TemiNavBar(
         }
     }
 }
+
+/**
+ * 3D Model Viewer Component - Displays a 3D GLB model using WebView with ModelViewer library
+ * Features: Auto-rotation, touch-disabled (kiosk mode), responsive sizing
+ */
+@Composable
+fun Model3DViewer(
+    modifier: Modifier = Modifier,
+    modelPath: String = "models/indian_doctor_lipsync.glb"
+) {
+    // Context for WebView
+    val context = LocalContext.current
+
+    // Set up WebViewAssetLoader to serve local assets via https://
+    // This bypasses Fetch API restrictions on file:/// URLs
+    val assetLoader = remember {
+        WebViewAssetLoader.Builder()
+            .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(context))
+            .build()
+    }
+
+    // Virtual URL for the model
+    val modelUrl = "https://appassets.androidplatform.net/assets/$modelPath"
+
+    // HTML template using Google's ModelViewer library (Local)
+    // This creates an interactive 3D viewer with auto-rotation
+    val htmlContent = """
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <script type="module" src="https://appassets.androidplatform.net/assets/scripts/model-viewer.min.js"></script>
+            <style>
+                body, html {
+                    margin: 0;
+                    padding: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: transparent;
+                    overflow: hidden;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+                model-viewer {
+                    width: 100%;
+                    height: 100%;
+                    background-color: transparent;
+                    --progress-bar-color: transparent;
+                }
+            </style>
+        </head>
+        <body>
+            <model-viewer
+                id="modelViewer"
+                src="$modelUrl"
+                alt="Hospital Assistant"
+                camera-orbit="0deg 85deg -10m"
+                camera-target="0m 5.8m 0m"
+                field-of-view="5deg"
+                autoplay
+                interaction-prompt="none"
+                shadow-intensity="1"
+                environment-image="neutral"
+                exposure="1.2"
+                disable-zoom="true"
+                disable-pan="true"
+                disable-tap="true"
+                loading="eager"
+                style="width: 100%; height: 100%;"
+            >
+            </model-viewer>
+            
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    var viewer = document.getElementById('modelViewer');
+                    if (viewer) {
+                        viewer.addEventListener('load', function() {
+                            // Ensure animation starts
+                            const animations = viewer.availableAnimations;
+                            if (animations && animations.length > 0) {
+                                // Prefer an 'idle' animation if available
+                                const idleAnimation = animations.find(name => 
+                                    name.toLowerCase().includes('idle') || 
+                                    name.toLowerCase().includes('wave')
+                                );
+                                viewer.animationName = idleAnimation || animations[0];
+                                viewer.play();
+                            }
+                        });
+                    }
+                });
+            </script>
+        </body>
+        </html>
+    """.trimIndent()
+
+    // AndroidView to host the WebView
+    AndroidView(
+        factory = {
+            WebView(context).apply {
+                layoutParams = android.view.ViewGroup.LayoutParams(
+                    android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                    android.view.ViewGroup.LayoutParams.MATCH_PARENT
+                )
+                // Enable JavaScript for ModelViewer
+                settings.apply {
+                    javaScriptEnabled = true
+                    domStorageEnabled = true
+                    databaseEnabled = true
+                    allowFileAccess = true
+                    allowContentAccess = true
+                    allowFileAccessFromFileURLs = true
+                    allowUniversalAccessFromFileURLs = true
+                    mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+                    
+                    // Disable built-in zoom controls
+                    builtInZoomControls = false
+                    displayZoomControls = false
+                    setSupportZoom(false)
+                }
+
+                // Set WebViewClient to handle navigation and intercept asset requests
+                webViewClient = object : WebViewClient() {
+                    override fun onPageFinished(view: WebView?, url: String?) {
+                        super.onPageFinished(view, url)
+                        android.util.Log.d("Model3DViewer", "Page finished loading: $url")
+                        // Ensure it's not hidden
+                        view?.visibility = android.view.View.VISIBLE
+                    }
+
+                    override fun onReceivedError(
+                        view: WebView?,
+                        request: android.webkit.WebResourceRequest?,
+                        error: android.webkit.WebResourceError?
+                    ) {
+                        android.util.Log.e("Model3DViewer", "WebView error: ${error?.description}")
+                    }
+
+                    override fun shouldInterceptRequest(
+                        view: WebView?,
+                        request: android.webkit.WebResourceRequest?
+                    ): android.webkit.WebResourceResponse? {
+                        // Use AssetLoader to handle the request if it matches the virtual domain
+                        return request?.url?.let { assetLoader.shouldInterceptRequest(it) }
+                    }
+                }
+
+                // Set a transparent background
+                setBackgroundColor(android.graphics.Color.TRANSPARENT)
+                
+                // Enable remote debugging (Chrome DevTools)
+                WebView.setWebContentsDebuggingEnabled(true)
+
+                // Load the HTML content with virtual https base URL
+                loadDataWithBaseURL(
+                    "https://appassets.androidplatform.net/assets/",
+                    htmlContent,
+                    "text/html",
+                    "utf-8",
+                    null
+                )
+
+                android.util.Log.d("Model3DViewer", "WebView initialized with model: $modelPath")
+            }
+        },
+        modifier = modifier
+    )
+}
+

@@ -81,7 +81,7 @@ class MainActivity : ComponentActivity(),
     private var lastToastTime: Long = 0
 
     private var lastInteractionTime: Long = System.currentTimeMillis()
-    private val INACTIVITY_TIMEOUT: Long = 30000 // 30 seconds
+    private val INACTIVITY_TIMEOUT: Long = 5 * 60 * 1000 // 5 minutes (was 30s)
     private val handler = Handler(Looper.getMainLooper())
 
     // Handler callback refs for safe cleanup (prevents memory leaks)

@@ -86,6 +86,9 @@ dependencies {
     // Image Loading - Coil
     implementation("io.coil-kt:coil-compose:2.5.0")
 
+    // WebView for 3D Model Rendering
+    implementation("androidx.webkit:webkit:1.7.0")
+
     // Testing
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

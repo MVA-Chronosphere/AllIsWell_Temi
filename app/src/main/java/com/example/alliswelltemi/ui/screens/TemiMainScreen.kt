@@ -39,9 +39,6 @@ import androidx.compose.ui.unit.sp
 import com.example.alliswelltemi.R
 import com.robotemi.sdk.Robot
 import com.robotemi.sdk.TtsRequest
-import coil.compose.AsyncImage
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 
 /**
  * Main Hospital Assistant Screen for Temi Robot (13.3-inch display)
@@ -57,160 +54,113 @@ fun TemiMainScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(HospitalColors.Background),
-        contentAlignment = Alignment.TopStart
+            .background(HospitalColors.Background)
     ) {
-        Column(
-            modifier = Modifier
-                .width(1000.dp)
-                .fillMaxHeight()
+        Row(
+            modifier = Modifier.fillMaxSize()
         ) {
-            var currentLanguage by remember { mutableStateOf("en") } // Replace with actual language state if lifted
-            TemiNavBar(
-                currentLanguage = currentLanguage,
-                onLogoClick = { onNavigate("main") }
-            )
-
+            // LEFT CONTENT COLUMN
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 60.dp)
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.Start
+                    .weight(1.3f)
+                    .fillMaxHeight()
             ) {
-                Spacer(modifier = Modifier.height(10.dp))
+                var currentLanguage by remember { mutableStateOf("en") }
+                TemiNavBar(
+                    currentLanguage = currentLanguage,
+                    onLogoClick = { onNavigate("main") }
+                )
 
-                // HERO SECTION
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 60.dp)
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.Start
                 ) {
-                    Text(
-                        text = "NAMASTE",
-                        style = MaterialTheme.typography.displayLarge.copy(
-                            fontSize = 80.sp,
-                            fontWeight = FontWeight.Black,
-                            letterSpacing = (-2).sp,
-                            color = HospitalColors.DeepSlate
-                        )
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "I am Chronexa, your medical assistant. How can I help you?",
-                        style = MaterialTheme.typography.displayMedium.copy(
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = HospitalColors.DeepSlate.copy(alpha = 0.7f)
-                        )
-                    )
-                }
+                    Spacer(modifier = Modifier.height(10.dp))
 
-                Spacer(modifier = Modifier.height(40.dp))
-
-                // NAVIGATION GRID: 2x2 grid with 32px gap
-                val gridItems = remember {
-                    listOf(
-                        MenuItem(
-                            id = "navigation",
-                            title = "Find & \nNavigate",
-                            subtitle = "RADIOLOGY, LAB, PHARMACY",
-                            backgroundColor = HospitalColors.SkyBlue,
-                            icon = Icons.Default.LocationOn
-                        ),
-                        MenuItem(
-                            id = "doctors",
-                            title = "Doctors & \nDepartments",
-                            subtitle = "124 SPECIALISTS ON DUTY",
-                            backgroundColor = Color(0xFF7B61FF), // Vibrant Purple from image
-                            icon = Icons.Default.Groups
-                        ),
-                        MenuItem(
-                            id = "appointment",
-                            title = "Book \nAppointment",
-                            subtitle = "NEXT AVAILABLE: 2:30 PM",
-                            backgroundColor = Color(0xFF7B61FF),
-                            icon = Icons.Default.CalendarToday
-                        ),
-                        MenuItem(
-                            id = "feedback",
-                            title = "Patient \nFeedback",
-                            subtitle = "RATE YOUR EXPERIENCE",
-                            backgroundColor = HospitalColors.SkyBlue,
-                            icon = Icons.Default.ChatBubbleOutline
-                        )
-                    )
-                }
-
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(32.dp)
-                ) {
-                    Row(
+                    // HERO SECTION
+                    Column(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(32.dp)
+                        horizontalAlignment = Alignment.Start
                     ) {
-                        HeroMenuCard(
-                            item = gridItems[0],
-                            modifier = Modifier.weight(1f),
-                            onClick = { onNavigate("navigation") }
+                        Text(
+                            text = "NAMASTE",
+                            style = MaterialTheme.typography.displayLarge.copy(
+                                fontSize = 80.sp,
+                                fontWeight = FontWeight.Black,
+                                letterSpacing = (-2).sp,
+                                color = HospitalColors.DeepSlate
+                            )
                         )
-                        HeroMenuCard(
-                            item = gridItems[1],
-                            modifier = Modifier.weight(1f),
-                            onClick = { onNavigate("doctors") }
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "I am Chronexa, your medical assistant. How can I help you?",
+                            style = MaterialTheme.typography.displayMedium.copy(
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = HospitalColors.DeepSlate.copy(alpha = 0.7f)
+                            )
                         )
                     }
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(32.dp)
-                    ) {
-                        HeroMenuCard(
-                            item = gridItems[2],
-                            modifier = Modifier.weight(1f),
-                            onClick = { onNavigate("appointment") }
-                        )
-                        HeroMenuCard(
-                            item = gridItems[3],
-                            modifier = Modifier.weight(1f),
-                            onClick = { onNavigate("feedback") }
+
+                    Spacer(modifier = Modifier.height(40.dp))
+
+                    // NAVIGATION GRID
+                    val gridItems = remember {
+                        listOf(
+                            MenuItem("navigation", "Find & \nNavigate", "RADIOLOGY, LAB, PHARMACY", HospitalColors.SkyBlue, Icons.Default.LocationOn),
+                            MenuItem("doctors", "Doctors & \nDepartments", "124 SPECIALISTS ON DUTY", Color(0xFF7B61FF), Icons.Default.Groups),
+                            MenuItem("appointment", "Book \nAppointment", "NEXT AVAILABLE: 2:30 PM", Color(0xFF7B61FF), Icons.Default.CalendarToday),
+                            MenuItem("feedback", "Patient \nFeedback", "RATE YOUR EXPERIENCE", HospitalColors.SkyBlue, Icons.Default.ChatBubbleOutline)
                         )
                     }
+
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(32.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(32.dp)
+                        ) {
+                            HeroMenuCard(gridItems[0], Modifier.weight(1f), { onNavigate("navigation") })
+                            HeroMenuCard(gridItems[1], Modifier.weight(1f), { onNavigate("doctors") })
+                        }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(32.dp)
+                        ) {
+                            HeroMenuCard(gridItems[2], Modifier.weight(1f), { onNavigate("appointment") })
+                            HeroMenuCard(gridItems[3], Modifier.weight(1f), { onNavigate("feedback") })
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(140.dp)) // Extra space for voice footer
                 }
-                Spacer(modifier = Modifier.height(100.dp))
+            }
+
+            // RIGHT SIDE - 3D ASSISTANT
+            Box(
+                modifier = Modifier
+                    .weight(0.7f)
+                    .fillMaxHeight(),
+                contentAlignment = Alignment.Center
+            ) {
+                Model3DViewer(
+                    modifier = Modifier.fillMaxSize()
+                )
             }
         }
 
-        // DEMO AVATAR - Right side empty space
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
-                .padding(end = 40.dp),
-            contentAlignment = Alignment.CenterEnd
-        ) {
-            AsyncImage(
-                model = "https://img.freepik.com/free-vector/doctor-character-background_1270-84.jpg", // Demo avatar URL
-                contentDescription = "Avatar",
-                modifier = Modifier
-                    .size(400.dp)
-                    .graphicsLayer {
-                        alpha = 0.9f
-                    },
-                contentScale = ContentScale.Fit,
-                error = painterResource(id = R.drawable.ic_launcher_foreground)
-            )
-        }
-
-        // Global Voice Footer Overlay
+        // Floating Voice Footer
         VoiceFooterOverlay(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 24.dp),
             isListening = false,
-            onMicClick = {
-                // Future implementation for voice trigger
-            }
+            onMicClick = {}
         )
     }
 }
