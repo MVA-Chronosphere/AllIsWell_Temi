@@ -964,9 +964,9 @@ fun Model3DViewer(
                 id="modelViewer"
                 src="$modelUrl"
                 alt="Hospital Assistant"
-                camera-orbit="0deg 85deg -10m"
-                camera-target="0m 5.8m 0m"
-                field-of-view="5deg"
+                camera-orbit="0deg 85deg 0m"
+                camera-target="0m 6.5m 0m"
+                field-of-view="1.5deg"
                 autoplay
                 interaction-prompt="none"
                 shadow-intensity="1"
