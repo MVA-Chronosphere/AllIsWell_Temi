@@ -964,9 +964,9 @@ fun Model3DViewer(
                 id="modelViewer"
                 src="$modelUrl"
                 alt="Hospital Assistant"
-                camera-orbit="0deg 85deg 0m"
-                camera-target="0m 6.5m 0m"
-                field-of-view="1.5deg"
+                camera-orbit="10deg 85deg 4m"
+                camera-target="0m 3.1m 0m"
+                field-of-view="2.5deg"
                 autoplay
                 interaction-prompt="none"
                 shadow-intensity="1"
@@ -981,22 +981,33 @@ fun Model3DViewer(
             </model-viewer>
             
             <script>
+                window.onerror = function(message, source, lineno, colno, error) {
+                    console.error("JS Error: " + message + " at " + source + ":" + lineno);
+                };
                 document.addEventListener('DOMContentLoaded', function() {
+                    console.log("DOM Content Loaded");
                     var viewer = document.getElementById('modelViewer');
                     if (viewer) {
+                        console.log("ModelViewer element found");
                         viewer.addEventListener('load', function() {
-                            // Ensure animation starts
+                            console.log("Model loaded successfully: " + viewer.src);
                             const animations = viewer.availableAnimations;
+                            console.log("Available animations: " + JSON.stringify(animations));
                             if (animations && animations.length > 0) {
-                                // Prefer an 'idle' animation if available
                                 const idleAnimation = animations.find(name => 
                                     name.toLowerCase().includes('idle') || 
                                     name.toLowerCase().includes('wave')
                                 );
                                 viewer.animationName = idleAnimation || animations[0];
                                 viewer.play();
+                                console.log("Playing animation: " + viewer.animationName);
                             }
                         });
+                        viewer.addEventListener('error', function(e) {
+                            console.error("Model Viewer Error: " + JSON.stringify(e.detail));
+                        });
+                    } else {
+                        console.error("ModelViewer element NOT found");
                     }
                 });
             </script>
@@ -1028,6 +1039,9 @@ fun Model3DViewer(
                     displayZoomControls = false
                     setSupportZoom(false)
                 }
+
+                // Set WebChromeClient to see console logs in logcat
+                webChromeClient = android.webkit.WebChromeClient()
 
                 // Set WebViewClient to handle navigation and intercept asset requests
                 webViewClient = object : WebViewClient() {
