@@ -965,7 +965,7 @@ fun Model3DViewer(
                 src="$modelUrl"
                 alt="Hospital Assistant"
                 camera-orbit="10deg 85deg 4m"
-                camera-target="0m 3.1m 0m"
+                camera-target="0m 2.9m 0m"
                 field-of-view="2.5deg"
                 autoplay
                 interaction-prompt="none"
@@ -1033,7 +1033,7 @@ fun Model3DViewer(
                     allowFileAccessFromFileURLs = true
                     allowUniversalAccessFromFileURLs = true
                     mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-                    
+
                     // Disable built-in zoom controls
                     builtInZoomControls = false
                     displayZoomControls = false
@@ -1071,7 +1071,7 @@ fun Model3DViewer(
 
                 // Set a transparent background
                 setBackgroundColor(android.graphics.Color.TRANSPARENT)
-                
+
                 // Enable remote debugging (Chrome DevTools)
                 WebView.setWebContentsDebuggingEnabled(true)
 
@@ -1090,4 +1090,3 @@ fun Model3DViewer(
         modifier = modifier
     )
 }
-
