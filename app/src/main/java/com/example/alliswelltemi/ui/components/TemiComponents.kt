@@ -914,10 +914,30 @@ fun TemiNavBar(
 @Composable
 fun Model3DViewer(
     modifier: Modifier = Modifier,
-    modelPath: String = "models/indian_doctor_lipsync.glb"
+    modelPath: String = "models/indian_doctor_lipsync.glb",
+    viseme: String = "viseme_sil",
+    intensity: Float = 0f
 ) {
     // Context for WebView
     val context = LocalContext.current
+
+    // Keep track of the WebView instance to send JavaScript commands
+    var webViewInstance by remember { mutableStateOf<WebView?>(null) }
+    var webViewReady by remember { mutableStateOf(false) }
+
+    // Update visemes in the 3D model when they change
+    // This is called frequently (~30 FPS) from TtsLipSyncManager
+    LaunchedEffect(viseme, intensity) {
+        if (webViewReady && webViewInstance != null) {
+            // Escape viseme name to ensure safe JavaScript execution
+            val safeViseme = viseme.replace("'", "\\'")
+            webViewInstance?.evaluateJavascript(
+                "if(typeof window.updateViseme === 'function') { window.updateViseme('$safeViseme', $intensity); }",
+                null
+            )
+            android.util.Log.d("Model3DViewer", "✓ Viseme update sent: $viseme, intensity: $intensity")
+        }
+    }
 
     // Set up WebViewAssetLoader to serve local assets via https://
     // This bypasses Fetch API restrictions on file:/// URLs
@@ -930,87 +950,281 @@ fun Model3DViewer(
     // Virtual URL for the model
     val modelUrl = "https://appassets.androidplatform.net/assets/$modelPath"
 
-    // HTML template using Google's ModelViewer library (Local)
-    // This creates an interactive 3D viewer with auto-rotation
+    // HTML template using Three.js logic from avatar-view.html
     val htmlContent = """
         <!DOCTYPE html>
         <html>
         <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <script type="module" src="https://appassets.androidplatform.net/assets/scripts/model-viewer.min.js"></script>
-            <style>
-                body, html {
-                    margin: 0;
-                    padding: 0;
-                    width: 100%;
-                    height: 100%;
-                    background-color: transparent;
-                    overflow: hidden;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                }
-                model-viewer {
-                    width: 100%;
-                    height: 100%;
-                    background-color: transparent;
-                    --progress-bar-color: transparent;
-                }
-            </style>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <style>
+            * { margin: 0; padding: 0; }
+            body { background: transparent; overflow: hidden; width: 100vw; height: 100vh; }
+            canvas { display: block; width: 100%; height: 100%; }
+          </style>
         </head>
         <body>
-            <model-viewer
-                id="modelViewer"
-                src="$modelUrl"
-                alt="Hospital Assistant"
-                camera-orbit="10deg 85deg 4m"
-                camera-target="0m 3.1m 0m"
-                field-of-view="2.5deg"
-                autoplay
-                interaction-prompt="none"
-                shadow-intensity="1"
-                environment-image="neutral"
-                exposure="1.2"
-                disable-zoom="true"
-                disable-pan="true"
-                disable-tap="true"
-                loading="eager"
-                style="width: 100%; height: 100%;"
-            >
-            </model-viewer>
+          <script type="importmap">
+          {
+            "imports": {
+              "three": "https://appassets.androidplatform.net/assets/scripts/three.module.js",
+              "three/examples/jsm/loaders/GLTFLoader": "https://appassets.androidplatform.net/assets/scripts/GLTFLoader.js",
+              "three/examples/jsm/utils/BufferGeometryUtils": "https://appassets.androidplatform.net/assets/utils/BufferGeometryUtils.js"
+            }
+          }
+          </script>
+          <script type="module">
+            import * as THREE from 'three';
+            import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+
+            const scene = new THREE.Scene();
+            // Transparent background to match Compose theme
+            scene.background = null; 
             
-            <script>
-                window.onerror = function(message, source, lineno, colno, error) {
-                    console.error("JS Error: " + message + " at " + source + ":" + lineno);
-                };
-                document.addEventListener('DOMContentLoaded', function() {
-                    console.log("DOM Content Loaded");
-                    var viewer = document.getElementById('modelViewer');
-                    if (viewer) {
-                        console.log("ModelViewer element found");
-                        viewer.addEventListener('load', function() {
-                            console.log("Model loaded successfully: " + viewer.src);
-                            const animations = viewer.availableAnimations;
-                            console.log("Available animations: " + JSON.stringify(animations));
-                            if (animations && animations.length > 0) {
-                                const idleAnimation = animations.find(name => 
-                                    name.toLowerCase().includes('idle') || 
-                                    name.toLowerCase().includes('wave')
-                                );
-                                viewer.animationName = idleAnimation || animations[0];
-                                viewer.play();
-                                console.log("Playing animation: " + viewer.animationName);
-                            }
-                        });
-                        viewer.addEventListener('error', function(e) {
-                            console.error("Model Viewer Error: " + JSON.stringify(e.detail));
-                        });
-                    } else {
-                        console.error("ModelViewer element NOT found");
+            const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200);
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.outputColorSpace = THREE.SRGBColorSpace;
+            document.body.appendChild(renderer.domElement);
+
+            // Lighting — matched to original setup
+            scene.add(new THREE.AmbientLight(0xffffff, 2.2));
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
+            dirLight.position.set(0.5, 1.5, 2);
+            scene.add(dirLight);
+
+            let mixer = null;
+            let model = null;
+            let clock = new THREE.Clock();
+
+            let morphMeshes = [];
+            let headBone = null;
+            let neckBone = null;
+            let rightUpperArm = null;
+            let leftUpperArm = null;
+            let rightForeArm = null;
+            let leftForeArm = null;
+            let rightHand = null;
+            let leftHand = null;
+            let restPose = {};
+            let idlePoseQuats = {};
+
+            // Idle Pose Configuration
+            const IDLE_POSE = {
+              rightUpper: [1.36, 0, -0.12],
+              rightFore:  [0.10, 0, 0],
+              rightHand:  [0, 0, 0],
+              leftUpper:  [1.36, 0, 0.12],
+              leftFore:   [0.10, 0, 0],
+              leftHand:   [0, 0, 0],
+            };
+
+            // Viseme smoothing state
+            const currentWeights = {};
+            const targetWeights = {};
+            const OCULUS_VISEMES = [
+              'viseme_aa', 'viseme_E', 'viseme_I', 'viseme_O', 'viseme_U',
+              'viseme_PP', 'viseme_SS', 'viseme_TH', 'viseme_DD', 'viseme_FF',
+              'viseme_kk', 'viseme_nn', 'viseme_RR', 'viseme_CH', 'viseme_sil'
+            ];
+            OCULUS_VISEMES.forEach(v => { currentWeights[v] = 0; targetWeights[v] = 0; });
+            const LERP_SPEED = 0.18; // Even slower for fluid, human-like transitions
+
+            function initIdlePose() {
+              const idleMap = [
+                ['RightArm_039', IDLE_POSE.rightUpper, 'rightUpper'],
+                ['RightForeArm_040', IDLE_POSE.rightFore, 'rightFore'],
+                ['RightHand_043', IDLE_POSE.rightHand, 'rightHand'],
+                ['LeftArm_013', IDLE_POSE.leftUpper, 'leftUpper'],
+                ['LeftForeArm_014', IDLE_POSE.leftFore, 'leftFore'],
+                ['LeftHand_017', IDLE_POSE.leftHand, 'leftHand'],
+              ];
+              
+              idleMap.forEach(([boneName, euler, key]) => {
+                const bone = model.getObjectByName(boneName);
+                if (bone && restPose[boneName]) {
+                  const q = restPose[boneName].clone();
+                  const g = new THREE.Quaternion().setFromEuler(new THREE.Euler(...euler));
+                  idlePoseQuats[boneName] = q.multiply(g);
+                  
+                  if (key === 'rightUpper') rightUpperArm = bone;
+                  if (key === 'leftUpper') leftUpperArm = bone;
+                  if (key === 'rightFore') rightForeArm = bone;
+                  if (key === 'leftFore') leftForeArm = bone;
+                  if (key === 'rightHand') rightHand = bone;
+                  if (key === 'leftHand') leftHand = bone;
+                }
+              });
+            }
+
+            function updateIdleGesture() {
+              const it = Date.now() / 1000;
+              // Subtle breathing/sway
+              const armSwayR = Math.sin(it * 0.6) * 0.015;
+              const armSwayL = Math.sin(it * 0.6 + 0.5) * 0.015;
+
+              [rightUpperArm, leftUpperArm, rightForeArm, leftForeArm, rightHand, leftHand].forEach(bone => {
+                if (bone && idlePoseQuats[bone.name]) {
+                  bone.quaternion.slerp(idlePoseQuats[bone.name], 0.05);
+                }
+              });
+              
+              // Head idle
+              if (headBone && restPose[headBone.name]) {
+                const breathX = Math.sin(it * 0.8) * 0.012;
+                const hq = restPose[headBone.name].clone();
+                const hg = new THREE.Quaternion().setFromEuler(new THREE.Euler(breathX, 0, 0));
+                headBone.quaternion.slerp(hq.multiply(hg), 0.06);
+              }
+            }
+
+            window.updateViseme = function(viseme, intensity) {
+                if (!OCULUS_VISEMES.includes(viseme)) return;
+                
+                // Significant reduction in intensity to keep mouth movements within natural human range
+                let scale = 0.42; 
+                if (viseme === 'viseme_aa' || viseme === 'viseme_O' || viseme === 'viseme_U') {
+                    scale = 0.32; // Heavily damp the 'alien' wide-open mouth shapes
+                }
+                
+                const adjustedIntensity = intensity * scale;
+                
+                // Reset other target weights
+                OCULUS_VISEMES.forEach(v => { targetWeights[v] = 0; });
+                targetWeights[viseme] = adjustedIntensity;
+            };
+
+            function applySmoothedWeights() {
+              for (const name of OCULUS_VISEMES) {
+                currentWeights[name] += (targetWeights[name] - currentWeights[name]) * LERP_SPEED;
+                if (currentWeights[name] < 0.001) currentWeights[name] = 0;
+              }
+
+              // Teeth visibility logic based on mouth openness
+              const mouthOpen = (currentWeights['viseme_aa'] || 0) +
+                                 (currentWeights['viseme_O'] || 0) +
+                                 (currentWeights['viseme_E'] || 0);
+              const teethOpacity = Math.min(0.7, mouthOpen * 1.8); // More subtle teeth appearance
+
+              for (const mesh of morphMeshes) {
+                if (!mesh.morphTargetInfluences || !mesh.morphTargetDictionary) continue;
+                for (const name of OCULUS_VISEMES) {
+                  const idx = mesh.morphTargetDictionary[name];
+                  if (idx !== undefined) {
+                    mesh.morphTargetInfluences[idx] = currentWeights[name];
+                  }
+                }
+                
+                // Handle teeth opacity
+                if (mesh.name === 'Object_14' || mesh.name === 'Object_15') {
+                   if (Array.isArray(mesh.material)) {
+                      mesh.material.forEach(m => { m.opacity = teethOpacity; });
+                   } else {
+                      mesh.material.opacity = teethOpacity;
+                   }
+                }
+              }
+
+              // Head tilt coupling - make it extremely subtle to avoid "bobbing" look
+              if (headBone && restPose[headBone.name]) {
+                const jawInfluence = (currentWeights['viseme_aa'] || 0) * 0.5 + (currentWeights['viseme_O'] || 0) * 0.3;
+                if (jawInfluence > 0.05) {
+                  const tiltBack = jawInfluence * 0.025; 
+                  const jq = new THREE.Quaternion().setFromEuler(new THREE.Euler(-tiltBack, 0, 0));
+                  const targetQuat = restPose[headBone.name].clone().multiply(jq);
+                  headBone.quaternion.slerp(targetQuat, 0.08);
+                } else {
+                   headBone.quaternion.slerp(restPose[headBone.name], 0.08);
+                }
+              }
+            }
+
+            const loader = new GLTFLoader();
+            loader.load('$modelUrl', (gltf) => {
+                model = gltf.scene;
+                scene.add(model);
+
+                model.traverse((node) => {
+                  if (node.isMesh && node.isSkinnedMesh) {
+                    node.frustumCulled = false;
+                    
+                    // Face material fix
+                    if (node.name === 'Object_9') {
+                      if (Array.isArray(node.material)) {
+                        node.material.forEach(m => { m.side = THREE.FrontSide; });
+                      } else {
+                        node.material.side = THREE.FrontSide;
+                      }
                     }
+
+                    // Teeth material fix
+                    if (node.name === 'Object_14' || node.name === 'Object_15') {
+                      const mats = Array.isArray(node.material) ? node.material : [node.material];
+                      mats.forEach(m => {
+                        m.side = THREE.DoubleSide;
+                        m.transparent = true;
+                        m.opacity = 0;
+                      });
+                    }
+
+                    if (node.morphTargetDictionary) {
+                      morphMeshes.push(node);
+                    }
+                  }
+                  
+                  if (node.isBone) {
+                    if (node.name.toLowerCase().includes('head')) headBone = node;
+                    if (node.name.toLowerCase().includes('neck')) neckBone = node;
+                    restPose[node.name] = node.quaternion.clone();
+                  }
                 });
-            </script>
+                
+                initIdlePose();
+
+                // Camera framing based on provided configuration
+                const target = new THREE.Vector3(0.05, 3.04, 0.12);
+                const yaw = THREE.MathUtils.degToRad(12.54);
+                const pitch = THREE.MathUtils.degToRad(88.48);
+                const radius = 2.0; // Distance adjusted to show head down to chest
+
+                // Convert spherical (yaw/pitch) to Cartesian coordinates
+                const camX = target.x + radius * Math.sin(pitch) * Math.sin(yaw);
+                const camY = target.y + radius * Math.cos(pitch);
+                const camZ = target.z + radius * Math.sin(pitch) * Math.cos(yaw);
+                
+                camera.position.set(camX, camY, camZ);
+                camera.lookAt(target);
+                camera.fov = 40; // Balanced FOV for a natural chest-up portrait
+                camera.updateProjectionMatrix();
+
+                // Animation
+                if (gltf.animations.length > 0) {
+                  mixer = new THREE.AnimationMixer(model);
+                  // Filter out head/neck/arm tracks if we wanted custom gestures later
+                  const action = mixer.clipAction(gltf.animations[0]);
+                  action.play();
+                }
+                
+                console.log('Three.js Model Loaded');
+            });
+
+            function animate() {
+              requestAnimationFrame(animate);
+              const dt = clock.getDelta();
+              if (mixer) mixer.update(dt);
+              applySmoothedWeights();
+              updateIdleGesture();
+              renderer.render(scene, camera);
+            }
+            animate();
+
+            window.addEventListener('resize', () => {
+              camera.aspect = window.innerWidth / window.innerHeight;
+              camera.updateProjectionMatrix();
+              renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+          </script>
         </body>
         </html>
     """.trimIndent()
@@ -1019,11 +1233,12 @@ fun Model3DViewer(
     AndroidView(
         factory = {
             WebView(context).apply {
+                webViewInstance = this
                 layoutParams = android.view.ViewGroup.LayoutParams(
                     android.view.ViewGroup.LayoutParams.MATCH_PARENT,
                     android.view.ViewGroup.LayoutParams.MATCH_PARENT
                 )
-                // Enable JavaScript for ModelViewer
+                // Set up WebViewAssetLoader to serve local assets via https://
                 settings.apply {
                     javaScriptEnabled = true
                     domStorageEnabled = true
@@ -1033,7 +1248,8 @@ fun Model3DViewer(
                     allowFileAccessFromFileURLs = true
                     allowUniversalAccessFromFileURLs = true
                     mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-                    
+                    cacheMode = android.webkit.WebSettings.LOAD_NO_CACHE
+
                     // Disable built-in zoom controls
                     builtInZoomControls = false
                     displayZoomControls = false
@@ -1050,6 +1266,9 @@ fun Model3DViewer(
                         android.util.Log.d("Model3DViewer", "Page finished loading: $url")
                         // Ensure it's not hidden
                         view?.visibility = android.view.View.VISIBLE
+                        // LIPSYNC FIX 2: Mark WebView as ready to receive viseme updates
+                        webViewReady = true
+                        android.util.Log.d("Model3DViewer", "✓ WebView ready for viseme updates")
                     }
 
                     override fun onReceivedError(
@@ -1071,7 +1290,7 @@ fun Model3DViewer(
 
                 // Set a transparent background
                 setBackgroundColor(android.graphics.Color.TRANSPARENT)
-                
+
                 // Enable remote debugging (Chrome DevTools)
                 WebView.setWebContentsDebuggingEnabled(true)
 
@@ -1086,6 +1305,11 @@ fun Model3DViewer(
 
                 android.util.Log.d("Model3DViewer", "WebView initialized with model: $modelPath")
             }
+        },
+        update = { webView ->
+            // If the model URL changes, we should reload it
+            // For now, we mainly use the update block to keep the instance updated
+            webViewInstance = webView
         },
         modifier = modifier
     )

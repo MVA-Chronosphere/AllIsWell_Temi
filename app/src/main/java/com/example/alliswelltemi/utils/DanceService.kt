@@ -1,9 +1,7 @@
 package com.example.alliswelltemi.utils
 
-import android.content.Context
 import android.util.Log
 import com.robotemi.sdk.Robot
-import com.robotemi.sdk.TtsRequest
 import kotlinx.coroutines.*
 
 /**
@@ -53,14 +51,15 @@ object DanceService {
      * Execute a full dance sequence on the Temi robot
      * @param robot The Temi robot instance
      * @param danceMove Type of dance to perform
-     * @param context The context for speech synthesis
      * @param language The language for speech synthesis
+     * @param ttsLipSyncManager Optional lip sync manager to sync visemes with speech
      * @param onComplete Callback when dance finishes
      */
     suspend fun performDance(
         robot: Robot?,
         danceMove: DanceMove,
         language: String = "en-US",
+        ttsLipSyncManager: TtsLipSyncManager? = null,
         onComplete: (() -> Unit)? = null
     ) {
         if (robot == null) {
@@ -80,7 +79,13 @@ object DanceService {
 
         try {
             // Initial greeting
-            speakWithLanguage("Let me show you my dance moves!", language, robot)
+            val greeting = "Let me show you my dance moves!"
+            speakWithLanguage(greeting, language, robot)
+
+            // LIPSYNC FIX 5: Start lip sync with greeting
+            ttsLipSyncManager?.startLipSync(greeting)
+            Log.d(TAG, "Dance greeting: lip sync started")
+
             delay(500)
 
             // Execute each move in sequence
@@ -88,7 +93,7 @@ object DanceService {
                 Log.d(TAG, "Move ${index + 1}/${sequence.moves.size}: tiltY=${move.tiltY}, tiltX=${move.tiltX}, rotation=${move.rotation}")
 
                 // Apply head tilts (in radians, convert from degrees)
-                applyHeadTilt(robot, move.tiltY, move.tiltX)
+                applyHeadTilt(move.tiltY, move.tiltX)
 
                 // Apply body rotation if needed
                 if (move.rotation != 0f) {
@@ -97,12 +102,15 @@ object DanceService {
 
                 // Move forward/backward if needed
                 if (move.moveDistance != 0f) {
-                    applyMovement(robot, move.moveDistance)
+                    applyMovement(move.moveDistance)
                 }
 
                 // Speak if this move has speech
                 move.speech?.let {
                     speakWithLanguage(it, language, robot)
+                    // LIPSYNC FIX 5: Start lip sync for move speech
+                    ttsLipSyncManager?.startLipSync(it)
+                    Log.d(TAG, "Move speech: lip sync started for '${it}'")
                 }
 
                 // Wait for this move's duration
@@ -111,16 +119,23 @@ object DanceService {
 
             // Reset position to neutral
             Log.d(TAG, "Dance complete, resetting to neutral position")
-            resetToNeutral(robot)
+            resetToNeutral()
 
             // Closing speech
-            speakWithLanguage("Thanks for watching! Did you enjoy my moves?", language, robot)
+            val closingMessage = "Thanks for watching! Did you enjoy my moves?"
+            speakWithLanguage(closingMessage, language, robot)
+
+            // LIPSYNC FIX 5: Start lip sync for closing
+            ttsLipSyncManager?.startLipSync(closingMessage)
+            Log.d(TAG, "Dance closing: lip sync started")
 
             onComplete?.invoke()
 
         } catch (e: Exception) {
             Log.e(TAG, "Error during dance: ${e.message}", e)
-            resetToNeutral(robot)
+            resetToNeutral()
+            // Stop lip sync on error
+            ttsLipSyncManager?.stopLipSync()
         }
     }
 
@@ -296,24 +311,24 @@ object DanceService {
 
     /**
      * Apply head tilt to robot (tiltY = pitch/up-down, tiltX = roll/left-right)
-     * Note: Temi Robot SDK v1.137.1 doesn't have direct tilt() API
-     * We simulate tilting by speaking at different head positions via screen animations
-     * and using turnBy() for body rotation effects
+     *
+     * ⚠️ NOTE: Temi Robot SDK v1.137.1 does NOT provide a direct tilt() API.
+     * Head tilting would require:
+     * - Custom Temi firmware modification
+     * - Or ROS bridge integration
+     * - Or upgrading to a newer Temi SDK version with tilt support
+     *
+     * Current implementation logs the intent for UI animation layer integration.
      */
-    private fun applyHeadTilt(robot: Robot, tiltY: Float, tiltX: Float) {
+    private fun applyHeadTilt(tiltY: Float, tiltX: Float) {
         try {
-            // The Temi SDK doesn't provide direct head tilt APIs
-            // Instead, we log the tilt intent for UI animation layer
-            // Real robots would need custom firmware or ROS integration
             val tiltYInt = tiltY.toInt()
             val tiltXInt = tiltX.toInt()
-            Log.d(TAG, "Head tilt intent: Y=$tiltYInt°, X=$tiltXInt° (UI animation layer)")
+            Log.d(TAG, "⚠️ Head tilt logged (not available in Temi SDK v1.137.1): Y=${tiltYInt}°, X=${tiltXInt}°")
+            Log.d(TAG, "   → Upgrade Temi SDK or implement ROS bridge for actual head tilt support")
 
-            // For demonstration: We can use turnBy() for body rotation only
-            // Actual implementation would require:
-            // - Custom Temi firmware modification
-            // - Or using ROS bridge if available
-            // - Or controlling via SDK's available APIs (speak, navigate, etc)
+            // Temi SDK v1.137.1 limitation: no head tilt API available
+            // Only body rotation via turnBy() is supported
         } catch (e: Exception) {
             Log.w(TAG, "Could not apply tilt: ${e.message}")
         }
@@ -333,11 +348,11 @@ object DanceService {
         }
     }
 
-     /**
-      * Apply forward/backward movement to robot
-      * Uses Temi's goTo() navigation or custom movement patterns
-      */
-    private fun applyMovement(robot: Robot, distance: Float) {
+      /**
+       * Apply forward/backward movement to robot
+       * Uses Temi's goTo() navigation or custom movement patterns
+       */
+    private fun applyMovement(distance: Float) {
         try {
             // Temi SDK doesn't provide direct moveTo() API
             // Instead, we can:
@@ -358,7 +373,7 @@ object DanceService {
      * Reset robot to neutral position
      * Stops any ongoing movements and resets head position
      */
-    private fun resetToNeutral(robot: Robot) {
+    private fun resetToNeutral() {
         try {
             // Reset to neutral - Temi SDK doesn't have a direct "reset" command
             // We achieve this by stopping any animations and returning to home position

@@ -15,7 +15,7 @@ object OllamaConfig {
     private const val KEY_ENABLE_CACHE = "ollama_enable_cache"
 
     // Default values
-    private const val DEFAULT_SERVER_URL = "http://10.1.90.159:11434/"
+    private const val DEFAULT_SERVER_URL = "http://192.168.1.82:11434/"
     private const val DEFAULT_TIMEOUT = 30
     const val ENABLE_CACHE = true  // Fix 7: SAFE CACHE USAGE
 

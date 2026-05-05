@@ -1,9 +1,10 @@
 package com.example.alliswelltemi.viewmodel
 
+import android.app.Application
 import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.alliswelltemi.data.Doctor
 import com.example.alliswelltemi.data.DoctorCache
@@ -16,7 +17,9 @@ import kotlinx.coroutines.withContext
  * ViewModel for managing doctors from Strapi CMS
  * PERFORMANCE OPTIMIZED: Eager loading + caching for instant access
  */
-class DoctorsViewModel(private val context: Context? = null) : ViewModel() {
+class DoctorsViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val context: Context = application.applicationContext
 
     private val _doctors = mutableStateOf<List<Doctor>>(emptyList())
     val doctors: State<List<Doctor>> = _doctors
@@ -42,7 +45,7 @@ class DoctorsViewModel(private val context: Context? = null) : ViewModel() {
     private val _isNavigating = mutableStateOf(false)
     val isNavigating: State<Boolean> = _isNavigating
 
-    private val doctorCache: DoctorCache? = context?.let { DoctorCache(it) }
+    private val doctorCache: DoctorCache? = DoctorCache(context)
 
     /**
      * Get filtered and searched doctors list

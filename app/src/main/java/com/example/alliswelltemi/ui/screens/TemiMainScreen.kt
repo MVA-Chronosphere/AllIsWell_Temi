@@ -49,7 +49,10 @@ import com.robotemi.sdk.TtsRequest
 fun TemiMainScreen(
     modifier: Modifier = Modifier,
     robot: Robot? = null,
-    onNavigate: (String) -> Unit = {}
+    onNavigate: (String) -> Unit = {},
+    currentViseme: String = "viseme_sil",
+    currentIntensity: Float = 0f,
+    isLipSyncActive: Boolean = false
 ) {
     Box(
         modifier = modifier
@@ -149,7 +152,9 @@ fun TemiMainScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Model3DViewer(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    viseme = currentViseme,
+                    intensity = currentIntensity
                 )
             }
         }

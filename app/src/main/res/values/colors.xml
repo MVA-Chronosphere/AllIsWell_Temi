@@ -34,4 +34,17 @@
     <color name="purple_700">#809671</color>
     <color name="teal_200">#B3B792</color>
     <color name="black">#000000</color>
+
+    <!-- Dark Theme Colors for Hospital Kiosk -->
+    <color name="dark_bg">#0B1220</color>
+
+    <!-- Gradient Colors for Menu Cards -->
+    <color name="gradient_blue_start">#0D47A1</color>
+    <color name="gradient_blue_end">#1976D2</color>
+    <color name="gradient_teal_start">#00695C</color>
+    <color name="gradient_teal_end">#00897B</color>
+    <color name="gradient_purple_start">#4A148C</color>
+    <color name="gradient_purple_end">#7B1FA2</color>
+    <color name="gradient_orange_start">#E65100</color>
+    <color name="gradient_orange_end">#F57C00</color>
 </resources>

@@ -59,8 +59,16 @@ class MainActivity : ComponentActivity(),
     // Expose conversation state to UI for guarding interactions
     private val conversationActiveState = mutableStateOf(false)
 
+    // LIPSYNC FIX 2: Viseme state for 3D avatar lip sync animation
+    // Updated in real-time by TtsLipSyncManager callbacks, passed to TemiMainScreen
+    private val currentViseme = mutableStateOf("viseme_sil")
+    private val currentIntensity = mutableStateOf(0f)
+
     // Production-grade voice pipeline
     private lateinit var orchestrator: SpeechOrchestrator
+
+    // LIPSYNC FIX 1: TTS-based lip sync manager (estimated visemes from text)
+    private lateinit var ttsLipSyncManager: com.example.alliswelltemi.utils.TtsLipSyncManager
 
     // Conversation Context - maintains chat history
     private val conversationContext = ConversationContext(
@@ -133,10 +141,24 @@ class MainActivity : ComponentActivity(),
 
             Robot.getInstance().addOnRobotReadyListener(this)
 
-            doctorsViewModel = DoctorsViewModel(context = this@MainActivity)
+            doctorsViewModel = DoctorsViewModel(application = application)
 
             // Initialize orchestrator with empty list (will be updated when doctors load)
             orchestrator = SpeechOrchestrator(emptyList())
+
+            // LIPSYNC FIX 1: Initialize TTS-based lip sync manager
+            // This estimates visemes from text duration to approximate mouth movements
+            ttsLipSyncManager = com.example.alliswelltemi.utils.TtsLipSyncManager(
+                coroutineScope = lifecycleScope,
+                onVisemeUpdate = { viseme, intensity ->
+                    // LIPSYNC FIX 2: Forward viseme updates to UI state
+                    // This drives the 3D avatar lip sync on the main screen
+                    currentViseme.value = viseme
+                    currentIntensity.value = intensity
+                    android.util.Log.d("LIPSYNC_VISEME", "✓ Viseme: $viseme, intensity: $intensity")
+                }
+            )
+            android.util.Log.d("TemiMain", "✓ TtsLipSyncManager initialized for lip sync")
 
             lifecycleScope.launch {
                 snapshotFlow { doctorsViewModel.doctors.value }.collectLatest { doctors ->
@@ -161,6 +183,8 @@ class MainActivity : ComponentActivity(),
             setContent {
                 val currentRobot = robotState.value
                 val isConversationActive = conversationActiveState.value
+                val viseme = currentViseme.value
+                val intensity = currentIntensity.value
 
                 TemiTheme(darkTheme = true) {
                     when (currentScreen.value) {
@@ -193,9 +217,11 @@ class MainActivity : ComponentActivity(),
                         else -> {
                             TemiMainScreen(
                                 robot = currentRobot,
-                                onNavigate = { screen ->
+                                onNavigate = { screen: String ->
                                     currentScreen.value = screen
-                                }
+                                },
+                                currentViseme = viseme,
+                                currentIntensity = intensity
                             )
                         }
                     }
@@ -223,6 +249,9 @@ class MainActivity : ComponentActivity(),
         handler.removeCallbacksAndMessages(null)
         safeSpeak_Runnable = null
         safeSpeakDuringStreaming_Runnable = null
+
+        // LIPSYNC FIX: Release TtsLipSyncManager resources
+        ttsLipSyncManager.release()
 
         voiceInteractionManager?.release()
         Robot.getInstance().removeOnRobotReadyListener(this)
@@ -264,8 +293,16 @@ class MainActivity : ComponentActivity(),
     override fun onTtsStatusChanged(ttsRequest: TtsRequest) {
         synchronized(pendingTtsIds) {
             when (ttsRequest.status) {
-                TtsRequest.Status.STARTED -> isRobotSpeaking.set(true)
+                TtsRequest.Status.STARTED -> {
+                    isRobotSpeaking.set(true)
+                    // LIPSYNC FIX 2: Log TTS start for monitoring
+                    android.util.Log.d("TTS_LIFECYCLE", "✓ TTS started (${ttsRequest.id})")
+                }
                 TtsRequest.Status.COMPLETED, TtsRequest.Status.CANCELED, TtsRequest.Status.ERROR -> {
+                    // LIPSYNC FIX 2: Stop lip sync when TTS completes
+                    ttsLipSyncManager.stopLipSync()
+                    android.util.Log.d("TTS_LIFECYCLE", "✓ TTS completed - lip sync stopped (${ttsRequest.id})")
+                    
                     pendingTtsIds.remove(ttsRequest.id)
                     if (pendingTtsIds.isEmpty()) {
                         isRobotSpeaking.set(false)
@@ -273,6 +310,8 @@ class MainActivity : ComponentActivity(),
                         // CRITICAL FIX: Use restartListeningWithDelay for proper state management
                         android.util.Log.d("VOICE_PIPELINE", "TTS finished - restarting ASR listening with delay")
                         voiceInteractionManager?.restartListeningWithDelay()
+                    } else {
+                        // Still have pending TTS, don't mark as done speaking yet
                     }
                 }
                 else -> {}
@@ -433,13 +472,15 @@ class MainActivity : ComponentActivity(),
                         lifecycleScope.launch {
                             try {
                                 val danceMove = context.danceMove ?: DanceService.DanceMove.SMOOTH_GROOVE
+                                // LIPSYNC FIX 5: Pass TtsLipSyncManager to DanceService
                                 DanceService.performDance(
                                     robot = robot,
                                     danceMove = danceMove,
-                                    language = "en"
+                                    language = "en",
+                                    ttsLipSyncManager = ttsLipSyncManager
                                 ) { }
                             } catch (e: Exception) {
-                                 safeSpeak("Oops! I had trouble dancing. Please try again.")
+                                safeSpeak("Oops! I had trouble dancing. Please try again.")
                             }
                         }
                     }
@@ -545,7 +586,7 @@ class MainActivity : ComponentActivity(),
             if (chunks.isEmpty()) return
 
             isRobotSpeaking.set(true)
-            
+
             // Use speakWithLanguage for multi-lingual TTS support (Temi built-in TTS)
             chunks.forEach { chunk ->
                 speakWithLanguage(
@@ -553,16 +594,27 @@ class MainActivity : ComponentActivity(),
                     language = detectedLanguage,
                     robot = robot
                 )
+
+                // LIPSYNC FIX 3: Start lip sync with this chunk
+                // TtsLipSyncManager estimates visemes based on text analysis
+                ttsLipSyncManager.startLipSync(chunk)
+                android.util.Log.d("LIPSYNC", "Started lip sync for chunk: ${chunk.take(50)}...")
             }
+
+            // LIPSYNC FIX 3: Calculate accurate speech duration
+            val charsPerSecond = if (detectedLanguage == "hi") 13f else 15f
+            val estimatedSeconds = cleanedMessage.length / charsPerSecond
+            val speechDurationMs = (estimatedSeconds * 1000).toLong() + 500
 
             // FIXED: Cancel previous callback, create new one
             safeSpeak_Runnable?.let { handler.removeCallbacks(it) }
             safeSpeak_Runnable = Runnable {
                 if (isRobotSpeaking.get()) {
                     isRobotSpeaking.set(false)
+                    ttsLipSyncManager.stopLipSync()  // Ensure lip sync stops
                 }
             }
-            handler.postDelayed(safeSpeak_Runnable!!, (cleanedMessage.length * 100L) + 10000L)
+            handler.postDelayed(safeSpeak_Runnable!!, speechDurationMs)
 
         } catch (_: Exception) {
             isRobotSpeaking.set(false)
@@ -620,14 +672,24 @@ class MainActivity : ComponentActivity(),
                 robot = robot
             )
 
+            // LIPSYNC FIX: Start lip sync during streaming response
+            ttsLipSyncManager.startLipSync(cleanedMessage)
+            android.util.Log.d("LIPSYNC", "Started lip sync for streaming: ${cleanedMessage.take(50)}...")
+
+            // LIPSYNC FIX: Calculate accurate speech duration
+            val charsPerSecond = if (detectedLanguage == "hi") 13f else 15f
+            val estimatedSeconds = cleanedMessage.length / charsPerSecond
+            val speechDurationMs = (estimatedSeconds * 1000).toLong() + 500
+
             // FIXED: Proper callback management
             safeSpeakDuringStreaming_Runnable?.let { handler.removeCallbacks(it) }
             safeSpeakDuringStreaming_Runnable = Runnable {
                 if (isRobotSpeaking.get()) {
                     isRobotSpeaking.set(false)
+                    ttsLipSyncManager.stopLipSync()  // Ensure lip sync stops
                 }
             }
-            handler.postDelayed(safeSpeakDuringStreaming_Runnable!!, (cleanedMessage.length * 100L) + 5000L)
+            handler.postDelayed(safeSpeakDuringStreaming_Runnable!!, speechDurationMs)
 
         } catch (e: Exception) {
             android.util.Log.e("MainActivity", "Error speaking during streaming: ${e.message}", e)

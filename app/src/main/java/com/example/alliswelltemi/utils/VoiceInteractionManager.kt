@@ -77,56 +77,56 @@ class VoiceInteractionManager(
         }
     }
 
-    /**
-     * Start listening for user speech
-     */
-    fun startListening() {
-        if (isListening) {
-            Log.d(TAG, "Already listening - ignoring duplicate request")
-            return
-        }
+     /**
+      * Start listening for user speech
+      */
+     fun startListening() {
+         if (isListening) {
+             Log.d(TAG, "Already listening - ignoring duplicate request")
+             return
+         }
 
-        try {
-            if (speechRecognizer == null) {
-                initializeSpeechRecognizer()
-            }
+         try {
+             if (speechRecognizer == null) {
+                 initializeSpeechRecognizer()
+             }
 
-            isListening = true
-            updateState(VoiceState.LISTENING)
+             isListening = true
+             updateState(VoiceState.LISTENING)
 
-            val intent = Intent(android.speech.RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-                putExtra(
-                    android.speech.RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                    android.speech.RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-                )
-                putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-                putExtra(android.speech.RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+             val intent = Intent(android.speech.RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+                 putExtra(
+                     android.speech.RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                     android.speech.RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+                 )
+                 putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+                 putExtra(android.speech.RecognizerIntent.EXTRA_MAX_RESULTS, 1)
 
-                // CRITICAL AUDIO SENSITIVITY FIX: Allow normal speech without shouting
-                // Reduced minimum length to detect soft/normal speech faster
-                putExtra(android.speech.RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 100)
+                 // CRITICAL AUDIO SENSITIVITY FIX: Allow normal speech without shouting
+                 // Reduced minimum length to detect soft/normal speech faster
+                 putExtra(android.speech.RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 100)
 
-                // Allow ongoing listening (don't timeout between "hey temi" and the command)
-                putExtra(android.speech.RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 3000)
+                 // Allow ongoing listening (don't timeout between "hey temi" and the command)
+                 putExtra(android.speech.RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 3000)
 
-                // Additional sensitivity improvements
-                // Request on-device recognition for better sensitivity
-                putExtra(android.speech.RecognizerIntent.EXTRA_PREFER_OFFLINE, true)
+                 // Additional sensitivity improvements
+                 // Request on-device recognition for better sensitivity
+                 putExtra(android.speech.RecognizerIntent.EXTRA_PREFER_OFFLINE, true)
 
-                // Allow the recognizer to be more permissive with audio levels
-                // Less strict about what counts as "speech detected"
-                putExtra("android.speech.extra.PREFER_OFFLINE", true)
-            }
+                 // Allow the recognizer to be more permissive with audio levels
+                 // Less strict about what counts as "speech detected"
+                 putExtra("android.speech.extra.PREFER_OFFLINE", true)
+             }
 
-            speechRecognizer?.startListening(intent)
-            Log.d(TAG, "SpeechRecognizer started - listening for speech")
-        } catch (e: Exception) {
-            Log.e(TAG, "Error starting listening", e)
-            isListening = false
-            updateState(VoiceState.ERROR)
-            onError?.invoke("Failed to start listening: ${e.message}")
-        }
-    }
+             speechRecognizer?.startListening(intent)
+             Log.d(TAG, "SpeechRecognizer started - listening for speech")
+         } catch (e: Exception) {
+             Log.e(TAG, "Error starting listening", e)
+             isListening = false
+             updateState(VoiceState.ERROR)
+             onError?.invoke("Failed to start listening: ${e.message}")
+         }
+     }
 
     /**
      * Restart listening with proper delay (prevents rapid start/stop cycles)

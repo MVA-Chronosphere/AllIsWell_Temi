@@ -71,6 +71,8 @@ fun NavigationScreen(
     modifier: Modifier = Modifier,
     robot: Robot? = null,
     viewModel: NavigationViewModel = remember { NavigationViewModel() },
+    isThinking: Boolean = false,
+    isConversationActive: Boolean = false,
     onBackPress: () -> Unit = {},
     onNavigationComplete: (Location) -> Unit = {}
 ) {
