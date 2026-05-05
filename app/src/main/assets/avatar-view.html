@@ -110,24 +110,22 @@
 
     // Per-viseme SCALE factors for HeadAudio output.
     // Tuned for English + Hindi bilingual speech.
-    // Hindi has more retroflex (DD), dental (TH), nasal (nn), and
-    // open vowels (aa/O) than English — these are boosted.
     const HA_SCALE = {
       'viseme_sil': 0.00,
-      'viseme_PP':  0.42,   // M/B/P — lips press
-      'viseme_FF':  0.35,   // F/V
-      'viseme_TH':  0.35,   // Th/D dental
-      'viseme_DD':  0.38,   // T/D retroflex
-      'viseme_kk':  0.30,   // K/G
-      'viseme_CH':  0.35,   // Ch/J/Sh
-      'viseme_SS':  0.25,   // S/Z
-      'viseme_nn':  0.32,   // N/L
-      'viseme_RR':  0.32,   // R
-      'viseme_aa':  0.32,   // Ah — jaw open (heavily damped)
-      'viseme_E':   0.15,   // Eh
-      'viseme_I':   0.12,   // Ee
-      'viseme_O':   0.32,   // Oh (heavily damped)
-      'viseme_U':   0.32,   // Oo (heavily damped)
+      'viseme_PP':  0.50,   // Restored for correct mouth opening
+      'viseme_FF':  0.55,
+      'viseme_TH':  0.65,
+      'viseme_DD':  0.65,
+      'viseme_kk':  0.60,
+      'viseme_CH':  0.65,
+      'viseme_SS':  0.50,
+      'viseme_nn':  0.60,
+      'viseme_RR':  0.60,
+      'viseme_aa':  0.85,   // Jaw wide open
+      'viseme_E':   0.55,   // Mid open
+      'viseme_I':   0.50,   // Spread
+      'viseme_O':   0.80,   // Rounded
+      'viseme_U':   0.75,   // Tight round
     };
 
     async function initHeadAudio() {
@@ -270,26 +268,26 @@
     const targetWeights = {};
     OCULUS_VISEMES.forEach(v => { currentWeights[v] = 0; targetWeights[v] = 0; });
 
-    // Smoothing: higher = snappier mouth response
-    const LERP_SPEED = 0.18; // Slowed down for fluid, human-like transitions
+    // Smoothing: lower = slower, more natural transitions
+    const LERP_SPEED = 0.15;
 
-    // Per-viseme weight caps — tuned for natural human range.
+    // Per-viseme weight caps — significantly reduced to prevent over-stretching
     const VISEME_MAX = {
       'viseme_sil': 0.00,
-      'viseme_PP':  0.40,   // M/B/P — lips press
-      'viseme_FF':  0.35,   // F/V — lower lip tucks
-      'viseme_TH':  0.32,   // Th/dental
-      'viseme_DD':  0.35,   // T/D retroflex
-      'viseme_kk':  0.28,   // K/G
-      'viseme_CH':  0.32,   // Ch/J/Sh
-      'viseme_SS':  0.22,   // S/Z
-      'viseme_nn':  0.28,   // N/L
-      'viseme_RR':  0.30,   // R
-      'viseme_aa':  0.32,   // Ah — wide jaw (heavily damped)
-      'viseme_E':   0.14,   // Eh
-      'viseme_I':   0.10,   // Ee
-      'viseme_O':   0.32,   // Oh (heavily damped)
-      'viseme_U':   0.32,   // Oo (heavily damped)
+      'viseme_PP':  0.38,   // Reduced from 0.45
+      'viseme_FF':  0.32,   // Reduced
+      'viseme_TH':  0.32,   // Reduced
+      'viseme_DD':  0.35,   // Reduced
+      'viseme_kk':  0.25,   // Reduced
+      'viseme_CH':  0.30,   // Reduced
+      'viseme_SS':  0.20,   // Reduced
+      'viseme_nn':  0.28,   // Reduced
+      'viseme_RR':  0.28,   // Reduced
+      'viseme_aa':  0.42,   // Reduced from 0.50 (Natural jaw drop)
+      'viseme_E':   0.10,
+      'viseme_I':   0.08,
+      'viseme_O':   0.38,   // Reduced from 0.45
+      'viseme_U':   0.35,   // Reduced from 0.40
     };
 
     // Idle smile weight — visible, warm smile when not speaking
@@ -315,8 +313,26 @@
       // Calculate mouth openness for teeth visibility
       const mouthOpen = (currentWeights['viseme_aa'] || 0) +
                          (currentWeights['viseme_O'] || 0) +
-                         (currentWeights['viseme_E'] || 0);
-      const teethOpacity = Math.min(0.7, mouthOpen * 1.8); // More subtle teeth appearance
+                         (currentWeights['viseme_E'] || 0) +
+                         (currentWeights['viseme_DD'] || 0);
+
+      const teethOpacity = Math.min(1.0, mouthOpen * 6); // More gradual teeth reveal
+
+      // Apply teeth properties to relevant meshes
+      model.traverse(node => {
+        if (node.name === 'Object_14' || node.name === 'Object_15') {
+          const mats = Array.isArray(node.material) ? node.material : [node.material];
+          mats.forEach(m => {
+            m.opacity = teethOpacity;
+            // Disable transparency when solid to fix depth sorting (broken look)
+            m.transparent = teethOpacity < 0.9;
+            m.depthWrite = true;
+          });
+          // Move teeth forward significantly and ensure they render on top of lips
+          node.renderOrder = 50;
+          node.position.z = 0.022;
+        }
+      });
 
       // Head tilt coupling - make it extremely subtle to avoid "bobbing" look
       if (headBone && restPose[headBone.name]) {
@@ -367,14 +383,13 @@
     window.updateViseme = function(viseme, intensity) {
       if (!OCULUS_VISEMES.includes(viseme)) return;
 
-      let scale = 0.42;
-      if (viseme === 'viseme_aa' || viseme === 'viseme_O' || viseme === 'viseme_U') {
-          scale = 0.32;
-      }
+      const maxWeight = VISEME_MAX[viseme] || 0.5;
+      const adjustedIntensity = intensity * maxWeight;
 
-      const adjustedIntensity = intensity * scale;
       resetAllVisemes();
-      targetWeights[viseme] = adjustedIntensity;
+      // Apply subtle idle smile to 'I'
+      targetWeights['viseme_I'] = IDLE_SMILE_WEIGHT;
+      targetWeights[viseme] = Math.max(adjustedIntensity, (viseme === 'viseme_I' ? IDLE_SMILE_WEIGHT : 0));
     };
 
     // ─── Cue-based lip sync (Rhubarb) with per-viseme caps + smooth blending ───
@@ -799,18 +814,19 @@
         return;
       }
 
-      // ── Head nod during speech (independent of arm gestures) ──
+      // Head tilt coupling - make it extremely subtle to avoid "bobbing" look
       if (headBone && restPose[headBone.name]) {
-        const ht = elapsed / 1000;
-        // Multi-frequency nod (pitch) — feels organic, not mechanical
-        const nodX = Math.sin(ht * 1.8) * 0.06 + Math.sin(ht * 0.7) * 0.03 + Math.sin(ht * 3.1) * 0.015;
-        // Subtle yaw turns — looks at imaginary points while explaining
-        const yawY = Math.sin(ht * 0.5) * 0.04 + Math.sin(ht * 1.3 + 1.0) * 0.02;
-        // Gentle tilt (roll)
-        const tiltZ = Math.sin(ht * 0.9 + 0.5) * 0.025;
-        const hq = restPose[headBone.name].clone();
-        const hg = new THREE.Quaternion().setFromEuler(new THREE.Euler(nodX, yawY, tiltZ));
-        headBone.quaternion.copy(hq).multiply(hg);
+        const jawInfluence = (currentWeights['viseme_aa'] || 0) * 0.6 +
+                             (currentWeights['viseme_O'] || 0) * 0.4 +
+                             (currentWeights['viseme_E'] || 0) * 0.2;
+        if (jawInfluence > 0.02) {
+          const tiltBack = jawInfluence * 0.06;
+          const jq = new THREE.Quaternion().setFromEuler(new THREE.Euler(-tiltBack, 0, 0));
+          const targetQuat = restPose[headBone.name].clone().multiply(jq);
+          headBone.quaternion.slerp(targetQuat, 0.1);
+        } else {
+           headBone.quaternion.slerp(restPose[headBone.name], 0.08);
+        }
       }
       if (neckBone && restPose[neckBone.name]) {
         const ht = elapsed / 1000;
@@ -994,6 +1010,12 @@
                   node.material.transparent = true;
                   node.material.opacity = 0.0;
                 }
+
+                // FIX: Force teeth to render after face and move slightly forward
+                // to prevent clipping with inner lip skin.
+                node.renderOrder = 10;
+                node.position.z += 0.008;
+
                 console.log('[AvatarView] Teeth mesh fixed:', node.name);
               }
 

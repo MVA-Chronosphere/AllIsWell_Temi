@@ -158,9 +158,9 @@ class TtsLipSyncManager(
     private fun mapCharToViseme(char: Char, progress: Float): Pair<String, Float> {
         val lower = char.lowercaseChar()
 
-        // LIPSYNC REFINEMENT: Reduce base intensity to prevent "alien" wide-open mouth.
-        // Fluctuates between 0.35 and 0.65 for a more natural human range.
-        val baseIntensity = 0.5f + (sin(progress * 6.28f * 4) * 0.15f)
+        // RESTORED INTENSITY: Using a higher base range (0.7 to 1.0) to ensure the mouth
+        // opens fully and teeth are visible, as requested.
+        val baseIntensity = 0.85f + (sin(progress * 6.28f * 4) * 0.15f)
 
         val phoneme = when {
             // Vowels mapping

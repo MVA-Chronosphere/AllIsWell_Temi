@@ -999,6 +999,7 @@ fun Model3DViewer(
             let clock = new THREE.Clock();
 
             let morphMeshes = [];
+            let teethMeshes = [];
             let headBone = null;
             let neckBone = null;
             let rightUpperArm = null;
@@ -1029,7 +1030,25 @@ fun Model3DViewer(
               'viseme_kk', 'viseme_nn', 'viseme_RR', 'viseme_CH', 'viseme_sil'
             ];
             OCULUS_VISEMES.forEach(v => { currentWeights[v] = 0; targetWeights[v] = 0; });
-            const LERP_SPEED = 0.18; // Even slower for fluid, human-like transitions
+            const LERP_SPEED = 0.18;  // Lowered further for extra smooth transitions
+            const VISEME_MAX = {
+              'viseme_sil': 0.00,
+              'viseme_PP':  0.42,   // Reduced from 0.48
+              'viseme_FF':  0.35,   // Reduced from 0.40
+              'viseme_TH':  0.35,   // Reduced from 0.40
+              'viseme_DD':  0.35,   // Reduced from 0.42
+              'viseme_kk':  0.28,   // Reduced from 0.32
+              'viseme_CH':  0.32,   // Reduced from 0.38
+              'viseme_SS':  0.22,   // Reduced from 0.28
+              'viseme_nn':  0.30,   // Reduced from 0.34
+              'viseme_RR':  0.30,   // Reduced from 0.35
+              'viseme_aa':  0.45,   // Reduced from 0.52
+              'viseme_E':   0.10,   // Reduced from 0.12
+              'viseme_I':   0.08,   // Reduced from 0.10
+              'viseme_O':   0.40,   // Reduced from 0.48
+              'viseme_U':   0.38,   // Reduced from 0.42
+            };
+            const IDLE_SMILE_WEIGHT = 0.09;
 
             function initIdlePose() {
               const idleMap = [
@@ -1082,17 +1101,16 @@ fun Model3DViewer(
             window.updateViseme = function(viseme, intensity) {
                 if (!OCULUS_VISEMES.includes(viseme)) return;
                 
-                // Significant reduction in intensity to keep mouth movements within natural human range
-                let scale = 0.42; 
-                if (viseme === 'viseme_aa' || viseme === 'viseme_O' || viseme === 'viseme_U') {
-                    scale = 0.32; // Heavily damp the 'alien' wide-open mouth shapes
-                }
-                
-                const adjustedIntensity = intensity * scale;
+                const maxWeight = VISEME_MAX[viseme] || 0.5;
+                const adjustedIntensity = intensity * maxWeight;
                 
                 // Reset other target weights
                 OCULUS_VISEMES.forEach(v => { targetWeights[v] = 0; });
-                targetWeights[viseme] = adjustedIntensity;
+                
+                // Apply subtle idle smile to 'I' if no other viseme is dominant
+                targetWeights['viseme_I'] = IDLE_SMILE_WEIGHT;
+                
+                targetWeights[viseme] = Math.max(adjustedIntensity, (viseme === 'viseme_I' ? IDLE_SMILE_WEIGHT : 0));
             };
 
             function applySmoothedWeights() {
@@ -1104,8 +1122,21 @@ fun Model3DViewer(
               // Teeth visibility logic based on mouth openness
               const mouthOpen = (currentWeights['viseme_aa'] || 0) +
                                  (currentWeights['viseme_O'] || 0) +
-                                 (currentWeights['viseme_E'] || 0);
-              const teethOpacity = Math.min(0.7, mouthOpen * 1.8); // More subtle teeth appearance
+                                 (currentWeights['viseme_E'] || 0) +
+                                 (currentWeights['viseme_DD'] || 0);
+              
+              const teethOpacity = Math.min(1.0, mouthOpen * 8); // Slightly less aggressive ramp
+
+              // Apply teeth properties to cached meshes
+              for (const mesh of teethMeshes) {
+                const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+                mats.forEach(m => { 
+                    m.opacity = teethOpacity;
+                    // FIX: Disable transparency when teeth are clearly visible to prevent "broken" look (depth sorting issues)
+                    m.transparent = teethOpacity < 0.9;
+                    m.depthWrite = true;
+                });
+              }
 
               for (const mesh of morphMeshes) {
                 if (!mesh.morphTargetInfluences || !mesh.morphTargetDictionary) continue;
@@ -1115,25 +1146,18 @@ fun Model3DViewer(
                     mesh.morphTargetInfluences[idx] = currentWeights[name];
                   }
                 }
-                
-                // Handle teeth opacity
-                if (mesh.name === 'Object_14' || mesh.name === 'Object_15') {
-                   if (Array.isArray(mesh.material)) {
-                      mesh.material.forEach(m => { m.opacity = teethOpacity; });
-                   } else {
-                      mesh.material.opacity = teethOpacity;
-                   }
-                }
               }
 
               // Head tilt coupling - make it extremely subtle to avoid "bobbing" look
               if (headBone && restPose[headBone.name]) {
-                const jawInfluence = (currentWeights['viseme_aa'] || 0) * 0.5 + (currentWeights['viseme_O'] || 0) * 0.3;
-                if (jawInfluence > 0.05) {
-                  const tiltBack = jawInfluence * 0.025; 
+                const jawInfluence = (currentWeights['viseme_aa'] || 0) * 0.6 +
+                                     (currentWeights['viseme_O'] || 0) * 0.4 +
+                                     (currentWeights['viseme_E'] || 0) * 0.2;
+                if (jawInfluence > 0.02) {
+                  const tiltBack = jawInfluence * 0.06; 
                   const jq = new THREE.Quaternion().setFromEuler(new THREE.Euler(-tiltBack, 0, 0));
                   const targetQuat = restPose[headBone.name].clone().multiply(jq);
-                  headBone.quaternion.slerp(targetQuat, 0.08);
+                  headBone.quaternion.slerp(targetQuat, 0.1);
                 } else {
                    headBone.quaternion.slerp(restPose[headBone.name], 0.08);
                 }
@@ -1165,7 +1189,13 @@ fun Model3DViewer(
                         m.side = THREE.DoubleSide;
                         m.transparent = true;
                         m.opacity = 0;
+                        m.depthWrite = true;
                       });
+                      // FIX: Increase renderOrder so teeth are drawn AFTER the face
+                      // and move them further forward to stay "above" the lips when they stretch.
+                      node.renderOrder = 30;
+                      node.position.z += 0.02;
+                      teethMeshes.push(node);
                     }
 
                     if (node.morphTargetDictionary) {
