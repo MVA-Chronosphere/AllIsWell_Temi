@@ -37,6 +37,7 @@ import com.example.alliswelltemi.utils.DanceService
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import com.example.alliswelltemi.utils.speakWithLanguage
+import com.example.alliswelltemi.utils.isHindi
 
 class MainActivity : ComponentActivity(),
     Robot.AsrListener,
@@ -89,7 +90,7 @@ class MainActivity : ComponentActivity(),
     private var lastToastTime: Long = 0
 
     private var lastInteractionTime: Long = System.currentTimeMillis()
-    private val INACTIVITY_TIMEOUT: Long = 5 * 60 * 1000 // 5 minutes (was 30s)
+    private val INACTIVITY_TIMEOUT: Long = 10 * 60 * 1000 // 10 minutes (was 5m)
     private val handler = Handler(Looper.getMainLooper())
 
     // Handler callback refs for safe cleanup (prevents memory leaks)
@@ -143,8 +144,8 @@ class MainActivity : ComponentActivity(),
 
             doctorsViewModel = DoctorsViewModel(application = application)
 
-            // Initialize orchestrator with empty list (will be updated when doctors load)
-            orchestrator = SpeechOrchestrator(emptyList())
+            // Initialize orchestrator with empty list and null robot (will be updated when doctors load and robot is ready)
+            orchestrator = SpeechOrchestrator(emptyList(), null)
 
             // LIPSYNC FIX 1: Initialize TTS-based lip sync manager
             // This estimates visemes from text duration to approximate mouth movements
@@ -163,8 +164,8 @@ class MainActivity : ComponentActivity(),
             lifecycleScope.launch {
                 snapshotFlow { doctorsViewModel.doctors.value }.collectLatest { doctors ->
                     if (doctors.isNotEmpty()) {
-                        // Update orchestrator with fresh doctor list
-                        orchestrator = SpeechOrchestrator(doctors)
+                        // Update orchestrator with fresh doctor list and current robot instance
+                        orchestrator = SpeechOrchestrator(doctors, robot)
 
                         // CRITICAL: Inject dynamic doctor Q&As into knowledge base
                         // This synchronizes Strapi doctor data with the RAG knowledge base
@@ -487,21 +488,146 @@ class MainActivity : ComponentActivity(),
                     return@launch
                 }
 
+                var intentHandled = false
                 withContext(Dispatchers.Main) {
                     when (context.intent) {
                         SpeechOrchestrator.Intent.NAVIGATE -> {
-                            context.doctor?.let { robot?.goTo(it.cabin) }
+                            // LOCATION NAVIGATION: Priority 1 - Hospital location
+                            if (context.location != null) {
+                                val location = context.location
+                                android.util.Log.d("NAVIGATE_DEBUG", "🎯 NAVIGATE Intent triggered!")
+                                android.util.Log.d("NAVIGATE_DEBUG", "   Location found: ${location.name}")
+                                android.util.Log.d("NAVIGATE_DEBUG", "   Location mapName: ${location.mapName}")
+                                android.util.Log.d("NAVIGATE_DEBUG", "   Location nameHi: ${location.nameHi}")
+
+                                try {
+                                    // Use appropriate language for location name
+                                    val detectedLanguage = if (isHindi(text)) "hi" else "en"
+                                    val locationName = location.getNameInLanguage(detectedLanguage)
+
+                                    // Try mapName first, then fall back to name
+                                    // mapName is the Temi SDK location identifier
+                                    // name is the human-readable location name
+                                    val navigationTarget = if (location.mapName.isNotEmpty()) {
+                                        location.mapName
+                                    } else {
+                                        location.name
+                                    }
+
+                                    android.util.Log.d("NAVIGATE_DEBUG", "   Navigation target: $navigationTarget")
+
+                                    // Speak confirmation in appropriate language
+                                    val confirmationText = if (detectedLanguage == "hi") {
+                                        "ठीक है, आपको ${locationName} ले जा रहे हैं।"
+                                    } else {
+                                        "Sure, taking you to the ${locationName}."
+                                    }
+
+                                    android.util.Log.d("NAVIGATE_DEBUG", "   Speaking: $confirmationText")
+                                    safeSpeak(confirmationText)
+
+                                    // Log all available locations on robot FIRST
+                                    val availableLocations = robot?.locations ?: emptyList()
+                                    android.util.Log.i("LOCATION_NAV", "📍 Robot has ${availableLocations.size} saved locations:")
+                                    availableLocations.forEach { robotLoc ->
+                                        android.util.Log.i("LOCATION_NAV", "  - '$robotLoc'")
+                                    }
+
+                                    // IMPORTANT: Use the EXACT location name from robot's list
+                                    // First, try to find exact match in robot's saved locations
+                                    val robotLocationMatch = availableLocations.find { robotLoc ->
+                                        robotLoc.equals(navigationTarget, ignoreCase = true) ||
+                                        robotLoc.equals(location.name, ignoreCase = true) ||
+                                        robotLoc.lowercase().replace(" ", "") == navigationTarget.lowercase().replace(" ", "")
+                                    }
+
+                                    android.util.Log.i("LOCATION_NAV", "✅ Navigating to: '$navigationTarget'")
+                                    android.util.Log.d("NAVIGATE_DEBUG", "   Starting navigation attempts...")
+                                    android.util.Log.d("NAVIGATE_DEBUG", "   Robot location match found: '${robotLocationMatch ?: "NONE"}'")
+
+                                    // Try the robot's exact location name first if found
+                                    val navigationAttempts = mutableListOf<String>()
+                                    if (robotLocationMatch != null) {
+                                        navigationAttempts.add(robotLocationMatch)  // EXACT name from robot
+                                    }
+                                    // Then try variations
+                                    navigationAttempts.add(navigationTarget)  // "MAIN PHARMACY"
+                                    navigationAttempts.add(navigationTarget.lowercase())  // "main pharmacy"
+                                    navigationAttempts.add(navigationTarget.replace(" ", "_"))  // "MAIN_PHARMACY"
+                                    navigationAttempts.add(location.id)  // "main_pharmacy"
+
+                                    var navigated = false
+                                    for (target in navigationAttempts) {
+                                        android.util.Log.d("NAVIGATE_DEBUG", "   Attempting goTo('$target')")
+                                        try {
+                                            robot?.goTo(target)
+                                            android.util.Log.d("NAVIGATE_DEBUG", "   ✅ goTo('$target') executed!")
+                                            navigated = true
+                                            break  // Stop if one succeeds
+                                        } catch (navException: Exception) {
+                                            android.util.Log.d("NAVIGATE_DEBUG", "   ⚠️ goTo('$target') error: ${navException.message}")
+                                        }
+                                    }
+
+                                    if (!navigated) {
+                                        android.util.Log.w("NAVIGATE_DEBUG", "   ⚠️ Navigation attempted but result unclear")
+                                    }
+
+                                    intentHandled = true
+                                } catch (e: Exception) {
+                                    android.util.Log.e("LOCATION_NAV", "❌ Navigation failed", e)
+                                    android.util.Log.e("NAVIGATE_DEBUG", "❌ Exception: ${e.message}")
+                                    safeSpeak("Sorry, I could not navigate to that location.")
+                                }
+                            }
+                            // LOCATION NAVIGATION: Priority 2 - Doctor's cabin (fallback)
+                            else if (context.doctor != null) {
+                                context.doctor.let { doctor ->
+                                    try {
+                                        val detectedLanguage = if (isHindi(text)) "hi" else "en"
+                                        val confirmationText = if (detectedLanguage == "hi") {
+                                            "${doctor.name} के कैबिन ${doctor.cabin} में ले जा रहे हैं।"
+                                        } else {
+                                            "Taking you to ${doctor.name}'s cabin ${doctor.cabin}."
+                                        }
+
+                                        safeSpeak(confirmationText)
+                                        android.util.Log.i("DOCTOR_NAV", "🏥 Navigating to doctor cabin: ${doctor.cabin}")
+                                        robot?.goTo(doctor.cabin)
+                                        intentHandled = true
+                                    } catch (e: Exception) {
+                                        android.util.Log.e("DOCTOR_NAV", "❌ Navigation failed", e)
+                                        safeSpeak("Sorry, I could not navigate to that cabin.")
+                                    }
+                                }
+                            }
+                            else {
+                                android.util.Log.d("NAVIGATE_INTENT", "⚠️ NAVIGATE intent detected but no location or doctor found")
+                            }
                         }
-                        SpeechOrchestrator.Intent.BOOK -> { currentScreen.value = "appointment" }
+                        SpeechOrchestrator.Intent.BOOK -> {
+                            currentScreen.value = "appointment"
+                            intentHandled = true
+                        }
                         SpeechOrchestrator.Intent.FIND_DOCTOR -> {
                             if (context.confidence >= 0.85f) {
                                 currentScreen.value = "doctors"
-                            } else {
-                                // Do nothing or handle low confidence
+                                // We might still want Ollama to explain WHICH doctors if they asked "Which cardiologists do you have?"
+                                // So we don't set intentHandled = true here necessarily, or we do if it's just "Show doctors"
+                                if (context.doctor == null && context.department == null) {
+                                    intentHandled = true
+                                }
                             }
                         }
                         else -> {}
                     }
+                    Unit
+                }
+
+                // If the intent was a direct action (Navigate/Book/Dance), don't call Ollama
+                if (intentHandled) {
+                    android.util.Log.d("PROCESS_SPEECH", "Intent handled via direct action, skipping Ollama.")
+                    return@launch
                 }
 
                 val prompt = withContext(Dispatchers.Default) {
@@ -523,39 +649,53 @@ class MainActivity : ComponentActivity(),
     }
 
     private fun safeSpeak(message: String) {
-        try {
-            if (robot == null || message.isBlank() || isConversationActive) return
+         try {
+             if (robot == null || message.isBlank() || isConversationActive) return
 
-            // Detect language FIRST before cleaning
-            val detectedLanguage = if (com.example.alliswelltemi.utils.isHindi(message)) "hi" else "en"
+             // Detect language FIRST before cleaning
+             val detectedLanguage = if (com.example.alliswelltemi.utils.isHindi(message)) "hi" else "en"
 
-            // OPTIMIZED: Clean message differently based on language
-            val cleanedMessage = if (detectedLanguage == "hi") {
-                // Hindi: Minimal punctuation changes, rely on TTS normalization
-                message
-                    .replace(NEWLINE_REGEX, " ")         // Convert newlines to space
-                    .replace(Regex("!+"), "")            // Remove exclamation marks completely
-                    .replace(Regex("\\.{2,}"), "")       // Remove multiple periods
-                    .replace(":", "")                     // Remove colons
-                    .replace(";", "")                     // Remove semicolons
-                    .replace(SPACE_REGEX, " ")           // Normalize whitespace
-                    .replace("Dr.", "Doctor", ignoreCase = true)
-                    .replace(SYMBOL_REGEX, "")
-                    .trim()
-            } else {
-                // English: Use comma replacement for smoother flow
-                message
-                    .replace(NEWLINE_REGEX, " ")         // Convert newlines to space
-                    .replace(Regex("[.!]+"), ",")        // Replace periods/exclamations with comma (less pause)
-                    .replace(Regex(",\\s*,+"), ",")      // Remove duplicate commas
-                    .replace(":", ",")                    // Replace colons with comma
-                    .replace(";", ",")                    // Replace semicolons with comma
-                    .replace(SPACE_REGEX, " ")           // Normalize whitespace
-                    .replace("Dr.", "Doctor", ignoreCase = true)
-                    .replace(SYMBOL_REGEX, "")
-                    .replace(Regex(",\\s*$"), "")        // Remove trailing comma
-                    .trim()
-            }
+             // CRITICAL FIX: Standardize hospital name references
+             // Replace any "AAMIS" hallucinations with correct hospital name
+             var standardizedMessage = message
+
+             // Check if AAMIS was present for logging
+             if (standardizedMessage.contains(Regex("(?i)AAMIS"))) {
+                 android.util.Log.w("HOSPITAL_NAME_FIX", "⚠️ Detected AAMIS hallucination in response, replacing with 'All Is Well Hospital'")
+             }
+
+             standardizedMessage = standardizedMessage
+                 .replace(Regex("(?i)AAMIS"), "All Is Well Hospital")  // Exact match case-insensitive
+                 .replace(Regex("(?i)AAMIS Hospital"), "All Is Well Hospital")  // With Hospital
+                 .replace(Regex("(?i)A\\.?A\\.?M\\.?I\\.?S\\.?"), "All Is Well Hospital")  // Abbreviated forms
+
+             // OPTIMIZED: Clean message differently based on language
+             val cleanedMessage = if (detectedLanguage == "hi") {
+                 // Hindi: Minimal punctuation changes, rely on TTS normalization
+                 standardizedMessage
+                     .replace(NEWLINE_REGEX, " ")         // Convert newlines to space
+                     .replace(Regex("!+"), "")            // Remove exclamation marks completely
+                     .replace(Regex("\\.{2,}"), "")       // Remove multiple periods
+                     .replace(":", "")                     // Remove colons
+                     .replace(";", "")                     // Remove semicolons
+                     .replace(SPACE_REGEX, " ")           // Normalize whitespace
+                     .replace("Dr.", "Doctor", ignoreCase = true)
+                     .replace(SYMBOL_REGEX, "")
+                     .trim()
+             } else {
+                 // English: Use comma replacement for smoother flow
+                 standardizedMessage
+                     .replace(NEWLINE_REGEX, " ")         // Convert newlines to space
+                     .replace(Regex("[.!]+"), ",")        // Replace periods/exclamations with comma (less pause)
+                     .replace(Regex(",\\s*,+"), ",")      // Remove duplicate commas
+                     .replace(":", ",")                    // Replace colons with comma
+                     .replace(";", ",")                    // Replace semicolons with comma
+                     .replace(SPACE_REGEX, " ")           // Normalize whitespace
+                     .replace("Dr.", "Doctor", ignoreCase = true)
+                     .replace(SYMBOL_REGEX, "")
+                     .replace(Regex(",\\s*$"), "")        // Remove trailing comma
+                     .trim()
+             }
 
             // For Hindi, don't split - speak as one chunk (TTS handles pauses)
             // For English, split on commas for better pacing
@@ -707,7 +847,33 @@ class MainActivity : ComponentActivity(),
             robot?.setKioskModeOn(true)
             robot?.hideTopBar()
 
+            // CRITICAL: Update orchestrator with robot instance for location validation
+            orchestrator.setRobot(robot)
+            android.util.Log.d("TemiMain", "✓ Orchestrator updated with robot instance for location validation")
+
+            // DEBUG: List all available locations on the robot
+            try {
+                val availableLocations = robot?.locations ?: emptyList()
+                android.util.Log.i("LOCATION_NAV", "========== ROBOT LOCATIONS ==========")
+                android.util.Log.i("LOCATION_NAV", "Total locations on robot: ${availableLocations.size}")
+                availableLocations.forEachIndexed { index, location ->
+                    android.util.Log.i("LOCATION_NAV", "${index + 1}. '$location'")
+                }
+                android.util.Log.i("LOCATION_NAV", "=====================================")
+            } catch (e: Exception) {
+                android.util.Log.w("LOCATION_NAV", "Could not fetch robot locations: ${e.message}")
+            }
+
             // Removed TemiTTSManager initialization and completion listener (now using Temi's built-in TTS only)
+
+            // LOCATION NAVIGATION: Load Temi map for location-based navigation
+            // This enables voice commands like "Take me to pharmacy" or "ले चलो फार्मेसी"
+            try {
+                robot?.tiltAngle(0)  // Reset tilt for map viewing if needed
+                android.util.Log.i("MAP_NAVIGATION", "✅ Temi map ready for location-based navigation")
+            } catch (e: Exception) {
+                android.util.Log.e("MAP_NAVIGATION", "⚠️ Could not initialize map - location navigation may fail", e)
+            }
 
             try {
                 voiceInteractionManager = com.example.alliswelltemi.utils.VoiceInteractionManager(

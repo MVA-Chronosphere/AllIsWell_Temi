@@ -38,6 +38,86 @@ object HospitalKnowledgeBase {
             language = "hi"
         ),
         KnowledgeBaseQA(
+            id = "qa_2_hi",
+            question = "क्या आपके पास बीमा सुविधाएं हैं?",
+            answer = "अस्पताल विस्तृत श्रेणी के विश्वसनीय स्वास्थ्य बीमा प्रदाताओं के माध्यम से कैशलेस और प्रतिपूर्ति सुविधाएं प्रदान करता है। स्वीकृत बीमा कंपनियों में स्टार हेल्थ इन्शुरेंस, केयर हेल्थ इन्शुरेंस, पैरामाउंट हेल्थ सर्विसेज़, IFFCO-टोकियो जनरल इंश्योरेंस, डिजिट इंश्योरेंस, आदित्य बिड़ला हेल्थ इन्शुरेंस, SBI जनरल इंश्योरेंस शामिल हैं।",
+            keywords = listOf("बीमा", "सुविधाएं", "कैशलेस", "प्रतिपूर्ति", "स्वास्थ्य", "कंपनियां"),
+            category = "insurance",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_3_hi",
+            question = "स्वास्थ्य पैकेज कौन से हैं?",
+            answer = "ऑल इज़ वेल हॉस्पिटल में विशेष रूप से डिज़ाइन किए गए स्वास्थ्य पैकेज हैं: बेसिक वेलनेस, कम्प्रिहेंसिव वेलनेस, महिला स्वास्थ्य पैकेज, डायबिटिक वेलनेस और बाल स्वास्थ्य पैकेज। प्रत्येक पैकेज में प्रयोगशाला परीक्षण और नैदानिक मूल्यांकन शामिल हैं।",
+            keywords = listOf("पैकेज", "स्वास्थ्य", "वेलनेस", "परीक्षण", "महिला", "बाल", "मधुमेह"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_6_hi",
+            question = "क्या वॉक-इन परामर्श की अनुमति है?",
+            answer = "ऑल इज़ वेल हॉस्पिटल 24/7 OPD सेवाएं प्रदान करता है। मरीज़ रिसेप्शन पर आकर परामर्श ले सकते हैं। आपातकालीन मामलों में प्राथमिकता दी जाती है। 24 घंटे फार्मेसी, प्रयोगशाला और रेडियोलॉजी विभाग उपलब्ध हैं।",
+            keywords = listOf("परामर्श", "OPD", "आपातकालीन", "24/7", "डॉक्टर", "उपलब्ध"),
+            category = "departments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_7_hi",
+            question = "अस्पताल का फोन नंबर क्या है?",
+            answer = "ऑल इज़ वेल हॉस्पिटल से संपर्क करने के लिए आपातकालीन नंबर +91 76977 44444 या +91 70890 66888 पर कॉल करें। ये नंबर अस्पताल के सामने के डेस्क से जुड़े हैं जहां विभाग की जानकारी, अपॉइंटमेंट बुकिंग और आपातकालीन सहायता उपलब्ध है।",
+            keywords = listOf("फोन", "नंबर", "संपर्क", "अपॉइंटमेंट", "आपातकालीन"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_8_hi",
+            question = "क्या आप हिंदी में बोल सकते हैं?",
+            answer = "हां, मैं हिंदी में बोल सकता हूँ। आप हिंदी में अपने सवाल पूछ सकते हैं और मैं हिंदी में जवाब दूंगा। मेरा लक्ष्य आपके लिए संचार को आसान और सुविधाजनक बनाना है।",
+            keywords = listOf("हिंदी", "भाषा", "बोल", "समझ", "सवाल", "जवाब"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_9_hi",
+            question = "क्या आप दोहरा सकते हैं?",
+            answer = "जी, मैं आपके लिए जानकारी को स्पष्ट और धीरे-धीरे दोहराऊंगा। यदि आपको कोई विस्तृत जानकारी चाहिए, तो बस पूछें। मैं आपकी सहायता के लिए यहां हूँ।",
+            keywords = listOf("दोहराना", "स्पष्ट", "जानकारी", "धीरे", "समझ", "विस्तार"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_13_hi",
+            question = "अस्पताल में कौन सी सुविधाएं उपलब्ध हैं?",
+            answer = "ऑल इज़ वेल हॉस्पिटल में उन्नत नैदानिक प्रयोगशालाएं, 24/7 फार्मेसी, कैफेटेरिया, ATM, पेयजल स्टेशन, शौचालय, लिफ्टें, व्हीलचेयर सहायता और समर्पित प्रतीक्षा क्षेत्र हैं। ICU के लिए विशेष समय हैं (आमतौर पर 11 AM-12 PM और 6 PM-7 PM)।",
+            keywords = listOf("सुविधाएं", "प्रयोगशाला", "फार्मेसी", "ATM", "शौचालय", "लिफ्ट", "ICU"),
+            category = "diagnostics",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_51_hi",
+            question = "अस्पताल का ईमेल क्या है?",
+            answer = "आप अस्पताल को frontdesk@alliswellhospital.com पर ईमेल कर सकते हैं। यह ईमेल पता अस्पताल की प्रशासनिक टीम द्वारा समीक्षा किया जाता है और सामान्य पूछताछ, अपॉइंटमेंट अनुरोध और स्वास्थ्य पैकेज विवरण के लिए उपयोग किया जा सकता है।",
+            keywords = listOf("ईमेल", "संपर्क", "frontdesk", "अपॉइंटमेंट", "पूछताछ"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_57_hi",
+            question = "अस्पताल का खुलने का समय क्या है?",
+            answer = "सोमवार से शुक्रवार: सुबह 8:00 से शाम 8:00 बजे | शनिवार से रविवार: सुबह 9:00 से शाम 6:00 बजे",
+            keywords = listOf("खुलने", "समय", "सोमवार", "शुक्रवार", "शनिवार", "रविवार", "घंटे"),
+            category = "hospital_info",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_58_hi",
+            question = "ऑल इज़ वेल हॉस्पिटल कहां स्थित है?",
+            answer = "ऑल इज़ वेल हॉस्पिटल मैक्रो विजन अकादमी के पास, बुरहानपुर, मध्य प्रदेश, 450331 में स्थित है।",
+            keywords = listOf("स्थान", "पता", "बुरहानपुर", "मध्य प्रदेश", "मैक्रो", "विजन", "अकादमी"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
             id = "qa_2",
             question = "Do you have insurance facilities?",
             answer = "The hospital provides cashless and reimbursement facilities through a wide range of trusted health insurance providers to ensure convenient and hassle-free treatment for patients. The accepted insurance companies include Star Health Insurance, Care Health Insurance, Paramount Health Services, IFFCO-Tokio General Insurance, Digit Insurance, Aditya Birla Health Insurance, SBI General Insurance, ICICI Lombard, FHPL (Family Health Plan Limited), MDIndia Healthcare Services, Niva Bupa Health Insurance.",
@@ -1869,6 +1949,153 @@ object HospitalKnowledgeBase {
             category = "facilities",
             language = "en"
         ),
+        // ==================== MEDICAL KNOWLEDGE BASE ====================
+        // Basic medical information - patients should see a doctor
+        KnowledgeBaseQA(
+            id = "qa_medical_001",
+            question = "What should I do if I have fever?",
+            answer = "Fever can be a sign of infection or other health conditions. You should consult a doctor at All Is Well Hospital for proper diagnosis and treatment. Our OPD services are available 24/7. Call +91 76977 44444 for appointment or urgent care.",
+            keywords = listOf("fever", "temperature", "high", "ill", "sick", "symptom", "consult", "doctor"),
+            category = "medical_info",
+            language = "en"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_medical_001_hi",
+            question = "अगर मुझे बुखार है तो क्या करूँ?",
+            answer = "बुखार संक्रमण या अन्य स्वास्थ्य समस्याओं का संकेत हो सकता है। आपको ऑल इज़ वेल हॉस्पिटल में एक डॉक्टर से मिलना चाहिए। हमारी OPD सेवाएं 24/7 उपलब्ध हैं। अपॉइंटमेंट या आपातकालीन देखभाल के लिए +91 76977 44444 पर कॉल करें।",
+            keywords = listOf("बुखार", "तापमान", "बीमार", "संक्रमण", "डॉक्टर", "दवा", "उपचार", "परामर्श"),
+            category = "medical_info",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_medical_002",
+            question = "What should I do if I have stomach pain?",
+            answer = "Stomach pain can have various causes - it may be due to indigestion, infection, or other conditions. You should see a doctor for proper evaluation. All Is Well Hospital has experienced gastroenterologists and general physicians. Contact us at +91 76977 44444 for consultation.",
+            keywords = listOf("stomach", "pain", "abdominal", "belly", "indigestion", "gastro", "digestive", "consult"),
+            category = "medical_info",
+            language = "en"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_medical_002_hi",
+            question = "अगर मुझे पेट में दर्द है तो क्या करूँ?",
+            answer = "पेट में दर्द में कई कारण हो सकते हैं - यह अपच, संक्रमण, या अन्य समस्याओं के कारण हो सकता है। आपको सही मूल्यांकन के लिए डॉक्टर से मिलना चाहिए। ऑल इज़ वेल हॉस्पिटल में अनुभवी जठरांत्र रोग विशेषज्ञ और सामान्य चिकित्सक हैं। परामर्श के लिए +91 76977 44444 पर संपर्क करें।",
+            keywords = listOf("पेट", "दर्द", "पेटदर्द", "अपच", "पाचन", "गैस्ट्रो", "डॉक्टर", "परामर्श"),
+            category = "medical_info",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_medical_003",
+            question = "What should I do if I have a cough or cold?",
+            answer = "Cough and cold are usually viral infections but can sometimes indicate more serious conditions. Rest, stay hydrated, and see a doctor if symptoms persist beyond a few days. All Is Well Hospital's respiratory specialists can help. Contact +91 76977 44444.",
+            keywords = listOf("cough", "cold", "respiratory", "throat", "congestion", "sneeze", "flu", "consult"),
+            category = "medical_info",
+            language = "en"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_medical_003_hi",
+            question = "अगर मुझे खांसी या सर्दी है तो क्या करूँ?",
+            answer = "खांसी और सर्दी आमतौर पर वायरल संक्रमण होते हैं लेकिन कभी-कभी गंभीर समस्याओं का संकेत हो सकते हैं। आराम करें, हाइड्रेटेड रहें, और अगर लक्षण कुछ दिनों से अधिक बने रहें तो डॉक्टर से मिलें। ऑल इज़ वेल हॉस्पिटल के श्वसन विशेषज्ञ मदद कर सकते हैं। +91 76977 44444 पर संपर्क करें।",
+            keywords = listOf("खांसी", "सर्दी", "फ्लू", "सांस", "गले", "बुखार", "डॉक्टर", "परामर्श"),
+            category = "medical_info",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_medical_004",
+            question = "What should I do if I have body pain or aches?",
+            answer = "Body pain or aches can result from muscle strain, stress, infection, or other conditions. For persistent pain, consult a doctor for evaluation. All Is Well Hospital has specialists in orthopedics, rheumatology, and neurology. Call +91 76977 44444 for medical advice.",
+            keywords = listOf("pain", "ache", "muscle", "body", "soreness", "joint", "stiffness", "consult"),
+            category = "medical_info",
+            language = "en"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_medical_004_hi",
+            question = "अगर मुझे शरीर में दर्द या पीड़ा है तो क्या करूँ?",
+            answer = "शरीर में दर्द मांसपेशियों में खिंचाव, तनाव, संक्रमण, या अन्य स्थितियों के कारण हो सकता है। लगातार दर्द के लिए, मूल्यांकन के लिए डॉक्टर से मिलें। ऑल इज़ वेल हॉस्पिटल में ऑर्थोपेडिक्स, गठिया रोग, और न्यूरोलॉजी विशेषज्ञ हैं। चिकित्सा सलाह के लिए +91 76977 44444 पर कॉल करें।",
+            keywords = listOf("दर्द", "पीड़ा", "शरीर", "मांसपेशी", "जोड़", "अकड़न", "डॉक्टर", "परामर्श"),
+            category = "medical_info",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_medical_005",
+            question = "What should I do if I feel dizzy or lightheaded?",
+            answer = "Dizziness or lightheadedness can be caused by dehydration, low blood pressure, inner ear issues, or other conditions. Sit down, rest, and drink water. If symptoms persist or are severe, visit the hospital immediately. Call +91 76977 44444 for urgent assistance.",
+            keywords = listOf("dizzy", "lightheaded", "vertigo", "spinning", "faint", "balance", "consult", "urgent"),
+            category = "medical_info",
+            language = "en"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_medical_005_hi",
+            question = "अगर मुझे चक्कर आ रहे हैं या सिर हल्का महसूस हो रहा है तो क्या करूँ?",
+            answer = "चक्कर या सिर हल्का महसूस होना निर्जलीकरण, कम रक्तचाप, आंतरिक कान की समस्याएं, या अन्य स्थितियों के कारण हो सकता है। बैठ जाएं, आराम करें, और पानी पिएं। अगर लक्षण बने रहें या गंभीर हों तो तुरंत हॉस्पिटल जाएं। तुरंत सहायता के लिए +91 76977 44444 पर कॉल करें।",
+            keywords = listOf("चक्कर", "सिर", "चक्कर खाना", "बेहोश", "संतुलन", "कमजोरी", "डॉक्टर", "आपातकालीन"),
+            category = "medical_info",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_medical_006",
+            question = "When should I see a doctor immediately (emergency)?",
+            answer = "Seek immediate medical care if you experience: chest pain, difficulty breathing, severe bleeding, unconsciousness, severe allergic reaction, poisoning, severe burns, or signs of stroke. Call emergency: +91 76977 44444. Do not delay - go to the nearest hospital ER.",
+            keywords = listOf("emergency", "urgent", "immediately", "hospital", "serious", "critical", "danger", "ambulance"),
+            category = "medical_info",
+            language = "en"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_medical_006_hi",
+            question = "मुझे तुरंत डॉक्टर से मिलना कब चाहिए (आपातकालीन)?",
+            answer = "अगर आपको ये लक्षण हों तो तुरंत चिकित्सा सुविधा लें: छाती में दर्द, सांस लेने में कठिनाई, गंभीर रक्तस्राव, बेहोशी, गंभीर एलर्जी प्रतिक्रिया, जहर, गंभीर जलन, या स्ट्रोक के संकेत। आपातकालीन कॉल करें: +91 76977 44444। देरी न करें - निकटतम अस्पताल के आपातकालीन विभाग में जाएं।",
+            keywords = listOf("आपातकालीन", "तुरंत", "गंभीर", "ख़तरा", "चिकित्सा", "एम्बुलेंस", "124", "संकट"),
+            category = "medical_info",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_medical_007",
+            question = "What is basic first aid for a minor injury?",
+            answer = "For minor cuts or scrapes: Clean the wound with clean water, apply antiseptic cream, and cover with a sterile bandage. For minor burns: Cool with cold water immediately (not ice). For sprains: Rest, ice, compress, and elevate. See a doctor if pain, swelling, or infection develops. Call +91 76977 44444.",
+            keywords = listOf("injury", "first", "aid", "wound", "burn", "sprain", "cut", "bleed"),
+            category = "medical_info",
+            language = "en"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_medical_007_hi",
+            question = "मामूली चोट के लिए बुनियादी प्राथमिक चिकित्सा क्या है?",
+            answer = "छोटे कट या खरोंच के लिए: घाव को साफ पानी से धोएं, एंटीसेप्टिक क्रीम लगाएं, और बाँझ पट्टी से ढकें। हल्की जलन के लिए: तुरंत ठंडे पानी से ठंडा करें (बर्फ नहीं)। मोच के लिए: आराम, बर्फ, संपीड़न, और ऊंचाई रखें। अगर दर्द, सूजन, या संक्रमण हो तो डॉक्टर से मिलें। +91 76977 44444 पर कॉल करें।",
+            keywords = listOf("चोट", "घाव", "पहली सहायता", "जलन", "खून", "मोच", "कट", "खरोंच"),
+            category = "medical_info",
+            language = "hi"
+        ),
+        // Time and location information
+        KnowledgeBaseQA(
+            id = "qa_info_time_001",
+            question = "What is the current date and time?",
+            answer = "Please check your device for the current date and time. All Is Well Hospital operates: Mon-Fri 8:00 AM - 8:00 PM, Sat-Sun 9:00 AM - 6:00 PM. Emergency and OPD services are available 24/7.",
+            keywords = listOf("date", "time", "current", "today", "hour", "when", "schedule", "operating"),
+            category = "hospital_info",
+            language = "en"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_info_time_001_hi",
+            question = "वर्तमान तारीख और समय क्या है?",
+            answer = "कृपया अपने डिवाइस पर वर्तमान तारीख और समय देखें। ऑल इज़ वेल हॉस्पिटल का संचालन: सोमवार-शुक्रवार 8:00 AM - 8:00 PM, शनिवार-रविवार 9:00 AM - 6:00 PM। आपातकालीन और OPD सेवाएं 24/7 उपलब्ध हैं।",
+            keywords = listOf("तारीख", "समय", "वर्तमान", "आज", "घंटा", "कब", "अनुसूची", "संचालन"),
+            category = "hospital_info",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_info_location_001",
+            question = "What is the hospital location and address?",
+            answer = "All Is Well Hospital is located near Macro Vision Academy, Burhanpur, Madhya Pradesh 450331. For directions and navigation, contact reception or use our navigation system. We can guide you to any department.",
+            keywords = listOf("location", "address", "where", "directions", "burhanpur", "near", "macro", "academy"),
+            category = "facilities",
+            language = "en"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_info_location_001_hi",
+            question = "अस्पताल का स्थान और पता क्या है?",
+            answer = "ऑल इज़ वेल हॉस्पिटल मैक्रो विजन अकादमी के पास, बुरहानपुर, मध्य प्रदेश 450331 में स्थित है। दिशा और नेविगेशन के लिए रिसेप्शन से संपर्क करें या हमारी नेविगेशन सिस्टम का उपयोग करें। हम आपको किसी भी विभाग तक गाइड कर सकते हैं।",
+            keywords = listOf("स्थान", "पता", "कहां", "दिशा", "बुरहानपुर", "पास", "मैक्रो", "अकादमी"),
+            category = "facilities",
+            language = "hi"
+        ),
     )
 
     // Dynamic doctor Q&As injected from Strapi
@@ -1936,7 +2163,32 @@ object HospitalKnowledgeBase {
                     language = "en"
                 )
             )
-            
+
+            // Q&A 1 (Hindi): Direct doctor name query - HINDI VERSION
+            dynamicDoctorQAs.add(
+                KnowledgeBaseQA(
+                    id = "dynamic_doc_${doctor.id}_name_hi",
+                    question = "$doctorName कौन हैं?",
+                    answer = "$doctorName एक $primarySpecialty हैं। " +
+                            "प्राथमिक विशेषता: $primarySpecialty। " +
+                            "विभाग: ${doctor.department}। " +
+                            "अनुभव: ${doctor.yearsOfExperience} वर्ष। " +
+                            "केबिन: ${doctor.cabin}। " +
+                            "विवरण: ${doctor.aboutBio}",
+                    keywords = listOf(
+                        doctor.name.lowercase(),
+                        doctor.specialization?.lowercase() ?: "",
+                        doctor.department.lowercase(),
+                        "डॉक्टर",
+                        "विशेषज्ञ",
+                        "केबिन",
+                        doctor.cabin.lowercase()
+                    ).plus(nameKeywords).plus(bioKeywords).filter { it.isNotEmpty() }.distinct(),
+                    category = "departments",
+                    language = "hi"
+                )
+            )
+
             // Q&A 2: Department query with COMPLETE details - SPECIALTY FIRST
             dynamicDoctorQAs.add(
                 KnowledgeBaseQA(
@@ -1961,6 +2213,30 @@ object HospitalKnowledgeBase {
                 )
             )
 
+            // Q&A 2 (Hindi): Department query - HINDI VERSION
+            dynamicDoctorQAs.add(
+                KnowledgeBaseQA(
+                    id = "dynamic_doc_${doctor.id}_dept_hi",
+                    question = "क्या कोई ${doctor.department} विशेषज्ञ है?",
+                    answer = "$doctorName - प्राथमिक विशेषता: $primarySpecialty। " +
+                            "विभाग: ${doctor.department}। " +
+                            "अनुभव: ${doctor.yearsOfExperience} वर्ष। " +
+                            "केबिन: ${doctor.cabin}। " +
+                            "विवरण: ${doctor.aboutBio}",
+                    keywords = listOf(
+                        doctor.department.lowercase(),
+                        "विशेषज्ञ",
+                        "डॉक्टर",
+                        "विभाग",
+                        doctor.specialization?.lowercase() ?: "",
+                        "अनुभव",
+                        doctor.cabin.lowercase()
+                    ).plus(nameKeywords).filter { it.isNotEmpty() }.distinct(),
+                    category = "departments",
+                    language = "hi"
+                )
+            )
+
             // Q&A 3: Specialization query (if different from department) - SPECIALTY FIRST
             if (doctor.specialization.isNotBlank() && !doctor.specialization.equals(doctor.department, ignoreCase = true)) {
                 dynamicDoctorQAs.add(
@@ -1981,6 +2257,28 @@ object HospitalKnowledgeBase {
                         ).plus(nameKeywords).filter { it.isNotEmpty() }.distinct(),
                         category = "departments",
                         language = "en"
+                    )
+                )
+
+                // Q&A 3 (Hindi): Specialization query - HINDI VERSION
+                dynamicDoctorQAs.add(
+                    KnowledgeBaseQA(
+                        id = "dynamic_doc_${doctor.id}_spec_hi",
+                        question = "कौन ${doctor.specialization} में विशेषज्ञ है?",
+                        answer = "$doctorName - प्राथमिक विशेषता: ${doctor.specialization}। " +
+                                "विभाग: ${doctor.department}। " +
+                                "अनुभव: ${doctor.yearsOfExperience} वर्ष। " +
+                                "केबिन: ${doctor.cabin}। " +
+                                "विवरण: ${doctor.aboutBio}",
+                        keywords = listOf(
+                            doctor.specialization.lowercase(),
+                            doctor.department.lowercase(),
+                            "विशेषज्ञ",
+                            "विशेषता",
+                            doctor.name.lowercase()
+                        ).plus(nameKeywords).filter { it.isNotEmpty() }.distinct(),
+                        category = "departments",
+                        language = "hi"
                     )
                 )
             }

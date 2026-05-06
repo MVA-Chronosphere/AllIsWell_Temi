@@ -257,7 +257,7 @@ object VoiceCommandParser {
     }
 
     /**
-     * Remove common ASR noise words from query
+     * Remove common ASR noise words from query (English + Hindi)
      */
     private fun removeNoiseWords(query: String): String {
         val noiseWords = listOf(
@@ -265,7 +265,10 @@ object VoiceCommandParser {
             "male", "female", "doctor", "dr", // titles that don't help matching
             "specialist", "surgeon", "physician", // general titles
             "senior", "junior", "sr", "jr", // qualifiers
-            "the", "a", "an" // articles
+            "the", "a", "an", // articles
+            // Hindi noise words
+            "डॉक्टर", "डाक्टर", "विशेषज्ञ", "सर्जन",
+            "नर", "महिला", "कौन", "क्या", "है"
         )
 
         var result = query
@@ -277,7 +280,7 @@ object VoiceCommandParser {
     }
 
     /**
-     * Extract the doctor name portion from query (handles "who is", "show me", etc.)
+     * Extract the doctor name portion from query (handles "who is", "show me", etc. - English + Hindi)
      */
     private fun extractQueryName(normalized: String): String {
         val cleanQuery = normalized
@@ -290,6 +293,18 @@ object VoiceCommandParser {
             .replace("find", "")
             .replace("doctor", "")
             .replace("dr", "")
+            // Hindi variants
+            .replace("कौन है", "")
+            .replace("कौन हैं", "")
+            .replace("क्या है", "")
+            .replace("क्या हैं", "")
+            .replace("कहां है", "")
+            .replace("डॉक्टर", "")
+            .replace("डाक्टर", "")
+            .replace("विशेषज्ञ", "")
+            .replace("बताओ", "")
+            .replace("दिखाओ", "")
+            .replace("ढूंढो", "")
             .trim()
         return cleanQuery
     }

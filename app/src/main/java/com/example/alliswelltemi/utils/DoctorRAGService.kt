@@ -197,5 +197,98 @@ object DoctorRAGService {
             append("We are proud to have $objective on our team.")
         }.trim()
     }
+
+    // ====== HINDI RESPONSE GENERATION ======
+
+    /**
+     * Hindi version of getResponseForDoctor
+     */
+    fun getResponseForDoctorHindi(doctor: Doctor, queryType: String = "general"): String {
+        val name = if (doctor.name.startsWith("Dr.", ignoreCase = true)) doctor.name else "डॉ. ${doctor.name}"
+        return when (queryType.lowercase()) {
+            "location", "cabin", "where" -> {
+                "मिला: $name। वे ऑल इज़ वेल हॉस्पिटल में केबिन ${doctor.cabin} में मरीजों को देख रहे हैं।"
+            }
+            "department", "specialty" -> {
+                "मिला: $name। वे ऑल इज़ वेल में ${doctor.department} के शीर्ष विशेषज्ञों में से एक हैं।"
+            }
+            "experience", "years", "bio" -> {
+                "मिला: $name। वे हॉस्पिटल में एक पुरस्कृत विशेषज्ञ हैं और ${doctor.specialization} में विशेषज्ञता रखते हैं। ${doctor.aboutBio.split(". ").take(1).joinToString("")}"
+            }
+            "full", "info", "details" -> {
+                "मिला: $name। वे ऑल इज़ वेल के ${doctor.department} टीम के एक प्रतिष्ठित सदस्य हैं और ${doctor.specialization} में जाने जाते हैं। आप ${doctor.cabin} केबिन में मिल सकते हैं।"
+            }
+            else -> {
+                "मिला: $name। वे ऑल इज़ वेल हॉस्पिटल में ${doctor.department} के विशेषज्ञ के रूप में काम कर रहे हैं।"
+            }
+        }
+    }
+
+    /**
+     * Hindi version of getResponseForDepartment
+     */
+    fun getResponseForDepartmentHindi(dept: String, doctorCount: Int): String {
+        return when {
+            doctorCount == 0 -> "क्षमा करें, हमारे पास इस समय $dept विभाग में कोई डॉक्टर सूचीबद्ध नहीं हैं।"
+            doctorCount == 1 -> "निश्चित रूप से! $dept विभाग खुल रहा है। हमारे पास एक विशेषज्ञ आपकी सहायता के लिए तैयार हैं।"
+            else -> "निश्चित रूप से! यह $dept विभाग है। हमारे पास $doctorCount विशेषज्ञ आपकी सहायता के लिए उपलब्ध हैं।"
+        }
+    }
+
+    /**
+     * Hindi version of generateDetailedResponse
+     */
+    fun generateDetailedResponseHindi(doctor: Doctor): String {
+        val displayName = if (doctor.name.startsWith("Dr.", ignoreCase = true)) doctor.name else "डॉ. ${doctor.name}"
+        return buildString {
+            append("मिला: $displayName। ")
+            append("वे वर्तमान में ऑल इज़ वेल हॉस्पिटल में काम कर रहे हैं। ")
+
+            if (doctor.specialization.isNotBlank()) {
+                append("वे ${doctor.specialization} में एक पुरस्कृत विशेषज्ञ हैं। ")
+            } else if (doctor.department.isNotBlank()) {
+                append("वे हमारे ${doctor.department} विभाग में एक प्रमुख विशेषज्ञ हैं। ")
+            }
+
+            if (doctor.aboutBio.isNotBlank()) {
+                val cleanBio = doctor.aboutBio
+                    .replace(Regex("(?i)M\\.D\\."), "MD")
+                    .replace(Regex("(?i)M\\.B\\.B\\.S\\."), "MBBS")
+                    .split(". ")
+                    .take(2)
+                    .joinToString(". ")
+
+                append("उन्हें उनके योगदान के लिए मान्यता प्राप्त है: $cleanBio। ")
+            }
+
+            if (doctor.cabin.isNotBlank()) {
+                append("आप उन्हें केबिन ${doctor.cabin} में पा सकते हैं। ")
+            }
+
+            append("हम उन्हें अपनी टीम में रखने पर गर्व करते हैं।")
+        }.trim()
+    }
+
+    /**
+     * Hindi version of generateFallbackResponse
+     */
+    fun generateFallbackResponseHindi(searchResults: List<Doctor>, originalQuery: String): String {
+        return when {
+            searchResults.isEmpty() -> {
+                "क्षमा करें, मुझे \"$originalQuery\" के लिए कोई मेल नहीं मिला। क्या आप हमारे डॉक्टरों की पूरी सूची देखना चाहेंगे?"
+            }
+            searchResults.size == 1 -> {
+                val doc = searchResults.first()
+                val name = if (doc.name.startsWith("Dr.", ignoreCase = true)) doc.name else "डॉ. ${doc.name}"
+                "मिला: $name। वे ${doc.department} में एक समर्पित विशेषज्ञ हैं। ${doc.aboutBio}"
+            }
+            else -> {
+                val names = searchResults.take(3).joinToString(", ") { doc ->
+                    if (doc.name.startsWith("Dr.", ignoreCase = true)) doc.name else "डॉ. ${doc.name}"
+                }
+                "मुझे आपके लिए कुछ मेल मिले: $names। कृपया बताएं कि आप किसमें रुचि रखते हैं।"
+            }
+        }
+    }
 }
 

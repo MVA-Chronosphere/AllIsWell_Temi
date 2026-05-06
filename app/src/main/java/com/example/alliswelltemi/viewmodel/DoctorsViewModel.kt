@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.alliswelltemi.data.Doctor
 import com.example.alliswelltemi.data.DoctorCache
+import com.example.alliswelltemi.data.DoctorData
 import com.example.alliswelltemi.network.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -49,6 +50,7 @@ class DoctorsViewModel(application: Application) : AndroidViewModel(application)
 
     /**
      * Get filtered and searched doctors list
+     * Supports bilingual department and doctor name filtering
      */
     val filteredDoctors: List<Doctor>
         get() {
@@ -56,11 +58,22 @@ class DoctorsViewModel(application: Application) : AndroidViewModel(application)
             val dept = _selectedDepartment.value
 
             return _doctors.value.filter { doctor ->
-                val matchesDept = dept == null || doctor.department == dept
-                val matchesQuery = query.isEmpty() ||
-                        doctor.name.lowercase().contains(query) ||
-                        doctor.department.lowercase().contains(query) ||
-                        doctor.specialization.lowercase().contains(query)
+                val matchesDept = if (dept == null) {
+                    true
+                } else {
+                    // Support both English and Hindi department names for filtering
+                    doctor.department == dept || doctor.departmentHi == dept
+                }
+
+                val matchesQuery = if (query.isEmpty()) {
+                    true
+                } else {
+                    doctor.name.lowercase().contains(query) ||
+                    doctor.department.lowercase().contains(query) ||
+                    doctor.departmentHi.lowercase().contains(query) ||
+                    doctor.specialization.lowercase().contains(query)
+                }
+
                 matchesDept && matchesQuery
             }
         }
@@ -199,9 +212,46 @@ class DoctorsViewModel(application: Application) : AndroidViewModel(application)
 
     /**
      * Filter doctors by department
+     * Supports both English and Hindi department names
      */
     fun filterByDepartment(department: String?) {
-        _selectedDepartment.value = department
+        if (department == null) {
+            _selectedDepartment.value = null
+        } else {
+            // Normalize department name - if Hindi name is provided, convert to English for filtering
+            val normalizedDept = DoctorData.findDepartmentByName(department) ?: department
+            _selectedDepartment.value = normalizedDept
+        }
+    }
+
+    /**
+     * Handle voice input for department search (bilingual support)
+     * Can recognize department names in both English and Hindi
+     * Example: "Cardiology" or "कार्डियोलॉजी" both work
+     */
+    fun handleDepartmentVoiceInput(spokenText: String) {
+        val normalizedDept = DoctorData.findDepartmentByName(spokenText)
+        if (normalizedDept != null) {
+            filterByDepartment(normalizedDept)
+        }
+    }
+
+    /**
+     * Handle voice input for doctor/department search
+     * Intelligently detects if input is a department or doctor name
+     */
+    fun handleVoiceInput(spokenText: String) {
+        val trimmedText = spokenText.trim()
+
+        // First, try to match as a department (English or Hindi)
+        val deptMatch = DoctorData.findDepartmentByName(trimmedText)
+        if (deptMatch != null) {
+            handleDepartmentVoiceInput(trimmedText)
+            return
+        }
+
+        // Otherwise, treat as doctor search query
+        onSearchQueryChanged(trimmedText)
     }
 
     fun selectDoctorForNavigation(doctor: Doctor?) {

@@ -85,6 +85,14 @@ fun NavigationScreen(
     var selectedTab by remember { mutableStateOf(NavigationTab.MOST_USED) }
     var currentLanguage by remember { mutableStateOf("en") } // Replace with actual language state if lifted
 
+    // Load locations from Temi's saved map when screen is first composed
+    LaunchedEffect(robot) {
+        if (robot != null) {
+            viewModel.loadLocationsFromMap(robot)
+        }
+    }
+
+    // Handle navigation when a location is selected
     LaunchedEffect(selectedLocation) {
         selectedLocation?.let { location ->
             try {

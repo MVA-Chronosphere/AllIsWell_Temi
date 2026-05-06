@@ -1030,25 +1030,24 @@ fun Model3DViewer(
               'viseme_kk', 'viseme_nn', 'viseme_RR', 'viseme_CH', 'viseme_sil'
             ];
             OCULUS_VISEMES.forEach(v => { currentWeights[v] = 0; targetWeights[v] = 0; });
-            const LERP_SPEED = 0.18;  // Lowered further for extra smooth transitions
-            const VISEME_MAX = {
-              'viseme_sil': 0.00,
-              'viseme_PP':  0.42,   // Reduced from 0.48
-              'viseme_FF':  0.35,   // Reduced from 0.40
-              'viseme_TH':  0.35,   // Reduced from 0.40
-              'viseme_DD':  0.35,   // Reduced from 0.42
-              'viseme_kk':  0.28,   // Reduced from 0.32
-              'viseme_CH':  0.32,   // Reduced from 0.38
-              'viseme_SS':  0.22,   // Reduced from 0.28
-              'viseme_nn':  0.30,   // Reduced from 0.34
-              'viseme_RR':  0.30,   // Reduced from 0.35
-              'viseme_aa':  0.45,   // Reduced from 0.52
-              'viseme_E':   0.10,   // Reduced from 0.12
-              'viseme_I':   0.08,   // Reduced from 0.10
-              'viseme_O':   0.40,   // Reduced from 0.48
-              'viseme_U':   0.38,   // Reduced from 0.42
-            };
-            const IDLE_SMILE_WEIGHT = 0.09;
+            const LERP_SPEED = 0.10;  // Reduced for softer transitions
+             const VISEME_MAX = {
+               'viseme_sil': 0.00,
+               'viseme_PP':  0.30,
+               'viseme_FF':  0.22,
+               'viseme_TH':  0.18,
+               'viseme_DD':  0.20,
+               'viseme_kk':  0.16,
+               'viseme_CH':  0.18,
+               'viseme_SS':  0.12,
+               'viseme_nn':  0.15,
+               'viseme_RR':  0.15,
+               'viseme_aa':  0.28,
+               'viseme_E':   0.04,
+               'viseme_I':   0.03,
+               'viseme_O':   0.22,
+               'viseme_U':   0.20,
+             };
 
             function initIdlePose() {
               const idleMap = [
@@ -1099,53 +1098,157 @@ fun Model3DViewer(
             }
 
             window.updateViseme = function(viseme, intensity) {
-                if (!OCULUS_VISEMES.includes(viseme)) return;
+                if (!OCULUS_VISEMES.includes(viseme)) {
+                  console.log('⚠️ Unknown viseme:', viseme);
+                  return;
+                }
                 
-                const maxWeight = VISEME_MAX[viseme] || 0.5;
-                const adjustedIntensity = intensity * maxWeight;
+                 const maxWeight = VISEME_MAX[viseme] || 0.5;
+                 const adjustedIntensity = intensity * maxWeight;
+                 
+                 // Reset other target weights
+                 OCULUS_VISEMES.forEach(v => { targetWeights[v] = 0; });
+                 
+                 // NO idle smile - remove all idle morph application
+                 
+                 // Apply jaw damping to viseme_aa (REDUCED: was 0.55, now allows fuller opening)
+                 let finalIntensity = adjustedIntensity;
+                 if (viseme === 'viseme_aa') {
+                     finalIntensity *= 0.75;  // Increased from 0.55 to allow better mouth opening
+                 }
+                 
+                 targetWeights[viseme] = finalIntensity;
                 
-                // Reset other target weights
-                OCULUS_VISEMES.forEach(v => { targetWeights[v] = 0; });
+                // Prevent conflicting vowel visemes
+                const vowelVisemes = [
+                  'viseme_aa',
+                  'viseme_E',
+                  'viseme_I',
+                  'viseme_O',
+                  'viseme_U'
+                ];
+
+                let strongest = null;
+                let strongestWeight = 0;
+
+                // Find strongest vowel
+                vowelVisemes.forEach(v => {
+                  if (targetWeights[v] > strongestWeight) {
+                    strongestWeight = targetWeights[v];
+                    strongest = v;
+                  }
+                });
+
+                // Suppress weaker vowels
+                vowelVisemes.forEach(v => {
+                  if (v !== strongest) {
+                    targetWeights[v] *= 0.15;
+                  }
+                });
                 
-                // Apply subtle idle smile to 'I' if no other viseme is dominant
-                targetWeights['viseme_I'] = IDLE_SMILE_WEIGHT;
-                
-                targetWeights[viseme] = Math.max(adjustedIntensity, (viseme === 'viseme_I' ? IDLE_SMILE_WEIGHT : 0));
+                // Log significant viseme changes
+                if (intensity > 0.1) {
+                  console.log('🎤 Viseme update:', viseme, 'intensity:', intensity.toFixed(2), 'adjusted:', adjustedIntensity.toFixed(2));
+                }
             };
 
-            function applySmoothedWeights() {
-              for (const name of OCULUS_VISEMES) {
-                currentWeights[name] += (targetWeights[name] - currentWeights[name]) * LERP_SPEED;
-                if (currentWeights[name] < 0.001) currentWeights[name] = 0;
-              }
+             function applySmoothedWeights() {
+               for (const name of OCULUS_VISEMES) {
+                 currentWeights[name] += (targetWeights[name] - currentWeights[name]) * LERP_SPEED;
+                 if (currentWeights[name] < 0.001) currentWeights[name] = 0;
+               }
 
-              // Teeth visibility logic based on mouth openness
-              const mouthOpen = (currentWeights['viseme_aa'] || 0) +
-                                 (currentWeights['viseme_O'] || 0) +
-                                 (currentWeights['viseme_E'] || 0) +
-                                 (currentWeights['viseme_DD'] || 0);
-              
-              const teethOpacity = Math.min(1.0, mouthOpen * 8); // Slightly less aggressive ramp
+               // Prevent smile stretching during jaw open
+               const jawOpen = currentWeights['viseme_aa'] || 0;
+
+               if (jawOpen > 0.15) {
+                 currentWeights['viseme_I'] *= 0.2;
+                 currentWeights['viseme_E'] *= 0.3;
+               }
+
+               // Upper lip anti-stretch correction
+               const aa = currentWeights['viseme_aa'] || 0;
+               const O  = currentWeights['viseme_O'] || 0;
+               const U  = currentWeights['viseme_U'] || 0;
+
+               const openAmount = aa + (O * 0.6) + (U * 0.4);
+
+               // suppress smile/stretch morphs LESS aggressively with dynamic suppression
+               if (openAmount > 0.08) {
+                   // Scale suppression based on opening degree (less suppression for moderate opens)
+                   const suppressScale = Math.min(1.0, openAmount / 0.25);  // Full suppression only when very open
+                   currentWeights['viseme_I'] *= Math.max(0.2, 1.0 - suppressScale * 0.8);
+                   currentWeights['viseme_E'] *= Math.max(0.25, 1.0 - suppressScale * 0.75);
+                   currentWeights['viseme_SS'] *= 0.4;
+                   currentWeights['viseme_CH'] *= 0.5;
+               }
+
+               // Stabilize lips during speech
+               if (openAmount > 0.10) {
+                   currentWeights['viseme_PP'] += 0.03;
+               }
+
+               // Relax hard clamps to allow better mouth opening - use calibrated values from VISEME_MAX
+               currentWeights['viseme_aa'] = Math.min(currentWeights['viseme_aa'], 0.28);
+
+               // Add morph influence easing clamp (raised from 0.18 to 0.25 to allow fuller shapes)
+               for (const name of OCULUS_VISEMES) {
+                 currentWeights[name] = Math.max(0, Math.min(currentWeights[name], 0.25));
+               }
+
+               // Teeth visibility logic based on mouth openness (INCREASED opacity)
+               const mouthOpen = (currentWeights['viseme_aa'] || 0) +
+                                  (currentWeights['viseme_O'] || 0) +
+                                  (currentWeights['viseme_E'] || 0) +
+                                  (currentWeights['viseme_DD'] || 0);
+               
+               const teethOpacity = Math.min(0.65, mouthOpen * 2.0);  // Increased from 0.45 with better scaling
+
 
               // Apply teeth properties to cached meshes
               for (const mesh of teethMeshes) {
                 const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
                 mats.forEach(m => { 
                     m.opacity = teethOpacity;
-                    // FIX: Disable transparency when teeth are clearly visible to prevent "broken" look (depth sorting issues)
                     m.transparent = teethOpacity < 0.9;
                     m.depthWrite = true;
                 });
               }
 
+              // Apply morph targets to facial meshes
+              let appliedCount = 0;
+              if (morphMeshes.length === 0) {
+                // Log warning once every 5 seconds
+                const now = Date.now();
+                if (!window.lastMorphWarning || now - window.lastMorphWarning > 5000) {
+                  console.warn('⚠️ No morph meshes found - lip-sync will not work!');
+                  window.lastMorphWarning = now;
+                }
+              }
+              
               for (const mesh of morphMeshes) {
-                if (!mesh.morphTargetInfluences || !mesh.morphTargetDictionary) continue;
+                if (!mesh.morphTargetInfluences || !mesh.morphTargetDictionary) {
+                  console.warn('⚠️ Mesh missing morph data:', mesh.name);
+                  continue;
+                }
+                
                 for (const name of OCULUS_VISEMES) {
                   const idx = mesh.morphTargetDictionary[name];
                   if (idx !== undefined) {
                     mesh.morphTargetInfluences[idx] = currentWeights[name];
+                    if (currentWeights[name] > 0.1) {
+                      appliedCount++;
+                    }
                   }
                 }
+              }
+              
+              // Log active morph targets periodically
+              if (appliedCount > 0 && Math.random() < 0.01) {
+                const activeVisemes = OCULUS_VISEMES
+                  .filter(v => currentWeights[v] > 0.1)
+                  .map(v => v + ':' + currentWeights[v].toFixed(2));
+                console.log('👄 Active visemes:', activeVisemes.join(', '));
               }
 
               // Head tilt coupling - make it extremely subtle to avoid "bobbing" look
@@ -1170,20 +1273,27 @@ fun Model3DViewer(
                 scene.add(model);
 
                 model.traverse((node) => {
-                  if (node.isMesh && node.isSkinnedMesh) {
+                  if (node.isMesh) {
                     node.frustumCulled = false;
                     
-                    // Face material fix
-                    if (node.name === 'Object_9') {
+                    // Face/Head material fix - AvatarHead contains the lips and facial morphs
+                    if (node.name === 'AvatarHead' || node.name === 'Object_9') {
+                      console.log('✓ Found face mesh:', node.name);
                       if (Array.isArray(node.material)) {
                         node.material.forEach(m => { m.side = THREE.FrontSide; });
                       } else {
                         node.material.side = THREE.FrontSide;
                       }
+                      // AvatarHead should have morph targets for visemes
+                      if (node.morphTargetDictionary) {
+                        console.log('✓ Face mesh has morph targets:', Object.keys(node.morphTargetDictionary));
+                        morphMeshes.push(node);
+                      }
                     }
 
-                    // Teeth material fix
-                    if (node.name === 'Object_14' || node.name === 'Object_15') {
+                    // Upper teeth material fix
+                    if (node.name === 'AvatarTeethUpper' || node.name === 'Object_14') {
+                      console.log('✓ Found upper teeth:', node.name);
                       const mats = Array.isArray(node.material) ? node.material : [node.material];
                       mats.forEach(m => {
                         m.side = THREE.DoubleSide;
@@ -1191,29 +1301,68 @@ fun Model3DViewer(
                         m.opacity = 0;
                         m.depthWrite = true;
                       });
-                      // FIX: Increase renderOrder so teeth are drawn AFTER the face
-                      // and move them further forward to stay "above" the lips when they stretch.
                       node.renderOrder = 30;
                       node.position.z += 0.02;
                       teethMeshes.push(node);
                     }
 
-                    if (node.morphTargetDictionary) {
+                    // Lower teeth material fix
+                    if (node.name === 'AvatarTeethLower' || node.name === 'Object_15') {
+                      console.log('✓ Found lower teeth:', node.name);
+                      const mats = Array.isArray(node.material) ? node.material : [node.material];
+                      mats.forEach(m => {
+                        m.side = THREE.DoubleSide;
+                        m.transparent = true;
+                        m.opacity = 0;
+                        m.depthWrite = true;
+                      });
+                      node.renderOrder = 30;
+                      node.position.z += 0.02;
+                      teethMeshes.push(node);
+                    }
+
+                    // Catch any other meshes with morph targets
+                    if (node.morphTargetDictionary && !morphMeshes.includes(node)) {
+                      console.log('✓ Found mesh with morph targets:', node.name, Object.keys(node.morphTargetDictionary));
                       morphMeshes.push(node);
                     }
                   }
                   
                   if (node.isBone) {
-                    if (node.name.toLowerCase().includes('head')) headBone = node;
-                    if (node.name.toLowerCase().includes('neck')) neckBone = node;
+                    // Look for Head_08 bone specifically
+                    if (node.name === 'Head_08' || node.name.toLowerCase().includes('head')) {
+                      headBone = node;
+                      console.log('✓ Found head bone:', node.name);
+                    }
+                    if (node.name === 'Neck2_07' || node.name.toLowerCase().includes('neck')) {
+                      neckBone = node;
+                      console.log('✓ Found neck bone:', node.name);
+                    }
                     restPose[node.name] = node.quaternion.clone();
                   }
                 });
                 
                 initIdlePose();
 
+                // Diagnostic summary
+                console.log('═══════════════════════════════════════');
+                console.log('📊 MODEL LOAD SUMMARY');
+                console.log('═══════════════════════════════════════');
+                console.log('✓ Morph meshes found:', morphMeshes.length);
+                morphMeshes.forEach(m => {
+                  console.log('  - ' + m.name + ' has ' + Object.keys(m.morphTargetDictionary || {}).length + ' morph targets');
+                  if (m.morphTargetDictionary) {
+                    console.log('    Visemes:', Object.keys(m.morphTargetDictionary).filter(k => k.includes('viseme')).join(', '));
+                  }
+                });
+                console.log('✓ Teeth meshes found:', teethMeshes.length);
+                teethMeshes.forEach(m => console.log('  - ' + m.name));
+                console.log('✓ Head bone:', headBone ? headBone.name : 'NOT FOUND');
+                console.log('✓ Neck bone:', neckBone ? neckBone.name : 'NOT FOUND');
+                console.log('═══════════════════════════════════════');
+
                 // Camera framing based on provided configuration
-                const target = new THREE.Vector3(0.05, 3.04, 0.12);
+                const target = new THREE.Vector3(0.05, 2.75, 0.12);
                 const yaw = THREE.MathUtils.degToRad(12.54);
                 const pitch = THREE.MathUtils.degToRad(88.48);
                 const radius = 2.0; // Distance adjusted to show head down to chest

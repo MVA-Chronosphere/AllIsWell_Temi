@@ -281,9 +281,10 @@ class VoiceInteractionManager(
                 val hospitalContextPrompt = RagContextBuilder.buildOllamaPrompt(
                     query = spokenText,
                     doctors = doctors,
-                    historyContext = conversationContext.getContextString()
+                    historyContext = conversationContext.getContextString(),
+                    language = language  // Pass the detected/configured language
                 )
-                Log.d(TAG, "Built hospital context prompt (${hospitalContextPrompt.length} chars)")
+                Log.d(TAG, "Built hospital context prompt (${hospitalContextPrompt.length} chars, language: $language)")
 
                 updateState(VoiceState.THINKING)
 

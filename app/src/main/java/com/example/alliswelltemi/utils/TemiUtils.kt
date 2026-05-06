@@ -48,15 +48,17 @@ object TemiUtils {
     fun detectIntent(text: String): String {
         val lower = text.trim().lowercase()
         val commandKeywords = listOf(
-            "go to", "take me", "navigate", "start", "stop", "follow", "bring", "move to", "show me the way", "lead me", "find", "book", "rate", "dance"
+            "go to", "take me", "navigate", "start", "stop", "follow", "bring", "move to", "show me the way", "lead me", "find", "book", "rate", "dance",
+            "ले चलो", "ले जाओ", "दिखाओ", "नेविगेट", "चलो", "नाचो", "बुक करो", "ले चलिए", "दिखाइये"
         )
         val questionKeywords = listOf(
-            "what", "where", "how", "who", "when", "why", "can you", "could you", "would you", "is it", "are you", "do you", "does it", "should i", "tell me", "explain"
+            "what", "where", "how", "who", "when", "why", "can you", "could you", "would you", "is it", "are you", "do you", "does it", "should i", "tell me", "explain",
+            "क्या", "कहाँ", "कैसे", "कौन", "कब", "क्यों", "बताओ", "किधर", "बताइये"
         )
-        if (commandKeywords.any { lower.startsWith(it) || lower.contains(it) }) return "COMMAND"
-        if (questionKeywords.any { lower.startsWith(it) || lower.contains(it) }) return "QUESTION"
-        // Heuristic: ends with ?
-        if (lower.endsWith("?")) return "QUESTION"
+        if (commandKeywords.any { lower.contains(it) }) return "COMMAND"
+        if (questionKeywords.any { lower.contains(it) }) return "QUESTION"
+        // Heuristic: ends with ? or contains Hindi question punctuation
+        if (lower.contains("?") || lower.contains("।")) return "QUESTION"
         return "UNKNOWN"
     }
 }
