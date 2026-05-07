@@ -304,7 +304,7 @@ private fun MostlyUsedCard(
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
-                    text = "FLOOR ${location.name.length % 3}".toUpperCase(Locale.current),
+                    text = "FLOOR 0".toUpperCase(Locale.current),
                     style = MaterialTheme.typography.labelSmall.copy(
                         fontSize = 11.sp,
                         fontWeight = FontWeight.ExtraBold,

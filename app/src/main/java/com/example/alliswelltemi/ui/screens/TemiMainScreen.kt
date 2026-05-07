@@ -37,6 +37,7 @@ import com.example.alliswelltemi.ui.components.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.alliswelltemi.R
+import com.example.alliswelltemi.viewmodel.DoctorsViewModel
 import com.robotemi.sdk.Robot
 import com.robotemi.sdk.TtsRequest
 
@@ -52,110 +53,121 @@ fun TemiMainScreen(
     onNavigate: (String) -> Unit = {},
     currentViseme: String = "viseme_sil",
     currentIntensity: Float = 0f,
-    isLipSyncActive: Boolean = false
+    isLipSyncActive: Boolean = false,
+    doctorsViewModel: DoctorsViewModel? = null
 ) {
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(HospitalColors.Background)
     ) {
-        Row(
+        Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            // LEFT CONTENT COLUMN
-            Column(
-                modifier = Modifier
-                    .weight(1.3f)
-                    .fillMaxHeight()
-            ) {
-                var currentLanguage by remember { mutableStateOf("en") }
-                TemiNavBar(
-                    currentLanguage = currentLanguage,
-                    onLogoClick = { onNavigate("main") }
-                )
+            // NAVBAR - Full Width at Top
+            var currentLanguage by remember { mutableStateOf("en") }
+            TemiNavBar(
+                currentLanguage = currentLanguage,
+                onLogoClick = { onNavigate("main") }
+            )
 
+            // MAIN CONTENT - Below Navbar
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                // LEFT CONTENT COLUMN
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 60.dp)
                         .weight(1f)
-                        .verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.Start
+                        .fillMaxHeight()
                 ) {
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    // HERO SECTION
                     Column(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 60.dp)
+                            .weight(1f)
+                            .verticalScroll(rememberScrollState()),
                         horizontalAlignment = Alignment.Start
                     ) {
-                        Text(
-                            text = "NAMASTE",
-                            style = MaterialTheme.typography.displayLarge.copy(
-                                fontSize = 80.sp,
-                                fontWeight = FontWeight.Black,
-                                letterSpacing = (-2).sp,
-                                color = HospitalColors.DeepSlate
-                            )
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = "I am Chronexa, your medical assistant. How can I help you?",
-                            style = MaterialTheme.typography.displayMedium.copy(
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = HospitalColors.DeepSlate.copy(alpha = 0.7f)
-                            )
-                        )
-                    }
+                        Spacer(modifier = Modifier.height(10.dp))
 
-                    Spacer(modifier = Modifier.height(40.dp))
-
-                    // NAVIGATION GRID
-                    val gridItems = remember {
-                        listOf(
-                            MenuItem("navigation", "Find & \nNavigate", "RADIOLOGY, LAB, PHARMACY", HospitalColors.SkyBlue, Icons.Default.LocationOn),
-                            MenuItem("doctors", "Doctors & \nDepartments", "124 SPECIALISTS ON DUTY", Color(0xFF7B61FF), Icons.Default.Groups),
-                            MenuItem("appointment", "Book \nAppointment", "NEXT AVAILABLE: 2:30 PM", Color(0xFF7B61FF), Icons.Default.CalendarToday),
-                            MenuItem("feedback", "Patient \nFeedback", "RATE YOUR EXPERIENCE", HospitalColors.SkyBlue, Icons.Default.ChatBubbleOutline)
-                        )
-                    }
-
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(32.dp)
-                    ) {
-                        Row(
+                        // HERO SECTION
+                        Column(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(32.dp)
+                            horizontalAlignment = Alignment.Start
                         ) {
-                            HeroMenuCard(gridItems[0], Modifier.weight(1f), { onNavigate("navigation") })
-                            HeroMenuCard(gridItems[1], Modifier.weight(1f), { onNavigate("doctors") })
+                            Text(
+                                text = "NAMASTE",
+                                style = MaterialTheme.typography.displayLarge.copy(
+                                    fontSize = 80.sp,
+                                    fontWeight = FontWeight.Black,
+                                    letterSpacing = (-2).sp,
+                                    color = HospitalColors.DeepSlate
+                                )
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = "I am Chronexa, your medical assistant. How can I help you?",
+                                style = MaterialTheme.typography.displayMedium.copy(
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = HospitalColors.DeepSlate.copy(alpha = 0.7f)
+                                )
+                            )
                         }
-                        Row(
+
+                        Spacer(modifier = Modifier.height(40.dp))
+
+                        // NAVIGATION GRID
+                        val doctors by doctorsViewModel?.doctors ?: mutableStateOf(emptyList())
+                        val doctorCount = doctors.size
+                        val gridItems = remember(doctorCount) {
+                            listOf(
+                                MenuItem("navigation", "Find & \nNavigate", "RADIOLOGY, LAB, PHARMACY", HospitalColors.SkyBlue, Icons.Default.LocationOn),
+                                MenuItem("doctors", "Doctors & \nDepartments", "$doctorCount SPECIALISTS ON DUTY", Color(0xFF7B61FF), Icons.Default.Groups),
+                                MenuItem("appointment", "Book \nAppointment", "NEXT AVAILABLE: 2:30 PM", Color(0xFF7B61FF), Icons.Default.CalendarToday),
+                                MenuItem("feedback", "Patient \nFeedback", "RATE YOUR EXPERIENCE", HospitalColors.SkyBlue, Icons.Default.ChatBubbleOutline)
+                            )
+                        }
+
+                        Column(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(32.dp)
+                            verticalArrangement = Arrangement.spacedBy(32.dp)
                         ) {
-                            HeroMenuCard(gridItems[2], Modifier.weight(1f), { onNavigate("appointment") })
-                            HeroMenuCard(gridItems[3], Modifier.weight(1f), { onNavigate("feedback") })
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(32.dp)
+                            ) {
+                                HeroMenuCard(gridItems[0], Modifier.weight(1f), { onNavigate("navigation") })
+                                HeroMenuCard(gridItems[1], Modifier.weight(1f), { onNavigate("doctors") })
+                            }
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(32.dp)
+                            ) {
+                                HeroMenuCard(gridItems[2], Modifier.weight(1f), { onNavigate("availableSoon") })
+                                HeroMenuCard(gridItems[3], Modifier.weight(1f), { onNavigate("feedback") })
+                            }
                         }
+                        Spacer(modifier = Modifier.height(140.dp)) // Extra space for voice footer
                     }
-                    Spacer(modifier = Modifier.height(140.dp)) // Extra space for voice footer
                 }
-            }
 
-            // RIGHT SIDE - 3D ASSISTANT
-            Box(
-                modifier = Modifier
-                    .weight(0.7f)
-                    .fillMaxHeight(),
-                contentAlignment = Alignment.Center
-            ) {
-                Model3DViewer(
-                    modifier = Modifier.fillMaxSize(),
-                    viseme = currentViseme,
-                    intensity = currentIntensity
-                )
+                // RIGHT SIDE - 3D ASSISTANT
+                Box(
+                    modifier = Modifier
+                        .weight(0.7f)
+                        .fillMaxHeight(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Model3DViewer(
+                        modifier = Modifier.fillMaxSize(),
+                        viseme = currentViseme,
+                        intensity = currentIntensity
+                    )
+                }
             }
         }
 

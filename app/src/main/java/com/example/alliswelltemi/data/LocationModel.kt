@@ -9,6 +9,7 @@ package com.example.alliswelltemi.data
  * @param mapName Temi robot map name - must match pre-registered locations on Temi's control system
  * @param isPopular Whether location should appear in quick access
  * @param icon Emoji icon for UI display
+ * @param floor Floor number where location is located (0, 1, 2, 3, etc.)
  */
 data class Location(
     val id: String,
@@ -16,7 +17,8 @@ data class Location(
     val nameHi: String = "",  // Hindi translation for voice recognition
     val mapName: String = "",  // Temi robot map identifier
     val isPopular: Boolean = false,
-    val icon: String = "📍"
+    val icon: String = "📍",
+    val floor: Int = 0  // Floor number for location display
 ) {
     /**
      * Get location name in specified language
@@ -41,7 +43,8 @@ object LocationData {
             nameHi = "मुख्य फार्मेसी",
             mapName = "main_pharmacy",
             isPopular = true,
-            icon = "💊"
+            icon = "💊",
+            floor = 0
         ),
         Location(
             id = "main_reception",
@@ -49,7 +52,8 @@ object LocationData {
             nameHi = "मुख्य रिसेप्शन",
             mapName = "main_reception",
             isPopular = true,
-            icon = "🔔"
+            icon = "🔔",
+            floor = 0
         ),
         Location(
             id = "pathology_department",
@@ -57,7 +61,8 @@ object LocationData {
             nameHi = "पैथोलॉजी विभाग",
             mapName = "pathology_department",
             isPopular = true,
-            icon = "🔬"
+            icon = "🔬",
+            floor = 1
         ),
         Location(
             id = "pathology_reception",
@@ -65,7 +70,8 @@ object LocationData {
             nameHi = "पैथोलॉजी रिसेप्शन",
             mapName = "pathology_reception",
             isPopular = true,
-            icon = "🔬"
+            icon = "🔬",
+            floor = 1
         ),
         Location(
             id = "opd",
@@ -73,7 +79,8 @@ object LocationData {
             nameHi = "ओ.पी.डी",
             mapName = "opd",
             isPopular = true,
-            icon = "🏥"
+            icon = "🏥",
+            floor = 2
         )
     )
 
@@ -83,126 +90,144 @@ object LocationData {
             name = "Home Base",
             nameHi = "होम बेस",
             mapName = "HOME BASE",
-            icon = "🏠"
+            icon = "🏠",
+            floor = 0
         ),
         Location(
             id = "pathology_department",
             name = "Pathology Department",
             nameHi = "पैथोलॉजी विभाग",
             mapName = "PATHOLOGY DEPARTMENT",
-            icon = "🔬"
+            icon = "🔬",
+            floor = 1
         ),
         Location(
             id = "ayushman_department",
             name = "Ayushman Department",
             nameHi = "आयुष्मान विभाग",
             mapName = "AYUSHMAN DEPARTMENT",
-            icon = "🌿"
+            icon = "🌿",
+            floor = 2
         ),
         Location(
             id = "main_pharmacy",
             name = "Main Pharmacy",
             nameHi = "मुख्य फार्मेसी",
             mapName = "MAIN PHARMACY",
-            icon = "💊"
+            icon = "💊",
+            floor = 0
         ),
         Location(
             id = "back_entrance",
             name = "Back Entrance",
             nameHi = "पिछला प्रवेश द्वार",
             mapName = "BACK ENTRANCE",
-            icon = "🚪"
+            icon = "🚪",
+            floor = 0
         ),
         Location(
             id = "rotary_dialysis_center",
             name = "Rotary Dialysis Center",
             nameHi = "रोटरी डायलिसिस सेंटर",
             mapName = "ROTARY DIALYSIS CENTER",
-            icon = "🏥"
+            icon = "🏥",
+            floor = 1
         ),
         Location(
             id = "phlebotomy",
             name = "Phlebotomy",
             nameHi = "फलेबोटोमी",
             mapName = "PHLEBOTOMY",
-            icon = "💉"
+            icon = "💉",
+            floor = 1
         ),
         Location(
             id = "pathology_reception",
             name = "Pathology Reception",
             nameHi = "पैथोलॉजी रिसेप्शन",
             mapName = "PATHOLOGY RECEPTION",
-            icon = "🔬"
+            icon = "🔬",
+            floor = 1
         ),
         Location(
             id = "opticals",
             name = "Opticals",
             nameHi = "ऑप्टिकल्स",
             mapName = "OPTICALS",
-            icon = "👓"
+            icon = "👓",
+            floor = 2
         ),
         Location(
             id = "opd",
             name = "OPD",
             nameHi = "ओ.पी.डी",
             mapName = "OPD",
-            icon = "🏥"
+            icon = "🏥",
+            floor = 2
         ),
         Location(
             id = "dialysis_department",
             name = "Dialysis Department",
             nameHi = "डायलिसिस विभाग",
             mapName = "DIALYSIS DEPARTMENT",
-            icon = "🏥"
+            icon = "🏥",
+            floor = 1
         ),
         Location(
             id = "main_entrance",
             name = "Main Entrance",
             nameHi = "मुख्य प्रवेश द्वार",
             mapName = "MAIN ENTRANCE",
-            icon = "🚪"
+            icon = "🚪",
+            floor = 0
         ),
         Location(
             id = "ophthalmology_department",
             name = "Ophthalmology Department",
             nameHi = "नेत्र विज्ञान विभाग",
             mapName = "OPHTHALMOLOGY DEPARTMENT",
-            icon = "👁️"
+            icon = "👁️",
+            floor = 3
         ),
         Location(
             id = "health_shop",
             name = "Health Shop",
             nameHi = "स्वास्थ्य दुकान",
             mapName = "HEALTH SHOP",
-            icon = "🏪"
+            icon = "🏪",
+            floor = 0
         ),
         Location(
             id = "ipd_billing",
             name = "IPD Billing",
             nameHi = "आई.पी.डी बिलिंग",
             mapName = "IPD BILLING",
-            icon = "💳"
+            icon = "💳",
+            floor = 0
         ),
         Location(
             id = "radiology",
             name = "Radiology",
             nameHi = "रेडियोलॉजी",
             mapName = "RADIOLOGY",
-            icon = "📊"
+            icon = "📊",
+            floor = 2
         ),
         Location(
             id = "main_reception",
             name = "Main Reception",
             nameHi = "मुख्य रिसेप्शन",
             mapName = "MAIN RECEPTION",
-            icon = "🔔"
+            icon = "🔔",
+            floor = 0
         ),
         Location(
             id = "common_washroom",
             name = "Common Washroom",
             nameHi = "सामान्य शौचालय",
             mapName = "COMMON WASHROOM",
-            icon = "🚻"
+            icon = "🚻",
+            floor = 0
         )
     )
 

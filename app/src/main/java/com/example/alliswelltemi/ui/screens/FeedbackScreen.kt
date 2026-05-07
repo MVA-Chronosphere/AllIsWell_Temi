@@ -54,12 +54,13 @@ fun FeedbackScreen(
         contentAlignment = Alignment.TopStart
     ) {
         Column(
-            modifier = Modifier
-                .widthIn(max = 1100.dp)
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
-            // Global Status Bar
-            GlobalStatusBar()
+            // TemiNavBar - Full Width
+            TemiNavBar(
+                currentLanguage = currentLanguage,
+                onLogoClick = onBackPress
+            )
 
             Column(
                 modifier = Modifier

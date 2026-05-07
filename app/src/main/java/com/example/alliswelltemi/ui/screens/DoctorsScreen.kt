@@ -197,7 +197,8 @@ fun DoctorsScreen(
                                                 DepartmentsGrid(
                                                     departments = departments,
                                                     selectedDept = selectedDept,
-                                                    onDeptClick = { viewModel.filterByDepartment(it) }
+                                                    onDeptClick = { viewModel.filterByDepartment(it) },
+                                                    doctors = doctors
                                                 )
                                             }
                                         }
@@ -257,7 +258,8 @@ private fun DoctorsGrid(
 private fun DepartmentsGrid(
     departments: List<String>,
     selectedDept: String?,
-    onDeptClick: (String?) -> Unit
+    onDeptClick: (String?) -> Unit,
+    doctors: List<Doctor> = emptyList()
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(3), // Updated to 3 columns
@@ -270,16 +272,17 @@ private fun DepartmentsGrid(
         item {
             InfoCard(
                 title = "  Departments",
-                subtitle = "Comprehensive Healthcare for Everyone",
+                subtitle = "${doctors.size} specialists on duty",
                 icon = Icons.Outlined.Business,
                 isSelected = selectedDept == null,
                 onClick = { onDeptClick(null) }
             )
         }
         itemsIndexed(departments) { _, dept ->
+            val doctorCountInDept = doctors.count { it.department == dept }
             InfoCard(
                 title = dept,
-                subtitle = "Advanced Clinical Care & Specialized Treatment",
+                subtitle = "$doctorCountInDept specialists on duty",
                 icon = Icons.Outlined.Business,
                 isSelected = selectedDept == dept,
                 onClick = { onDeptClick(dept) }

@@ -211,8 +211,21 @@ class MainActivity : ComponentActivity(),
                                 robot = currentRobot,
                                 viewModel = doctorsViewModel,
                                 onBackPress = { currentScreen.value = "main" },
-                                onSelectDoctor = { currentScreen.value = "appointment" },
+                                onSelectDoctor = { /* Just navigate to doctor, don't go to appointment */ },
                                 selectedDoctorId = selectedDoctorIdForScreen
+                            )
+                        }
+                        "availableSoon" -> {
+                            AvailableSoonScreen(
+                                onBackPress = { currentScreen.value = "main" },
+                                currentLanguage = "en",
+                                featureName = "Appointment Booking"
+                            )
+                        }
+                        "feedback" -> {
+                            FeedbackScreen(
+                                robot = currentRobot,
+                                onBackPress = { currentScreen.value = "main" }
                             )
                         }
                         else -> {
@@ -222,7 +235,8 @@ class MainActivity : ComponentActivity(),
                                     currentScreen.value = screen
                                 },
                                 currentViseme = viseme,
-                                currentIntensity = intensity
+                                currentIntensity = intensity,
+                                doctorsViewModel = doctorsViewModel
                             )
                         }
                     }
