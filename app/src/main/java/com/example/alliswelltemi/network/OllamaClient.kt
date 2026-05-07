@@ -83,81 +83,97 @@ object OllamaClient {
         cacheEnabled: Boolean = false  // SECURITY: Cache disabled by default
     ): kotlinx.coroutines.flow.Flow<String> {
         return kotlinx.coroutines.flow.flow {
-            try {
-                // PRODUCTION FIX: Extract QUERY ONLY from prompt for cache key
-                // This prevents same-prompt collisions while allowing legitimate caching
-                val queryOnlyKey = extractQueryFromPrompt(request.prompt)
+            var lastException: Exception? = null
+            val urlsToTry = listOf(
+                com.example.alliswelltemi.utils.OllamaConfig.getPrimaryServerUrl(),
+                com.example.alliswelltemi.utils.OllamaConfig.getFallbackServerUrl()
+            )
 
-                // Check cache only if explicitly enabled
-                if (cacheEnabled && queryOnlyKey.isNotBlank()) {
-                    val cachedResponse = com.example.alliswelltemi.utils.ResponseCache.get(queryOnlyKey)
-                    if (cachedResponse != null) {
-                        android.util.Log.d("OllamaClient", "✓ Cache HIT for query: '${queryOnlyKey.take(50)}...'")
-                        emit(cachedResponse)
-                        com.example.alliswelltemi.utils.OllamaCircuitBreaker.recordSuccess()
-                        return@flow
+            for (urlToTry in urlsToTry) {
+                try {
+                    android.util.Log.i("OllamaClient", "Attempting connection to: $urlToTry")
+
+                    // Set the URL for this attempt
+                    com.example.alliswelltemi.utils.OllamaConfig.setServerUrl(urlToTry)
+
+                    // PRODUCTION FIX: Extract QUERY ONLY from prompt for cache key
+                    val queryOnlyKey = extractQueryFromPrompt(request.prompt)
+
+                    // Check cache only if explicitly enabled
+                    if (cacheEnabled && queryOnlyKey.isNotBlank()) {
+                        val cachedResponse = com.example.alliswelltemi.utils.ResponseCache.get(queryOnlyKey)
+                        if (cachedResponse != null) {
+                            android.util.Log.d("OllamaClient", "✓ Cache HIT for query: '${queryOnlyKey.take(50)}...'")
+                            emit(cachedResponse)
+                            com.example.alliswelltemi.utils.OllamaCircuitBreaker.recordSuccess()
+                            return@flow
+                        }
                     }
-                } else if (cacheEnabled) {
-                    android.util.Log.d("OllamaClient", "⚠ Cache enabled but query key is empty, proceeding without cache")
-                }
 
-                val response = api.generateStream(request.copy(stream = true))
-                
-                if (!response.isSuccessful) {
-                    val errorBody = response.errorBody()?.string()
-                    android.util.Log.e("OllamaClient", "API Error (${response.code()}): $errorBody")
-                    com.example.alliswelltemi.utils.OllamaCircuitBreaker.recordFailure()
-                    throw Exception("Ollama API Error: ${response.code()} - $errorBody")
-                }
+                    val response = api.generateStream(request.copy(stream = true))
 
-                val responseBody = response.body()
-                if (responseBody == null) {
-                    android.util.Log.e("OllamaClient", "Response body is null")
-                    com.example.alliswelltemi.utils.OllamaCircuitBreaker.recordFailure()
-                    throw Exception("Ollama Response body is null")
-                }
+                    if (!response.isSuccessful) {
+                        val errorBody = response.errorBody()?.string()
+                        android.util.Log.e("OllamaClient", "API Error (${response.code()}): $errorBody")
+                        com.example.alliswelltemi.utils.OllamaCircuitBreaker.recordFailure()
+                        lastException = Exception("Ollama API Error: ${response.code()} - $errorBody")
+                        continue  // Try next URL
+                    }
 
-                val fullResponse = StringBuilder()
-                responseBody.use { body ->
-                    val source = body.source()
-                    while (!source.exhausted()) {
-                        val line = source.readUtf8Line()
-                        if (!line.isNullOrBlank()) {
-                            try {
-                                val streamResponse = com.google.gson.Gson().fromJson(line, OllamaStreamResponse::class.java)
-                                if (streamResponse.response != null && streamResponse.response.isNotEmpty()) {
-                                    emit(streamResponse.response)
-                                    fullResponse.append(streamResponse.response)
+                    val responseBody = response.body()
+                    if (responseBody == null) {
+                        android.util.Log.e("OllamaClient", "Response body is null")
+                        com.example.alliswelltemi.utils.OllamaCircuitBreaker.recordFailure()
+                        lastException = Exception("Ollama Response body is null")
+                        continue  // Try next URL
+                    }
+
+                    val fullResponse = StringBuilder()
+                    responseBody.use { body ->
+                        val source = body.source()
+                        while (!source.exhausted()) {
+                            val line = source.readUtf8Line()
+                            if (!line.isNullOrBlank()) {
+                                try {
+                                    val streamResponse = com.google.gson.Gson().fromJson(line, OllamaStreamResponse::class.java)
+                                    if (streamResponse.response != null && streamResponse.response.isNotEmpty()) {
+                                        emit(streamResponse.response)
+                                        fullResponse.append(streamResponse.response)
+                                    }
+                                    if (streamResponse.done) {
+                                        break
+                                    }
+                                } catch (e: Exception) {
+                                    android.util.Log.w("OllamaClient", "Skipping malformed chunk: $line")
                                 }
-                                if (streamResponse.done) {
-                                    break
-                                }
-                            } catch (e: Exception) {
-                                // Skip malformed JSON lines
-                                android.util.Log.w("OllamaClient", "Skipping malformed chunk: $line")
                             }
                         }
                     }
-                }
 
-                // Cache successful response (only if enabled and key is valid)
-                if (cacheEnabled && fullResponse.isNotEmpty() && queryOnlyKey.isNotBlank()) {
-                    com.example.alliswelltemi.utils.ResponseCache.put(
-                        queryOnlyKey,  // PRODUCTION FIX: Query only, not full prompt
-                        fullResponse.toString(),
-                        ttlMs = 3600000L  // 1 hour TTL
-                    )
-                    android.util.Log.d("OllamaClient", "✓ Response cached for query: '${queryOnlyKey.take(50)}...'")
-                    com.example.alliswelltemi.utils.OllamaCircuitBreaker.recordSuccess()
-                } else if (fullResponse.isNotEmpty()) {
-                    // Just record success without caching
-                    com.example.alliswelltemi.utils.OllamaCircuitBreaker.recordSuccess()
+                    if (cacheEnabled && fullResponse.isNotEmpty() && queryOnlyKey.isNotBlank()) {
+                        com.example.alliswelltemi.utils.ResponseCache.put(
+                            queryOnlyKey,
+                            fullResponse.toString(),
+                            ttlMs = 3600000L
+                        )
+                        android.util.Log.d("OllamaClient", "✓ Response cached for query: '${queryOnlyKey.take(50)}...'")
+                        com.example.alliswelltemi.utils.OllamaCircuitBreaker.recordSuccess()
+                    } else if (fullResponse.isNotEmpty()) {
+                        com.example.alliswelltemi.utils.OllamaCircuitBreaker.recordSuccess()
+                    }
+
+                    android.util.Log.i("OllamaClient", "✅ Successfully connected to: $urlToTry")
+                    return@flow
+
+                } catch (e: Exception) {
+                    android.util.Log.e("OllamaClient", "Connection failed for $urlToTry: ${e.message}")
+                    lastException = e
+                    com.example.alliswelltemi.utils.OllamaCircuitBreaker.recordFailure()
                 }
-            } catch (e: Exception) {
-                android.util.Log.e("OllamaClient", "Streaming error: ${e.message}", e)
-                com.example.alliswelltemi.utils.OllamaCircuitBreaker.recordFailure()
-                throw e
             }
+
+            android.util.Log.e("OllamaClient", "Streaming failed on all URLs")
+            throw lastException ?: Exception("Failed to connect to Ollama on all configured URLs")
         }
     }
 

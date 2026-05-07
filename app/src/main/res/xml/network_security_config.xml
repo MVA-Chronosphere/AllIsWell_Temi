@@ -5,6 +5,9 @@
         <!-- Ollama server at 10.1.90.159 -->
         <domain includeSubdomains="true">10.1.90.159</domain>
 
+        <!-- Ollama server at 10.1.90.189 (fallback) -->
+        <domain includeSubdomains="true">10.1.90.189</domain>
+
         <!-- Local Ollama server (typical network) -->
         <domain includeSubdomains="true">192.168.1.82</domain>
 
