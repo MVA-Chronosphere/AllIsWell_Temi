@@ -14,12 +14,14 @@ object OllamaConfig {
     private const val KEY_TIMEOUT_SECONDS = "ollama_timeout_secs"
     private const val KEY_ENABLE_CACHE = "ollama_enable_cache"
 
-    // Default values
-    private const val DEFAULT_SERVER_URL = "http://192.168.1.82:11434/"
+    // Network URLs with fallback strategy
+    private const val PRIMARY_SERVER_URL = "http://192.168.1.82:11434/"
+    private const val FALLBACK_SERVER_URL = "http://10.1.90.189:11434/"
     private const val DEFAULT_TIMEOUT = 30
     const val ENABLE_CACHE = true  // Fix 7: SAFE CACHE USAGE
 
     private var preferences: SharedPreferences? = null
+    private var activeServerUrl: String = PRIMARY_SERVER_URL
 
     /**
      * Initialize config with application context
@@ -30,19 +32,44 @@ object OllamaConfig {
     }
 
     /**
-     * Get Ollama server URL
-     * Priority: Environment variable → SharedPreferences → Default
+     * Get Ollama server URL with fallback logic
+     * Priority: Environment variable → SharedPreferences → Primary (192.168.1.82) → Fallback (10.1.90.189)
      */
     fun getServerUrl(): String {
         // Try environment variable first (for testing/deployment)
         val envUrl = System.getenv("OLLAMA_BASE_URL")
         if (envUrl != null && envUrl.isNotBlank()) {
             android.util.Log.d("OllamaConfig", "Using Ollama URL from environment: $envUrl")
+            activeServerUrl = envUrl
             return envUrl
         }
 
-        return preferences?.getString(KEY_SERVER_URL, DEFAULT_SERVER_URL)
-            ?: DEFAULT_SERVER_URL
+        // Try SharedPreferences
+        val savedUrl = preferences?.getString(KEY_SERVER_URL, null)
+        if (savedUrl != null && savedUrl.isNotBlank()) {
+            android.util.Log.d("OllamaConfig", "Using Ollama URL from preferences: $savedUrl")
+            activeServerUrl = savedUrl
+            return savedUrl
+        }
+
+        // Default to primary (192.168.1.82) - will fallback to 10.1.90.189 if primary fails
+        android.util.Log.d("OllamaConfig", "Using primary Ollama URL: $PRIMARY_SERVER_URL (fallback: $FALLBACK_SERVER_URL)")
+        activeServerUrl = PRIMARY_SERVER_URL
+        return PRIMARY_SERVER_URL
+    }
+
+    /**
+     * Get fallback server URL for when primary fails
+     */
+    fun getFallbackServerUrl(): String {
+        return FALLBACK_SERVER_URL
+    }
+
+    /**
+     * Get primary server URL
+     */
+    fun getPrimaryServerUrl(): String {
+        return PRIMARY_SERVER_URL
     }
 
     /**
@@ -52,10 +79,18 @@ object OllamaConfig {
     fun setServerUrl(url: String) {
         if (url.isNotBlank() && (url.startsWith("http://") || url.startsWith("https://"))) {
             preferences?.edit()?.putString(KEY_SERVER_URL, url)?.apply()
+            activeServerUrl = url
             android.util.Log.i("OllamaConfig", "Ollama server URL updated: $url")
         } else {
             android.util.Log.e("OllamaConfig", "Invalid URL format: $url")
         }
+    }
+
+    /**
+     * Get currently active server URL
+     */
+    fun getActiveServerUrl(): String {
+        return activeServerUrl
     }
 
     /**
@@ -78,4 +113,3 @@ object OllamaConfig {
         }
     }
 }
-
