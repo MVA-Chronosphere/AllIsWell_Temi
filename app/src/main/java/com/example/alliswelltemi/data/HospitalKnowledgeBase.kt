@@ -24,7 +24,7 @@ object HospitalKnowledgeBase {
         KnowledgeBaseQA(
             id = "qa_1",
             question = "What is the hospital name ?",
-            answer = "All Is Well Hospital is a modern multi-speciality healthcare institution located in Burhanpur, Madhya Pradesh. The founder and chairman of All is Well Hospiital is Mr. Anand Prakash Chouksey. The hospital was established in 2019 with the vision of delivering high-quality, ethical, and patient-centered medical care to people in and around the region. The mission of All Is Well Hospital is to provide accessible, affordable, and advanced healthcare services with compassion and integrity.",
+            answer = "All Is Well Hospital is a modern multi-speciality healthcare institution located in Burhanpur, Madhya Pradesh. The founder and chairman of All is Well Hospiital is Mr. anand Prakash Chouksey sir. The hospital was established in 2019 with the vision of delivering high-quality, ethical, and patient-centered medical care to people in and around the region. The mission of All Is Well Hospital is to provide accessible, affordable, and advanced healthcare services with compassion and integrity.",
             keywords = listOf("transparent", "dignity", "hospiital", "outcomes", "dental", "specialists", "ophthalmology", "professionals", "burhanpur", "monitoring"),
             category = "general",
             language = "en"
@@ -240,24 +240,180 @@ object HospitalKnowledgeBase {
         KnowledgeBaseQA(
             id = "qa_17",
             question = "Who is the Director?",
-            answer = "Kabir Chouksey and Devanshi Chouksey is the Director of the hospital.",
+            answer = "kabir chouksey sir and Devanshi Chouksey ma'am ma'am ma'am ma'am ma'am ma'am ma'am ma'am is the Director of the hospital.",
             keywords = listOf("hospital", "director", "devanshi", "chouksey", "who", "kabir"),
             category = "general",
             language = "en"
         ),
         KnowledgeBaseQA(
             id = "qa_18",
-            question = "Who is Kabir Chouksey?",
-            answer = "Kabir Chouksey is the Director of the hospital.",
+            question = "Who is kabir chouksey sir?",
+            answer = "kabir chouksey sir is the Director of the hospital.",
             keywords = listOf("hospital", "director", "chouksey", "who", "kabir"),
             category = "general",
             language = "en"
         ),
         KnowledgeBaseQA(
             id = "qa_19",
-            question = "Who is Devanshi Chouksey?",
-            answer = "Devanshi Chouksey is the Director of the hospital.",
+            question = "Who is Devanshi Chouksey ma'am ma'am ma'am ma'am ma'am ma'am ma'am ma'am?",
+            answer = "Devanshi Chouksey ma'am ma'am ma'am ma'am ma'am ma'am ma'am ma'am is the Director of the hospital.",
             keywords = listOf("hospital", "director", "devanshi", "chouksey", "who"),
+            category = "general",
+            language = "en"
+        ),
+        // ==================== HINDI Q&A PAIRS FOR LEADERSHIP (NEW) ====================
+        KnowledgeBaseQA(
+            id = "qa_17_hi",
+            question = "निदेशक कौन हैं?",
+            answer = "कबीर चौकसे सर और देवांशी चौकसे मैडम अस्पताल के निदेशक हैं।",
+            keywords = listOf("निदेशक", "कबीर", "देवांशी", "चौकसे", "कौन", "अस्पताल", "सर", "मैडम"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_18_hi",
+            question = "कबीर चौकसे सर कौन हैं?",
+            answer = "कबीर चौकसे सर अस्पताल के निदेशक हैं।",
+            keywords = listOf("कबीर", "चौकसे", "निदेशक", "अस्पताल", "कौन", "सर"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_19_hi",
+            question = "देवांशी चौकसे मैडम कौन हैं?",
+            answer = "देवांशी चौकसे मैडम अस्पताल की निदेशक हैं।",
+            keywords = listOf("देवांशी", "चौकसे", "निदेशक", "अस्पताल", "कौन", "मैडम"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_founder_hi",
+            question = "संस्थापक कौन हैं?",
+            answer = "आनंद प्रकाश चौकसे सर ऑल इज़ वेल हॉस्पिटल के संस्थापक हैं।",
+            keywords = listOf("संस्थापक", "आनंद", "चौकसे", "प्रकाश", "हॉस्पिटल", "सर"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_chairman_hi",
+            question = "चेयरमैन कौन हैं?",
+            answer = "आनंद प्रकाश चौकसे सर ऑल इज़ वेल हॉस्पिटल के चेयरमैन हैं।",
+            keywords = listOf("चेयरमैन", "आनंद", "चौकसे", "प्रकाश", "हॉस्पिटल", "सर"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_87_hi",
+            question = "आनंद प्रकाश चौकसे सर कौन हैं?",
+            answer = "आनंद प्रकाश चौकसे सर ऑल इज़ वेल हॉस्पिटल के संस्थापक और चेयरमैन हैं।",
+            keywords = listOf("आनंद", "प्रकाश", "चौकसे", "संस्थापक", "चेयरमैन", "कौन", "सर"),
+            category = "general",
+            language = "hi"
+        ),
+        // ==================== HINGLISH Q&A PAIRS (ENGLISH WORDS WITH HINDI) ====================
+        // These are the MOST PRACTICAL - people speak Hinglish in hospitals!
+        KnowledgeBaseQA(
+            id = "qa_directors_hinglish",
+            question = "Directors कौन हैं?",
+            answer = "kabir chouksey sir और Devanshi Chouksey ma'am ma'am ma'am ma'am ma'am ma'am ma'am ma'am hospital के directors हैं।",
+            keywords = listOf("directors", "कौन", "हैं", "कबीर", "देवांशी", "चौकसे", "निदेशक"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_who_are_directors_hinglish",
+            question = "Hospital के directors कौन हैं?",
+            answer = "kabir chouksey sir और Devanshi Chouksey ma'am ma'am ma'am ma'am ma'am ma'am ma'am ma'am ऑल इज़ वेल हॉस्पिटल के directors हैं।",
+            keywords = listOf("directors", "hospital", "कौन", "के", "हैं", "कबीर", "देवांशी", "चौकसे"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_founder_hinglish",
+            question = "Founder कौन है?",
+            answer = "anand Prakash Chouksey sir ऑल इज़ वेल हॉस्पिटल के founder हैं।",
+            keywords = listOf("founder", "कौन", "है", "आनंद", "चौकसे", "प्रकाश", "संस्थापक"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_who_is_founder_hinglish",
+            question = "Hospital का founder कौन है?",
+            answer = "anand Prakash Chouksey sir ऑल इज़ वेल हॉस्पिटल का founder हैं।",
+            keywords = listOf("founder", "hospital", "कौन", "का", "है", "आनंद", "चौकसे", "प्रकाश"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_chairman_hinglish",
+            question = "Chairman कौन है?",
+            answer = "anand Prakash Chouksey sir ऑल इज़ वेल हॉस्पिटल के chairman हैं।",
+            keywords = listOf("chairman", "कौन", "है", "आनंद", "चौकसे", "प्रकाश", "चेयरमैन"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_who_is_chairman_hinglish",
+            question = "Hospital का chairman कौन है?",
+            answer = "anand Prakash Chouksey sir ऑल इज़ वेल हॉस्पिटल का chairman हैं।",
+            keywords = listOf("chairman", "hospital", "कौन", "का", "है", "आनंद", "चौकसे", "प्रकाश"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_kabir_hinglish",
+            question = "Kabir Chouksey सर कौन है?",
+            answer = "Kabir Chouksey सर ऑल इज़ वेल हॉस्पिटल के director हैं।",
+            keywords = listOf("kabir", "chouksey", "कौन", "है", "director", "निदेशक", "कबीर", "सर", "sir"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_devanshi_hinglish",
+            question = "Devanshi Chouksey मैडम कौन है?",
+            answer = "Devanshi Chouksey मैडम ऑल इज़ वेल हॉस्पिटल की director हैं।",
+            keywords = listOf("devanshi", "chouksey", "कौन", "है", "director", "निदेशक", "देवांशी", "मैडम", "madam"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_anand_hinglish",
+            question = "Anand Prakash Chouksey सर कौन है?",
+            answer = "Anand Prakash Chouksey सर ऑल इज़ वेल हॉस्पिटल के founder और chairman हैं।",
+            keywords = listOf("anand", "prakash", "chouksey", "कौन", "है", "founder", "chairman", "आनंद", "सर", "sir"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_director_hinglish",
+            question = "Director कौन है?",
+            answer = "Kabir Chouksey सर और Devanshi Chouksey मैडम ऑल इज़ वेल हॉस्पिटल के directors हैं।",
+            keywords = listOf("director", "कौन", "है", "कबीर", "देवांशी", "चौकसे", "निदेशक", "सर", "मैडम"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_hospital_leadership_hinglish",
+            question = "Hospital की leadership कौन है?",
+            answer = "Anand Prakash Chouksey सर (founder और chairman), Kabir Chouksey सर (director), और Devanshi Chouksey मैडम (director) ऑल इज़ वेल हॉस्पिटल की leadership team हैं।",
+            keywords = listOf("leadership", "hospital", "की", "कौन", "है", "management", "team", "नेतृत्व", "सर", "मैडम"),
+            category = "general",
+            language = "hi"
+        ),
+        // ==================== ENGLISH Q&A CONTINUES ====================
+        KnowledgeBaseQA(
+            id = "qa_founder_en",
+            question = "Who is the Founder?",
+            answer = "Anand Prakash Chouksey sir is the founder of All is Well Hospital.",
+            keywords = listOf("founder", "anand", "chouksey", "prakash", "hospital", "who", "sir"),
+            category = "general",
+            language = "en"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_chairman_en",
+            question = "Who is the Chairman?",
+            answer = "Anand Prakash Chouksey sir is the chairman of All is Well Hospital.",
+            keywords = listOf("chairman", "anand", "chouksey", "prakash", "hospital", "who", "sir"),
             category = "general",
             language = "en"
         ),
@@ -551,8 +707,8 @@ object HospitalKnowledgeBase {
         ),
         KnowledgeBaseQA(
             id = "qa_87",
-            question = "Who is Anand Prakash Chouksey?",
-            answer = "Anand Prakash Chouksey is the founder of All is Well Hospital.",
+            question = "Who is anand Prakash Chouksey sir?",
+            answer = "anand Prakash Chouksey sir is the founder of All is Well Hospital.",
             keywords = listOf("hospital", "well", "chouksey", "who", "anand", "all", "prakash", "founder"),
             category = "general",
             language = "en"
@@ -2091,12 +2247,69 @@ object HospitalKnowledgeBase {
         KnowledgeBaseQA(
             id = "qa_info_location_001_hi",
             question = "अस्पताल का स्थान और पता क्या है?",
-            answer = "ऑल इज़ वेल हॉस्पिटल मैक्रो विजन अकादमी के पास, बुरहानपुर, मध्य प्रदेश 450331 में स्थित है। दिशा और नेविगेशन के लिए रिसेप्शन से संपर्क करें या हमारी नेविगेशन सिस्टम का उपयोग करें। हम आपको किसी भी विभाग तक गाइड कर सकते हैं।",
-            keywords = listOf("स्थान", "पता", "कहां", "दिशा", "बुरहानपुर", "पास", "मैक्रो", "अकादमी"),
-            category = "facilities",
-            language = "hi"
-        ),
-    )
+             answer = "ऑल इज़ वेल हॉस्पिटल मैक्रो विजन अकादमी के पास, बुरहानपुर, मध्य प्रदेश 450331 में स्थित है। दिशा और नेविगेशन के लिए रिसेप्शन से संपर्क करें या हमारी नेविगेशन सिस्टम का उपयोग करें। हम आपको किसी भी विभाग तक गाइड कर सकते हैं।",
+             keywords = listOf("स्थान", "पता", "कहां", "दिशा", "बुरहानपुर", "पास", "मैक्रो", "अकादमी"),
+             category = "facilities",
+             language = "hi"
+         ),
+         // ==================== DEPARTMENT INFORMATION Q&As (PATHOLOGY & OTHERS) ====================
+         KnowledgeBaseQA(
+             id = "qa_dept_pathology",
+             question = "What is pathology?",
+             answer = "Pathology is the medical study of diseases, especially the examination of tissue and blood samples. The Pathology Department at All Is Well Hospital provides diagnostic laboratory testing including blood tests, tissue analysis, and other diagnostic procedures. These tests help doctors diagnose diseases, monitor treatment progress, and ensure patient health. Our pathology lab operates 24/7 with advanced equipment.",
+             keywords = listOf("pathology", "lab", "laboratory", "diagnostic", "blood", "tissue", "testing", "sample", "examination", "disease"),
+             category = "departments",
+             language = "en"
+         ),
+         KnowledgeBaseQA(
+             id = "qa_dept_pathology_hi",
+             question = "पैथोलॉजी क्या है?",
+             answer = "पैथोलॉजी रोगों का चिकित्सा अध्ययन है, विशेषकर ऊतक और रक्त के नमूनों की जांच। ऑल इज़ वेल हॉस्पिटल के पैथोलॉजी विभाग में रक्त परीक्षण, ऊतक विश्लेषण और अन्य नैदानिक प्रक्रियाएं उपलब्ध हैं। ये परीक्षण डॉक्टरों को रोगों का निदान करने, उपचार की प्रगति निगरानी करने और रोगी स्वास्थ्य सुनिश्चित करने में मदद करते हैं। हमारी पैथोलॉजी लैब 24/7 उन्नत उपकरणों के साथ काम करती है।",
+             keywords = listOf("पैथोलॉजी", "लैब", "प्रयोगशाला", "नैदानिक", "रक्त", "ऊतक", "परीक्षण", "नमूना", "जांच", "रोग"),
+             category = "departments",
+             language = "hi"
+         ),
+         KnowledgeBaseQA(
+             id = "qa_dept_pathology_info",
+             question = "Tell me about pathology department",
+             answer = "The Pathology and Diagnostics Department at All Is Well Hospital offers comprehensive laboratory services for disease diagnosis and health monitoring. Services include routine blood tests, specialized assays, tissue biopsies, culture studies, and advanced diagnostic testing. All tests are conducted by qualified pathologists using modern equipment. The department serves both inpatients and outpatients with quick turnaround times for results.",
+             keywords = listOf("pathology", "diagnostics", "department", "laboratory", "tests", "service", "results", "equipped", "qualified", "biopsy"),
+             category = "departments",
+             language = "en"
+         ),
+         KnowledgeBaseQA(
+             id = "qa_dept_pathology_services",
+             question = "What are the pathology services available?",
+             answer = "All Is Well Hospital's pathology lab provides: Complete Blood Count (CBC), Liver Function Tests (LFT), Kidney Function Tests (KFT), Blood Sugar Tests, Thyroid Function Tests, Lipid Profile, Serology Tests, Urine Analysis, Stool Analysis, Culture and Sensitivity Tests, Tissue Biopsies, and Histopathology. All tests use advanced automated analyzers for accuracy and speed.",
+             keywords = listOf("pathology", "services", "blood", "test", "available", "cbc", "lft", "kft", "thyroid", "analysis"),
+             category = "departments",
+             language = "en"
+         ),
+         KnowledgeBaseQA(
+             id = "qa_dept_pathology_location",
+             question = "Where is the pathology lab located?",
+             answer = "The Pathology Lab at All Is Well Hospital is centrally located with easy access from all departments. It operates 24 hours a day, 7 days a week. You can visit the lab counter for sample collection, or ask reception staff for specific directions. Our trained phlebotomists ensure quick and safe sample collection.",
+             keywords = listOf("pathology", "lab", "location", "direction", "sample", "collection", "counter", "24/7", "phlebotomist"),
+             category = "facilities",
+             language = "en"
+         ),
+         KnowledgeBaseQA(
+             id = "qa_dept_diagnostics",
+             question = "What is diagnostics?",
+             answer = "Diagnostics refers to the process of identifying diseases through medical tests and examinations. At All Is Well Hospital, our Diagnostics Department provides modern imaging and laboratory services including X-Ray, ultrasound, CT scans, and MRI to help doctors understand your health condition. These tools help in early disease detection and accurate treatment planning.",
+             keywords = listOf("diagnostics", "imaging", "xray", "ultrasound", "ct", "mri", "scan", "test", "examination", "disease"),
+             category = "departments",
+             language = "en"
+         ),
+         KnowledgeBaseQA(
+             id = "qa_dept_diagnostics_hi",
+             question = "नैदानिकीकरण क्या है?",
+             answer = "नैदानिकीकरण चिकित्सा परीक्षण और जांच के माध्यम से रोगों की पहचान करने की प्रक्रिया है। ऑल इज़ वेल हॉस्पिटल के नैदानिक विभाग में एक्स-रे, अल्ट्रासाउंड, सीटी स्कैन और एमआरआई जैसी आधुनिक सेवाएं उपलब्ध हैं। ये उपकरण डॉक्टरों को आपकी स्वास्थ्य स्थिति समझने में मदद करते हैं।",
+             keywords = listOf("नैदानिक", "जांच", "एक्सरे", "अल्ट्रासाउंड", "सीटी", "एमआरआई", "स्कैन", "परीक्षण", "रोग"),
+             category = "departments",
+             language = "hi"
+         ),
+     )
 
     // Dynamic doctor Q&As injected from Strapi
     private val dynamicDoctorQAs = mutableListOf<KnowledgeBaseQA>()
@@ -2351,12 +2564,15 @@ object HospitalKnowledgeBase {
         "जाओ" to "go",
         "जाएं" to "go",
         "jana" to "go",
-        "jao" to "go",
-        "hai" to "is",
-        "है" to "is",
-        "hei" to "is",
-        "hey" to "is",
-        "पास" to "near",
+         "jao" to "go",
+         "hai" to "is",
+         "है" to "is",
+         "हैं" to "are",  // Plural form - CRITICAL for "Directors कौन हैं?"
+         "hei" to "is",
+         "hey" to "is",
+         "हो" to "be",
+         "हो" to "are",
+         "पास" to "near",
         "near" to "near",
         "नज़दीक" to "near",
         "दूर" to "far",
@@ -2387,10 +2603,48 @@ object HospitalKnowledgeBase {
         "consultant" to "consultant",
         "सर्जन" to "surgeon",
         "surgeon" to "surgeon",
-        "नर्स" to "nurse",
-        "nurse" to "nurse",
-        
-        // === DEPARTMENTS & SPECIALIZATIONS ===
+         "नर्स" to "nurse",
+         "nurse" to "nurse",
+         
+         // === HOSPITAL LEADERSHIP (CRITICAL FOR TEMI) ===
+         "निदेशक" to "director",
+         "निदेशकों" to "directors",
+         "डायरेक्टर्स" to "directors",  // Alternative Devanagari spelling
+         "डायरेक्टर" to "director",     // Singular alternative spelling
+         "directors" to "directors",
+         "director" to "director",
+         "संस्थापक" to "founder",
+         "फाउंडर" to "founder",  // Alternative Devanagari spelling
+         "founder" to "founder",
+         "चेयरमैन" to "chairman",
+         "chairman" to "chairman",
+         "नेतृत्व" to "leadership",
+         "leadership" to "leadership",
+         "management" to "management",
+         "प्रबंधन" to "management",
+         "टीम" to "team",
+         "team" to "team",
+         
+         // === COMMON NAMES (Hospital Leadership) ===
+         "कबीर" to "kabir",
+         "kabir" to "kabir",
+         "कबीर सर" to "kabir",        // With honorific
+         "देवांशी" to "devanshi",
+         "devanshi" to "devanshi",
+         "देवांशी मैडम" to "devanshi",  // With honorific
+         "आनंद" to "anand",
+         "anand" to "anand",
+         "आनंद सर" to "anand",         // With honorific
+         "प्रकाश" to "prakash",
+         "prakash" to "prakash",
+         "चौकसे" to "chouksey",
+         "chouksey" to "chouksey",
+         "सर" to "sir",                // Honorific for male
+         "sir" to "sir",
+         "मैडम" to "madam",            // Honorific for female
+         "madam" to "madam",
+         
+         // === DEPARTMENTS & SPECIALIZATIONS ===
         "हृदय" to "heart",
         "heart" to "heart",
         "cardiology" to "cardiology",
@@ -2549,63 +2803,89 @@ object HospitalKnowledgeBase {
         return normalized.trim()
     }
 
-    /**
-     * Search knowledge base for relevant Q&As
-     * ENHANCED: Better matching for doctor queries with partial matches and answer text search
-     * NOW SUPPORTS HINDI QUERIES via keyword translation
-     * Returns top N results sorted by relevance (includes dynamic doctor Q&As)
-     */
-    fun search(userQuery: String, limit: Int = 3): List<KnowledgeBaseQA> {
-        val lowerQuery = userQuery.lowercase()
-        
-        // Normalize query to translate Hindi/Hinglish to English for better matching
-        val normalizedQuery = normalizeQueryForSearch(lowerQuery)
-        
-        android.util.Log.d("HospitalKnowledgeBase", "KB Search - Original: '$lowerQuery'")
-        android.util.Log.d("HospitalKnowledgeBase", "KB Search - Normalized: '$normalizedQuery'")
-        
-        val queryWords = normalizedQuery.split(" ").filter { it.length > 2 } // Words longer than 2 chars
+     /**
+      * Search knowledge base for relevant Q&As
+      * ENHANCED: Better matching for doctor queries with partial matches and answer text search
+      * NOW SUPPORTS HINDI QUERIES via keyword translation
+      * Returns top N results sorted by relevance (includes dynamic doctor Q&As)
+      * FIX: Keywords are also normalized for proper matching
+      * FIX 2: Also checks raw query for Hindi keyword matches (backward compatibility)
+      */
+     fun search(userQuery: String, limit: Int = 3): List<KnowledgeBaseQA> {
+         val lowerQuery = userQuery.lowercase()
+         
+         // Normalize query to translate Hindi/Hinglish to English for better matching
+         val normalizedQuery = normalizeQueryForSearch(lowerQuery)
+         
+         android.util.Log.d("HospitalKnowledgeBase", "KB Search - Original: '$lowerQuery'")
+         android.util.Log.d("HospitalKnowledgeBase", "KB Search - Normalized: '$normalizedQuery'")
+         
+         val queryWords = normalizedQuery.split(" ").filter { it.length > 2 } // Words longer than 2 chars
+         val rawQueryWords = lowerQuery.split(" ").filter { it.length > 2 } // Raw query words (for Hindi matching)
 
-        // Combine static and dynamic Q&As
-        val allQAs = qaDatabase + dynamicDoctorQAs
+         // Combine static and dynamic Q&As
+         val allQAs = qaDatabase + dynamicDoctorQAs
 
-        // Score each QA pair based on multiple matching criteria
-        val results = allQAs.map { qa ->
-            var score = 0
-            
-            // 1. Exact keyword matches (highest score)
-            score += qa.keywords.count { keyword ->
-                normalizedQuery.contains(keyword)
-            } * 3
-            
-            // 2. Partial word matches in keywords (medium score)
-            score += qa.keywords.count { keyword ->
-                queryWords.any { word -> keyword.contains(word) || word.contains(keyword) }
-            }
-            
-            // 3. Question text contains query words (good score for doctor name matching)
-            val questionLower = qa.question.lowercase()
-            score += queryWords.count { word -> questionLower.contains(word) } * 2
-            
-            // 4. Answer text contains query words (helps with department/specialization matching)
-            val answerLower = qa.answer.lowercase()
-            score += queryWords.count { word -> answerLower.contains(word) }
-            
-            // Priority Boost: If it's a dynamic doctor entry, add a significant boost
-            // to ensure it outranks static hospital info for same-keyword matches
-            if (score > 0 && qa.id.startsWith("dynamic_doc_")) {
-                score += 10 // Significant boost to prioritize Strapi doctor data
-            }
-            
-            qa to score
-        }
-            .filter { it.second > 0 }  // Only include matches
-            .sortedByDescending { it.second }  // Sort by relevance
-            .take(limit)
-            .map { it.first }
+         // Score each QA pair based on multiple matching criteria
+         val results = allQAs.map { qa ->
+             var score = 0
+             
+             // CRITICAL FIX: Normalize keywords for matching against normalized query
+             // This ensures Hindi keywords like "कौन" get matched properly
+             val normalizedKeywords = qa.keywords.map { kw -> normalizeQueryForSearch(kw) }
+             
+             // 1. Exact keyword matches (highest score)
+             score += normalizedKeywords.count { keyword ->
+                 normalizedQuery.contains(keyword)
+             } * 3
+             
+             // 1B. Also check raw keywords against raw query (for pure Hindi queries)
+             // This catches "Directors" in pure Hindi like "निदेशक"
+             score += qa.keywords.count { keyword ->
+                 lowerQuery.contains(keyword) && !normalizedQuery.contains(keyword)
+             } * 3
+             
+             // 2. Partial word matches in keywords (medium score)
+             score += normalizedKeywords.count { keyword ->
+                 queryWords.any { word -> keyword.contains(word) || word.contains(keyword) }
+             }
+             
+             // 2B. Partial match on raw keywords
+             score += qa.keywords.count { keyword ->
+                 rawQueryWords.any { word -> keyword.contains(word) || word.contains(keyword) }
+             }
+             
+             // 3. Question text contains query words (good score for doctor name matching)
+             val questionLower = normalizeQueryForSearch(qa.question.lowercase())
+             score += queryWords.count { word -> questionLower.contains(word) } * 2
+             
+             // 3B. Question text contains raw query words
+             val questionRaw = qa.question.lowercase()
+             score += rawQueryWords.count { word -> questionRaw.contains(word) } * 2
+             
+             // 4. Answer text contains query words (helps with department/specialization matching)
+             val answerLower = normalizeQueryForSearch(qa.answer.lowercase())
+             score += queryWords.count { word -> answerLower.contains(word) }
+             
+             // 4B. Answer text contains raw query words
+             val answerRaw = qa.answer.lowercase()
+             score += rawQueryWords.count { word -> answerRaw.contains(word) }
+             
+             // Priority Boost: If it's a dynamic doctor entry, add a significant boost
+             // to ensure it outranks static hospital info for same-keyword matches
+             if (score > 0 && qa.id.startsWith("dynamic_doc_")) {
+                 score += 10 // Significant boost to prioritize Strapi doctor data
+             }
+             
+             qa to score
+         }
+             .filter { it.second > 0 }  // Only include matches
+             .sortedByDescending { it.second }  // Sort by relevance
+             .take(limit)
+             .map { it.first }
 
-        return results
-    }
+         return results
+     }
 
     /**
      * Get QA by category (e.g., all departments Q&As)
@@ -2621,3 +2901,4 @@ object HospitalKnowledgeBase {
         return search(userQuery, limit = 1).firstOrNull()
     }
 }
+

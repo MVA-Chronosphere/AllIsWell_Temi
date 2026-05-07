@@ -51,6 +51,11 @@ class SpeechOrchestrator(
      * Analyze speech input and extract intent + relevant context
      * Supports both English and Hindi keywords
      * Detects location names for navigation commands
+     * 
+     * CRITICAL FIX: Properly distinguishes information queries from navigation commands
+     * - "What is pathology?" → GENERAL (info query)
+     * - "Take me to pathology" → NAVIGATE (action request)
+     * - "Show pathology doctors" → FIND_DOCTOR (department filter)
      *
      * @param text User's spoken/typed input
      * @return Context with detected intent and relevant data
@@ -64,6 +69,11 @@ class SpeechOrchestrator(
 
         // Step 0: Remove noise from ASR (common misrecognitions)
         val cleaned = removeASRNoise(lower)
+
+        // CRITICAL FIX: Detect if this is an INFORMATION QUERY (info keywords present)
+        // Info queries should NOT trigger navigation even if they contain location names
+        val isInfoQuery = isInformationQuery(cleaned)
+        Log.d(tag, "🔍 Is information query? $isInfoQuery (cleaned: '$cleaned')")
 
         // Step 1: Try to match a specific doctor by name
         val doctor = doctors.find { doctor ->
@@ -92,12 +102,18 @@ class SpeechOrchestrator(
             }
 
         // Step 3: Try to match a hospital location (for navigation)
-        val location = extractLocation(cleaned)
+        // CRITICAL: Skip location extraction if this is an info query
+        val location = if (!isInfoQuery) extractLocation(cleaned) else null
+        
+        if (isInfoQuery && location != null) {
+            Log.d(tag, "⚠️ Info query detected - ignoring location match: ${location.name}")
+        }
 
         // Step 4: Detect dance intent (MUST be before other intents)
         val danceMove = detectDanceIntent(cleaned)
 
         // Step 5: Detect intent from keywords (English + Hindi)
+        // CRITICAL: Check info query FIRST to prevent misclassification
         val intent = when {
             // Dance-related keywords (FIRST priority)
             danceMove != null ||
@@ -112,8 +128,13 @@ class SpeechOrchestrator(
             cleaned.contains("हिलना") ||
             cleaned.contains("घूमना") -> Intent.DANCE
 
+            // Information/General Query (MUST be before navigation check!)
+            // This prevents "What is X?" from triggering NAVIGATE
+            isInfoQuery -> Intent.GENERAL
+
             // Navigation-related keywords (English + Hindi)
              // Priority: Location matching first, then doctor/cabin
+             // ONLY if NOT an info query
              location != null ||
              cleaned.contains("navigate") ||
              cleaned.contains("take me") ||
@@ -374,6 +395,44 @@ class SpeechOrchestrator(
         }
 
         return dp[s1.length][s2.length]
+    }
+
+    /**
+     * Detect if this is an information query (asking about something, not requesting action)
+     * Examples:
+     * - "What is pathology?" → Info query (should NOT navigate)
+     * - "Who is Dr. Sharma?" → Info query
+     * - "Tell me about cardiology" → Info query
+     * - "Take me to pathology" → NOT info query (action request)
+     */
+    private fun isInformationQuery(cleaned: String): Boolean {
+        val infoKeywords = listOf(
+            // English info keywords
+            "what is", "what are", "what's", "tell me", "who is", "who are", "who's",
+            "how do i", "how to", "how is", "where can i", "where can i find",
+            "about", "information", "info", "explain", "describe", "definition",
+            "know about", "learn about", "curious about", "understand",
+            // Hindi info keywords
+            "क्या है", "कौन है", "कहानी", "बताओ", "जानकारी", "समझाओ",
+            "बारे में", "विवरण", "परिभाषा", "कैसे है", "क्यों है"
+        )
+        
+        val actionKeywords = listOf(
+            // Action keywords that indicate navigation/booking (NOT info query)
+            "navigate", "take me", "go to", "lead me", "bring me", "move", "walk",
+            "accompany", "guide me", "show me the way", "directions",
+            "book", "appointment", "schedule", "reserve",
+            "ले चलो", "ले जाओ", "लेके चलो", "दिखाओ रास्ता",
+            "बुक", "अपॉइंटमेंट"
+        )
+        
+        // If action keywords present, it's NOT an info query
+        if (actionKeywords.any { cleaned.contains(it) }) {
+            return false
+        }
+        
+        // If info keywords present, it IS an info query
+        return infoKeywords.any { cleaned.contains(it) }
     }
 
     /**
