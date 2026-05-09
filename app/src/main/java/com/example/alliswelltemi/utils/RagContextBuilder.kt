@@ -382,16 +382,19 @@ object RagContextBuilder {
                  if (language == "hi") "अपॉइंटमेंट बुक करने के लिए 'अपॉइंटमेंट बुक करें' कहें।" else "Say 'book an appointment' to schedule a visit."
              }
 
-             // Medical/Health queries - strict: no medical advice
-             lowerQuery.contains("fever") || lowerQuery.contains("pain") || lowerQuery.contains("sick") ||
-             lowerQuery.contains("बुखार") || lowerQuery.contains("दर्द") || lowerQuery.contains("बीमार") ||
-             lowerQuery.contains("symptom") || lowerQuery.contains("check") -> {
-                 if (language == "hi") {
-                     "किसी लक्षण के लिए कृपया किसी डॉक्टर से मिलें। आपातकालीन के लिए +91 76977 44444 पर कॉल करें।"
-                 } else {
-                     "Please see a doctor to discuss your symptoms. Call +91 76977 44444 for emergencies."
-                 }
-             }
+              // Medical/Health queries - strict: no medical advice
+              lowerQuery.contains("fever") || lowerQuery.contains("pain") || lowerQuery.contains("sick") ||
+              lowerQuery.contains("बुखार") || lowerQuery.contains("दर्द") || lowerQuery.contains("बीमार") ||
+              lowerQuery.contains("symptom") || lowerQuery.contains("check") ||
+              lowerQuery.contains("diet") || lowerQuery.contains("nutrition") || lowerQuery.contains("weight") ||
+              lowerQuery.contains("weight loss") || lowerQuery.contains("डाइट") || lowerQuery.contains("वजन") ||
+              lowerQuery.contains("पोषण") || lowerQuery.contains("आहार") -> {
+                  if (language == "hi") {
+                      "स्वास्थ्य संबंधित सलाह के लिए कृपया हमारे विशेषज्ञ से मिलें। बुकिंग के लिए +91 76977 44444 पर कॉल करें।"
+                  } else {
+                      "For personalized health and nutrition advice, please consult our specialists. Call +91 76977 44444 to book an appointment."
+                  }
+              }
 
              // Feedback/complaint
              lowerQuery.contains("feedback") || lowerQuery.contains("complaint") || lowerQuery.contains("rate") ||

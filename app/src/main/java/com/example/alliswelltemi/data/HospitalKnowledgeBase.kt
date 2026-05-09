@@ -2247,79 +2247,1802 @@ object HospitalKnowledgeBase {
         KnowledgeBaseQA(
             id = "qa_info_location_001_hi",
             question = "अस्पताल का स्थान और पता क्या है?",
-             answer = "ऑल इज़ वेल हॉस्पिटल मैक्रो विजन अकादमी के पास, बुरहानपुर, मध्य प्रदेश 450331 में स्थित है। दिशा और नेविगेशन के लिए रिसेप्शन से संपर्क करें या हमारी नेविगेशन सिस्टम का उपयोग करें। हम आपको किसी भी विभाग तक गाइड कर सकते हैं।",
-             keywords = listOf("स्थान", "पता", "कहां", "दिशा", "बुरहानपुर", "पास", "मैक्रो", "अकादमी"),
-             category = "facilities",
-             language = "hi"
-         ),
-         // ==================== DEPARTMENT INFORMATION Q&As (PATHOLOGY & OTHERS) ====================
-         KnowledgeBaseQA(
-             id = "qa_dept_pathology",
-             question = "What is pathology?",
-             answer = "Pathology is the medical study of diseases, especially the examination of tissue and blood samples. The Pathology Department at All Is Well Hospital provides diagnostic laboratory testing including blood tests, tissue analysis, and other diagnostic procedures. These tests help doctors diagnose diseases, monitor treatment progress, and ensure patient health. Our pathology lab operates 24/7 with advanced equipment.",
-             keywords = listOf("pathology", "lab", "laboratory", "diagnostic", "blood", "tissue", "testing", "sample", "examination", "disease"),
-             category = "departments",
-             language = "en"
-         ),
-         KnowledgeBaseQA(
-             id = "qa_dept_pathology_hi",
-             question = "पैथोलॉजी क्या है?",
-             answer = "पैथोलॉजी रोगों का चिकित्सा अध्ययन है, विशेषकर ऊतक और रक्त के नमूनों की जांच। ऑल इज़ वेल हॉस्पिटल के पैथोलॉजी विभाग में रक्त परीक्षण, ऊतक विश्लेषण और अन्य नैदानिक प्रक्रियाएं उपलब्ध हैं। ये परीक्षण डॉक्टरों को रोगों का निदान करने, उपचार की प्रगति निगरानी करने और रोगी स्वास्थ्य सुनिश्चित करने में मदद करते हैं। हमारी पैथोलॉजी लैब 24/7 उन्नत उपकरणों के साथ काम करती है।",
-             keywords = listOf("पैथोलॉजी", "लैब", "प्रयोगशाला", "नैदानिक", "रक्त", "ऊतक", "परीक्षण", "नमूना", "जांच", "रोग"),
-             category = "departments",
-             language = "hi"
-         ),
-         KnowledgeBaseQA(
-             id = "qa_dept_pathology_info",
-             question = "Tell me about pathology department",
-             answer = "The Pathology and Diagnostics Department at All Is Well Hospital offers comprehensive laboratory services for disease diagnosis and health monitoring. Services include routine blood tests, specialized assays, tissue biopsies, culture studies, and advanced diagnostic testing. All tests are conducted by qualified pathologists using modern equipment. The department serves both inpatients and outpatients with quick turnaround times for results.",
-             keywords = listOf("pathology", "diagnostics", "department", "laboratory", "tests", "service", "results", "equipped", "qualified", "biopsy"),
-             category = "departments",
-             language = "en"
-         ),
-         KnowledgeBaseQA(
-             id = "qa_dept_pathology_services",
-             question = "What are the pathology services available?",
-             answer = "All Is Well Hospital's pathology lab provides: Complete Blood Count (CBC), Liver Function Tests (LFT), Kidney Function Tests (KFT), Blood Sugar Tests, Thyroid Function Tests, Lipid Profile, Serology Tests, Urine Analysis, Stool Analysis, Culture and Sensitivity Tests, Tissue Biopsies, and Histopathology. All tests use advanced automated analyzers for accuracy and speed.",
-             keywords = listOf("pathology", "services", "blood", "test", "available", "cbc", "lft", "kft", "thyroid", "analysis"),
-             category = "departments",
-             language = "en"
-         ),
-         KnowledgeBaseQA(
-             id = "qa_dept_pathology_location",
-             question = "Where is the pathology lab located?",
-             answer = "The Pathology Lab at All Is Well Hospital is centrally located with easy access from all departments. It operates 24 hours a day, 7 days a week. You can visit the lab counter for sample collection, or ask reception staff for specific directions. Our trained phlebotomists ensure quick and safe sample collection.",
-             keywords = listOf("pathology", "lab", "location", "direction", "sample", "collection", "counter", "24/7", "phlebotomist"),
-             category = "facilities",
-             language = "en"
-         ),
-         KnowledgeBaseQA(
-             id = "qa_dept_diagnostics",
-             question = "What is diagnostics?",
-             answer = "Diagnostics refers to the process of identifying diseases through medical tests and examinations. At All Is Well Hospital, our Diagnostics Department provides modern imaging and laboratory services including X-Ray, ultrasound, CT scans, and MRI to help doctors understand your health condition. These tools help in early disease detection and accurate treatment planning.",
-             keywords = listOf("diagnostics", "imaging", "xray", "ultrasound", "ct", "mri", "scan", "test", "examination", "disease"),
-             category = "departments",
-             language = "en"
-         ),
-         KnowledgeBaseQA(
-             id = "qa_dept_diagnostics_hi",
-             question = "नैदानिकीकरण क्या है?",
-             answer = "नैदानिकीकरण चिकित्सा परीक्षण और जांच के माध्यम से रोगों की पहचान करने की प्रक्रिया है। ऑल इज़ वेल हॉस्पिटल के नैदानिक विभाग में एक्स-रे, अल्ट्रासाउंड, सीटी स्कैन और एमआरआई जैसी आधुनिक सेवाएं उपलब्ध हैं। ये उपकरण डॉक्टरों को आपकी स्वास्थ्य स्थिति समझने में मदद करते हैं।",
-             keywords = listOf("नैदानिक", "जांच", "एक्सरे", "अल्ट्रासाउंड", "सीटी", "एमआरआई", "स्कैन", "परीक्षण", "रोग"),
-             category = "departments",
-             language = "hi"
-         ),
-     )
+            answer = "ऑल इज़ वेल हॉस्पिटल मैक्रो विजन अकादमी के पास, बुरहानपुर, मध्य प्रदेश 450331 में स्थित है। दिशा और नेविगेशन के लिए रिसेप्शन से संपर्क करें या हमारी नेविगेशन सिस्टम का उपयोग करें। हम आपको किसी भी विभाग तक गाइड कर सकते हैं।",
+            keywords = listOf("स्थान", "पता", "कहां", "दिशा", "बुरहानपुर", "पास", "मैक्रो", "अकादमी"),
+            category = "facilities",
+            language = "hi"
+        ),
 
-    // Dynamic doctor Q&As injected from Strapi
-    private val dynamicDoctorQAs = mutableListOf<KnowledgeBaseQA>()
+        KnowledgeBaseQA(
+            id = "qa_4_hi",
+            question = "योग उपचार के कौन से प्रकार उपलब्ध हैं?",
+            answer = "ऑल इज़ वेल हॉस्पिटल में शारीरिक स्वास्थ्य, मानसिक कल्याण और समग्र जीवनशैली संतुलन का समर्थन करने के लिए विभिन्न प्रकार के संरचित योग उपचार उपलब्ध हैं। अस्पताल विभिन्न स्वास्थ्य आवश्यकताओं के अनुसार अनुकूलित बहुतेरिप्यूटिक योग दृष्टिकोण प्रदान करता है। इनमें हठ योग, विन्यासा फ्लो, यिन योग, प्राणायाम, ध्यान और माइंडफुलनेस, और योग थेरेपी शामिल हैं, प्रत्येक को विशिष्ट लाभों और चिकित्सीय लक्ष्यों के साथ डिज़ाइन किया गया है।",
+            keywords = listOf("योग", "उपचार", "हठ", "विन्यासा", "प्राणायाम", "ध्यान", "चिकित्सा", "स्वास्थ्य"),
+            category = "diagnostics",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_5_hi",
+            question = "पोषण और आहार में कौन से उपचार उपलब्ध हैं?",
+            answer = "पोषण और आहार में उपचार वैज्ञानिक रूप से डिज़ाइन की गई आहार रणनीतियों के माध्यम से समग्र स्वास्थ्य में सुधार, बीमारियों की रोकथाम और विशिष्ट चिकित्सा स्थितियों का समर्थन करने पर केंद्रित हैं। व्यक्तिगत भोजन योजना में किसी व्यक्ति के स्वास्थ्य लक्ष्यों, चिकित्सा इतिहास, जीवनशैली और आहार प्राथमिकताओं के अनुसार कस्टम पोषण योजनाएं बनाना शामिल है।",
+            keywords = listOf("पोषण", "आहार", "भोजन", "योजना", "स्वास्थ्य", "वजन", "बीमारी", "रोकथाम"),
+            category = "diagnostics",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_10_hi",
+            question = "क्या आप दिशा दोहरा सकते हैं?",
+            answer = "ज़रूर। मैं आपको आसानी से फॉलो कर सकें, इसलिए दिशाएं कदम-दर-कदम दोहराऊंगा। कृपया अपने वर्तमान स्थान से सीधे आगे बढ़ें, फिर निर्देशानुसार मुड़ें। यदि आप चाहें तो मैं आपको गंतव्य तक ले जाने के लिए भी गाइड कर सकता हूँ।",
+            keywords = listOf("दिशा", "दोहराना", "कदम", "गंतव्य", "गाइड", "मार्ग", "निर्देश"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_11_hi",
+            question = "क्या आप मैप दिखा सकते हैं?",
+            answer = "हाँ। मैं आपके लिए अपनी स्क्रीन पर अस्पताल का मैप दिखा सकता हूँ। मैप आपके वर्तमान स्थान और अस्पताल के अंदर आपके गंतव्य तक मार्ग दिखाएगा। आप हाइलाइट किए गए पथ का पालन कर सकते हैं, या मैं व्यक्तिगत रूप से आपको स्थान तक गाइड कर सकता हूँ।",
+            keywords = listOf("मैप", "दिखाना", "स्क्रीन", "स्थान", "मार्ग", "गंतव्य", "पथ"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_12_hi",
+            question = "क्या आप फिर से समझा सकते हैं?",
+            answer = "हाँ, मैं आपको सरल भाषा में फिर से समझाऊंगा। मैं यहाँ हूँ ताकि आपको पूर्ण और सटीक जानकारी मिल सके।",
+            keywords = listOf("समझाना", "सरल", "भाषा", "जानकारी", "सटीक", "पूर्ण"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_14_hi",
+            question = "रेडियोलॉजी और इमेजिंग का क्या खर्च है?",
+            answer = "ऑल इज़ वेल हॉस्पिटल में रेडियोलॉजी और इमेजिंग विभाग उन्नत नैदानिक इमेजिंग सेवाओं की एक विस्तृत श्रृंखला प्रदान करता है। प्रत्येक टेस्ट की सटीक लागत स्कैन के प्रकार, जांचे गए शरीर के अंग, कंट्रास्ट उपयोग और चिकित्सीय आवश्यकताओं पर निर्भर करती है। अपडेटेड मूल्य निर्धारण के लिए रोगियों को बिलिंग काउंटर से संपर्क करने की सलाह दी जाती है।",
+            keywords = listOf("रेडियोलॉजी", "इमेजिंग", "खर्च", "कीमत", "एक्स-रे", "स्कैन", "बिलिंग"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_15_hi",
+            question = "क्या नकद भुगतान स्वीकार किया जाता है?",
+            answer = "हाँ, अस्पताल परामर्श, नैदानिक परीक्षण, कमरा शुल्क और अन्य चिकित्सा सेवाओं के लिए नकद भुगतान स्वीकार करता है। नकद के अलावा, रोगी की सुविधा के लिए डिजिटल भुगतान विकल्प भी उपलब्ध हो सकते हैं। बड़े बिलों के लिए, बिलिंग काउंटर पर स्वीकृत भुगतान विधियों की पुष्टि करें।",
+            keywords = listOf("नकद", "भुगतान", "बिल", "डिजिटल", "स्वीकार", "भुगतान विधि"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_16_hi",
+            question = "अस्पताल का नाम क्या है?",
+            answer = "अस्पताल का नाम ऑल इज़ वेल हॉस्पिटल है। मैं आपकी सहायता के लिए यहां हूँ, ऑल इज़ वेल हॉस्पिटल में आपका स्वागत है। मैं आपका डिजिटल सहायक हूँ - दिशाएं, अपॉइंटमेंट या जानकारी में मदद के लिए तैयार।",
+            keywords = listOf("नाम", "अस्पताल", "ऑल इज़ वेल", "स्वागत", "सहायक"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_52_hi",
+            question = "यहां कितने ओटी हैं?",
+            answer = "ऑल इज़ वेल में 6+ मॉड्यूलर ओटी हैं।",
+            keywords = listOf("ओटी", "ऑपरेशन थिएटर", "मॉड्यूलर", "कितने", "सर्जरी"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_53_hi",
+            question = "अस्पताल में कितने कमरे हैं?",
+            answer = "हमारे अस्पताल में लगभग 350 कमरे हैं।",
+            keywords = listOf("कमरे", "अस्पताल", "कितने", "350", "कक्ष"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_54_hi",
+            question = "अस्पताल में कितने बेड हैं?",
+            answer = "अस्पताल में 360+ बेड हैं।",
+            keywords = listOf("बेड", "अस्पताल", "कितने", "360", "पलंग"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_55_hi",
+            question = "ऑल इज़ वेल के मूल मूल्य क्या हैं?",
+            answer = "1) समय का महत्व 2) उत्कृष्टता के लिए प्रयास 3) विनम्रता का अभ्यास 4) समावेशिता को बढ़ावा 5) ईमानदारी के साथ जीवन।",
+            keywords = listOf("मूल्य", "उत्कृष्टता", "विनम्रता", "समावेशिता", "ईमानदारी", "समय"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_56_hi",
+            question = "ऑल इज़ वेल हॉस्पिटल में कौन सा अस्पताल सबसे अच्छा है?",
+            answer = "ऑल इज़ वेल हॉस्पिटल बुरहानपुर के सबसे अच्छे अस्पतालों में गिना जाता है।",
+            keywords = listOf("अच्छा", "बेस्ट", "अस्पताल", "बुरहानपुर", "श्रेष्ठ"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_59_hi",
+            question = "मैं अस्पताल से कैसे संपर्क करूं?",
+            answer = "आप +91 7697744444 या +91 7089099888 पर संपर्क कर सकते हैं।",
+            keywords = listOf("संपर्क", "फोन", "कॉल", "नंबर", "पूछताछ"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_60_hi",
+            question = "ऑल इज़ वेल हॉस्पिटल का ईमेल क्या है?",
+            answer = "digitalmarketing@mvaburhanpur.com",
+            keywords = listOf("ईमेल", "डिजिटल", "मार्केटिंग", "संपर्क"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_61_hi",
+            question = "क्या विशेषज्ञ से मिलने के लिए रेफरल की जरूरत है?",
+            answer = "नहीं, अधिकांश विभागों के लिए रेफरल की आवश्यकता नहीं है; आप सीधे अपनी पसंद के विशेषज्ञ से बुकिंग कर सकते हैं।",
+            keywords = listOf("रेफरल", "विशेषज्ञ", "विभाग", "सीधे", "बुकिंग"),
+            category = "departments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_62_hi",
+            question = "मैं कैसे देख सकता हूं कि कौन सा डॉक्टर मेरी स्थिति का इलाज करता है?",
+            answer = "विभाग के अनुसार डॉक्टरों को फ़िल्टर करने और उनकी विशेषज्ञता देखने के लिए वेबसाइट पर 'हमारे विशेषज्ञों से मिलें' पर जाएं।",
+            keywords = listOf("डॉक्टर", "विशेषज्ञ", "विभाग", "इलाज", "वेबसाइट"),
+            category = "departments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_63_hi",
+            question = "क्या आपके डॉक्टर अनुभवी हैं?",
+            answer = "हाँ, हमारी टीम में फेलोशिप और अपने क्षेत्रों में विशेष प्रशिक्षण वाले योग्य कंसल्टेंट शामिल हैं।",
+            keywords = listOf("डॉक्टर", "अनुभवी", "योग्य", "फेलोशिप", "प्रशिक्षण"),
+            category = "departments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_64_hi",
+            question = "आप कौन से स्वास्थ्य चेक-अप पैकेज ऑफर करते हैं?",
+            answer = "हम बेसिक वेलनेस (₹899), कम्प्रिहेंसिव वेलनेस (₹4999), महिलाओं के, मधुमेह, गर्भावस्था और बाल पैकेज ऑफर करते हैं।",
+            keywords = listOf("पैकेज", "स्वास्थ्य", "चेक-अप", "वेलनेस", "महिला", "मधुमेह"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_65_hi",
+            question = "क्या स्वास्थ्य पैकेज पर छूट मिलती है?",
+            answer = "हाँ, सभी पैकेज वर्तमान में मूल कीमत पर 25-53% की छूट देते हैं - नवीनतम ऑफर के लिए वेबसाइट देखें।",
+            keywords = listOf("छूट", "पैकेज", "ऑफर", "कीमत", "वेबसाइट"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_66_hi",
+            question = "डायबिटिक वेलनेस पैकेज में क्या शामिल है?",
+            answer = "इसमें HbA1c, शुगर टेस्ट, ECG, 2D इको, किडनी/लिवर टेस्ट, आंखों की जांच और फिजिशियन और डायटीशियन से परामर्श शामिल हैं।",
+            keywords = listOf("मधुमेह", "पैकेज", "टेस्ट", "ECG", "इको", "किडनी", "लिवर"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_67_hi",
+            question = "क्या आप डायटीशियन परामर्श ऑफर करते हैं?",
+            answer = "हाँ, कम्प्रिहेंसिव वेलनेस और डायबिटिक वेलनेस पैकेज में डायटीशियन परामर्श शामिल हैं।",
+            keywords = listOf("डायटीशियन", "परामर्श", "पैकेज", "वेलनेस", "मधुमेह"),
+            category = "departments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_68_hi",
+            question = "क्या आपकी सेवाएं किफायती हैं?",
+            answer = "हम पारदर्शी मूल्य निर्धारण और छूट वाले वेलनेस पैकेज के साथ उच्च गुणवत्ता, लागत प्रभावी देखभाल प्रदान करते हैं।",
+            keywords = listOf("किफायती", "सेवाएं", "पारदर्शी", "मूल्य", "गुणवत्ता"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_69_hi",
+            question = "क्या अस्पताल में पार्किंग उपलब्ध है?",
+            answer = "हाँ, हम मुख्य प्रवेश द्वार के पास रोगियों और आगंतुकों के लिए मुफ्त पार्किंग ऑफर करते हैं।",
+            keywords = listOf("पार्किंग", "मुफ्त", "रोगी", "आगंतुक", "प्रवेश"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_70_hi",
+            question = "क्या आप वॉक-इन रोगियों को स्वीकार करते हैं?",
+            answer = "हाँ, सामान्य परामर्श के लिए वॉक-इन का स्वागत है; अपॉइंटमेंट से प्रतीक्षा समय कम होता है।",
+            keywords = listOf("वॉक-इन", "रोगी", "परामर्श", "अपॉइंटमेंट", "प्रतीक्षा"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_71_hi",
+            question = "क्या मैं इलाज से पहले बिल अनुमान प्राप्त कर सकता हूं?",
+            answer = "हाँ, डॉक्टर से संक्षिप्त परामर्श के बाद हमारा फ्रंट डेस्क अनुमानित लागत अनुमान प्रदान कर सकता है।",
+            keywords = listOf("बिल", "अनुमान", "इलाज", "लागत", "फ्रंट डेस्क"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_72_hi",
+            question = "क्या मैं ऑनलाइन अपने पिछले विजिट हिस्ट्री एक्सेस कर सकता हूं?",
+            answer = "अस्पताल के पास रोगी के सभी पिछले विवरण हैं, हर रोगी के पास पहली विजिट पर एक यूनिक आईडी होती है, जहां से वे अपना पिछला इतिहास एक्सेस कर सकते हैं।",
+            keywords = listOf("ऑनलाइन", "विजिट", "इतिहास", "रोगी", "आईडी"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_73_hi",
+            question = "क्या आप रिपोर्ट अन्य डॉक्टरों के साथ शेयर करते हैं?",
+            answer = "हाँ, आपकी सहमति से, हम किसी भी विशेषज्ञ के साथ डिजिटल या प्रिंटेड रिपोर्ट शेयर कर सकते हैं।",
+            keywords = listOf("रिपोर्ट", "शेयर", "डॉक्टर", "सहमति", "डिजिटल"),
+            category = "departments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_74_hi",
+            question = "चिकित्सा आपातकालीन स्थिति में मुझे क्या करना चाहिए?",
+            answer = "तुरंत हमारे आपातकालीन नंबर पर कॉल करें या अस्पताल का दौरा करें - हमारी 24/7 टीम मदद के लिए तैयार है।",
+            keywords = listOf("आपातकालीन", "चिकित्सा", "कॉल", "24/7", "मदद"),
+            category = "hospital_info",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_75_hi",
+            question = "क्या अस्पताल व्हीलचेयर-एक्सेसिबल है?",
+            answer = "हाँ, पूरी सुविधा रैम्प-इनेबल और रोगी की सुविधा के लिए व्हीलचेयर-फ्रेंडली है।",
+            keywords = listOf("व्हीलचेयर", "रैम्प", "एक्सेसिबल", "रोगी", "सुविधा"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_76_hi",
+            question = "मैं व्हाट्सएप चैट फीचर का उपयोग कैसे करूं?",
+            answer = "अपॉइंटमेंट मदद या त्वरित क्वेरी के लिए वेबसाइट पर व्हाट्सएप आइकन पर क्लिक करें।",
+            keywords = listOf("व्हाट्सएप", "चैट", "वेबसाइट", "अपॉइंटमेंट", "क्वेरी"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_77_hi",
+            question = "क्या मैं ऑनलाइन अपनी अपॉइंटमेंट रीशेड्यूल कर सकता हूं?",
+            answer = "हाँ, अपनी बुकिंग में लॉग इन करें या अपना स्लॉट बदलने के लिए व्हाट्सएप के माध्यम से संदेश भेजें।",
+            keywords = listOf("ऑनलाइन", "रीशेड्यूल", "अपॉइंटमेंट", "व्हाट्सएप", "स्लॉट"),
+            category = "appointments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_78_hi",
+            question = "क्या आप रोगियों और सेवकों के लिए भोजन प्रदान करते हैं?",
+            answer = "हाँ, हम स्वच्छ, डायटीशियन-अप्रूव्ड भोजन प्रदान करते हैं; विशेष आहार अनुरोध पर व्यवस्थित किए जा सकते हैं।",
+            keywords = listOf("भोजन", "रोगी", "सेवक", "आहार", "डायटीशियन"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_79_hi",
+            question = "क्या आपका अस्पताल प्रमाणित या प्रमाणपत्रित है?",
+            answer = "हाँ, हम सुरक्षा, स्वच्छता और उपचार के लिए प्रमाणित प्रोटोकॉल बनाए रखते हुए राष्ट्रीय स्वास्थ्य सेवा मानकों का पालन करते हैं।",
+            keywords = listOf("प्रमाणित", "अस्पताल", "सुरक्षा", "स्वच्छता", "मानक"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_80_hi",
+            question = "आपका अस्पताल अलग कैसे है?",
+            answer = "हम अनुभवी विशेषज्ञ, उन्नत डायग्नोस्टिक्स, पारदर्शी मूल्य निर्धारण और रोगी-पहले देखभाल को एक छत के नीचे जोड़ते हैं।",
+            keywords = listOf("अलग", "विशेषज्ञ", "डायग्नोस्टिक्स", "पारदर्शी", "रोगी"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_81_hi",
+            question = "क्या आप ग्रामीण या दूरस्थ रोगियों की सेवा करते हैं?",
+            answer = "हाँ, हम सभी क्षेत्रों के रोगियों का स्वागत करते हैं और दूर से यात्रा करने वालों के लिए टेली-कंसल्टेशन सपोर्ट ऑफर करते हैं।",
+            keywords = listOf("ग्रामीण", "दूरस्थ", "रोगी", "टेली-कंसल्टेशन", "सपोर्ट"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_82_hi",
+            question = "क्या आपका अस्पताल पर्यावरण अनुकूल या सतत है?",
+            answer = "हम कचरा अलगाव, ऊर्जा-कुशल सिस्टम और संभव होने पर प्लास्टिक के उपयोग में कमी जैसी हरित प्रथाओं का पालन करते हैं।",
+            keywords = listOf("पर्यावरण", "सतत", "हरित", "कचरा", "ऊर्जा"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_83_hi",
+            question = "क्या मैं एडमिशन से पहले अस्पताल का दौरा कर सकता हूं?",
+            answer = "हाँ, हमारा फ्रंट डेस्क एक गाइडेड विजिट व्यवस्थित कर सकता है - बस आगे से कॉल करें या व्हाट्सएप के माध्यम से अनुरोध करें।",
+            keywords = listOf("दौरा", "एडमिशन", "गाइडेड", "फ्रंट डेस्क", "व्हाट्सएप"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_84_hi",
+            question = "मैं फीडबैक कैसे दे सकता हूं या शिकायत कैसे दर्ज करूं?",
+            answer = "'हमसे संपर्क करें' फॉर्म, व्हाट्सएप के माध्यम से अपना अनुभव शेयर करें, या रोगी की डिस्चार्ज के बाद, पेशेंट केयर आपसे फीडबैक के लिए संपर्क करेगा - हम आपके इनपुट को महत्व देते हैं।",
+            keywords = listOf("फीडबैक", "शिकायत", "संपर्क", "व्हाट्सएप", "डिस्चार्ज"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_85_hi",
+            question = "क्या आपके डॉक्टर फुल-टाइम स्टाफ हैं?",
+            answer = "हाँ, हमारे मुख्य विशेषज्ञ समर्पित फुल-टाइम कंसल्टेंट हैं जो लगातार, विश्वसनीय देखभाल सुनिश्चित करते हैं।",
+            keywords = listOf("डॉक्टर", "फुल-टाइम", "स्टाफ", "विशेषज्ञ", "कंसल्टेंट"),
+            category = "departments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_86_hi",
+            question = "क्या रोगी की गोपनीयता संरक्षित है?",
+            answer = "सभी चिकित्सा रिकॉर्ड और व्यक्तिगत डेटा गोपनीय हैं और केवल आपकी सहमति से शेयर किए जाते हैं।",
+            keywords = listOf("गोपनीयता", "रोगी", "रिकॉर्ड", "डेटा", "सहमति"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_88_hi",
+            question = "क्या अस्पताल NABH प्रमाणित है?",
+            answer = "हाँ, हम NABH प्रमाणित हैं। आप इसे हमारी वेबसाइट पर देख सकते हैं।",
+            keywords = listOf("NABH", "प्रमाणित", "अस्पताल", "वेबसाइट"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_89_hi",
+            question = "क्या अस्पताल ISO 9001 प्रमाणित है?",
+            answer = "हाँ, अस्पताल ISO 9001 प्रमाणित है।",
+            keywords = listOf("ISO", "9001", "प्रमाणित", "अस्पताल"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_90_hi",
+            question = "डॉक्टरों की संख्या?",
+            answer = "30+ डॉक्टर उपलब्ध हैं।",
+            keywords = listOf("डॉक्टर", "संख्या", "30", "उपलब्ध"),
+            category = "departments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_91_hi",
+            question = "क्या मैं ऑनलाइन अपॉइंटमेंट बुक कर सकता हूं?",
+            answer = "हाँ, आप सीधे वेबसाइट के माध्यम से या रिसेप्शन पर कॉल करके ऑनलाइन अपॉइंटमेंट बुक कर सकते हैं।",
+            keywords = listOf("ऑनलाइन", "अपॉइंटमेंट", "बुक", "वेबसाइट", "रिसेप्शन"),
+            category = "appointments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_92_hi",
+            question = "क्या आपातकालीन सेवाएं उपलब्ध हैं?",
+            answer = "हाँ, आपातकालीन सेवाएं हमारे अस्पताल में 24/7 उपलब्ध हैं।",
+            keywords = listOf("आपातकालीन", "सेवाएं", "24/7", "अस्पताल"),
+            category = "hospital_info",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_93_hi",
+            question = "एम्बुलेंस नंबर क्या है?",
+            answer = "एम्बुलेंस कॉल करें: +91 7697744444",
+            keywords = listOf("एम्बुलेंस", "नंबर", "कॉल", "आपातकालीन"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_94_hi",
+            question = "कैफेटेरिया नाश्ता/दोपहर का भोजन/रात का खाना कब तक परोसता है?",
+            answer = "कैफेटेरियां मानक सुबह, दोपहर और शाम के समय में भोजन परोसती हैं। किसी भी भोजन अवधि के बीच में पहुंचें ताकि आप कटऑफ मिस न करें।",
+            keywords = listOf("कैफेटेरिया", "नाश्ता", "दोपहर", "रात", "भोजन", "समय"),
+            category = "hospital_info",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_95_hi",
+            question = "डॉक्टर वार्ड राउंड किस समय करते हैं?",
+            answer = "वार्ड राउंड आमतौर पर दिन में एक या दो बार होते हैं।",
+            keywords = listOf("डॉक्टर", "वार्ड", "राउंड", "समय", "दिन"),
+            category = "departments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_96_hi",
+            question = "सर्जरी शेड्यूलिंग के घंटे क्या हैं?",
+            answer = "सर्जरी आमतौर पर नियमित सप्ताह के दिन दिन के समय में शेड्यूल की जाती हैं। विशिष्ट समय के लिए, कृपया उपलब्धता और तत्कालता के आधार पर शेड्यूल भिन्न होते हैं, रिसेप्शन से जांचें।",
+            keywords = listOf("सर्जरी", "शेड्यूलिंग", "समय", "सप्ताह", "उपलब्धता"),
+            category = "hospital_info",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_97_hi",
+            question = "स्वास्थ्य शिविर या स्क्रीनिंग ड्राइव कब आयोजित किए जाते हैं?",
+            answer = "अस्पताल द्वारा पहले पंचायत और क्लिनिक में कई स्वास्थ्य शिविर आयोजित किए गए हैं, कार्डियोलॉजी शिविर और इस तरह के कई शिविर आयोजित किए गए हैं।",
+            keywords = listOf("स्वास्थ्य शिविर", "स्क्रीनिंग", "कार्डियोलॉजी", "पंचायत", "क्लिनिक"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_98_hi",
+            question = "क्या मैं रोगी के लिए अपना खाना ला सकता हूं?",
+            answer = "हाँ, आप खाना ला सकते हैं लेकिन इसे केवल विशेषज्ञ की चिंता के बाद दें।",
+            keywords = listOf("खाना", "रोगी", "बाहरी", "विशेषज्ञ", "अनुमति"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_99_hi",
+            question = "क्या अंदर फोटोग्राफी या वीडियो रिकॉर्डिंग की अनुमति है?",
+            answer = "गोपनीयता और सुरक्षा कारणों से, फोटोग्राफी और वीडियो रिकॉर्डिंग आमतौर पर अंदर की अनुमति नहीं है। कृपया किसी भी विशिष्ट दिशानिर्देशों या अपवादों के लिए रिसेप्शन से जांचें।",
+            keywords = listOf("फोटोग्राफी", "वीडियो", "रिकॉर्डिंग", "गोपनीयता", "सुरक्षा", "अनुमति"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_100_hi",
+            question = "क्या आप महंगे उपचारों के लिए पेमेंट प्लान या EMI ऑफर करते हैं?",
+            answer = "हम समझते हैं कि उपचार लागत भिन्न हो सकती है, और लचीले भुगतान विकल्प उपलब्ध हो सकते हैं। कृपया अपनी जरूरतों के अनुसार प्लान या EMI विवरण तलाशने के लिए रिसेप्शन से बात करें।",
+            keywords = listOf("EMI", "पेमेंट", "प्लान", "उपचार", "लागत", "विकल्प"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_101_hi",
+            question = "क्या सरकारी कर्मचारियों या वरिष्ठ नागरिकों के लिए छूट है?",
+            answer = "नहीं, अभी ऐसी कोई छूट नहीं है लेकिन माइक्रो विजन अकादमी के तहत काम करने वाले कर्मचारी जो ऑल इज़ वेल में काम करते हैं, उन्हें विजन कार्ड द्वारा इलाज किया जा सकता है।",
+            keywords = listOf("छूट", "सरकारी", "कर्मचारी", "वरिष्ठ", "विजन कार्ड"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_102_hi",
+            question = "अगर मैं तुरंत पूरा बिल नहीं दे पाता तो क्या होगा?",
+            answer = "अगर आप तुरंत पूरा बिल नहीं दे पाते तो कृपया रिसेप्शन से बात करें - वे उपलब्ध सपोर्ट विकल्पों या भुगतान व्यवस्था के माध्यम से आपको गाइड कर सकते हैं।",
+            keywords = listOf("बिल", "भुगतान", "तुरंत", "रिसेप्शन", "सपोर्ट"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_103_hi",
+            question = "अगर मुझे हार्ट अटैक या स्ट्रोक का शक हो तो मुझे क्या करना चाहिए?",
+            answer = "तुरंत किसी भी स्टाफ मेंबर को अलर्ट करें या इमरजेंसी नंबर +91 7697744444 पर कॉल करें।",
+            keywords = listOf("हार्ट अटैक", "स्ट्रोक", "इमरजेंसी", "कॉल", "अलर्ट"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_104_hi",
+            question = "क्या आपके पास पॉइजन कंट्रोल या टॉक्सिकोलॉजी यूनिट है?",
+            answer = "ज़हर के मामलों के लिए, तेज़ गाइडेंस और केयर कोऑर्डिनेशन के लिए तुरंत रिसेप्शन या इमरजेंसी सेवाओं से संपर्क करें।",
+            keywords = listOf("पॉइजन", "टॉक्सिकोलॉजी", "यूनिट", "इमरजेंसी", "रिसेप्शन"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_105_hi",
+            question = "अगर रोगी की स्थिति अचानक बिगड़ जाए तो क्या प्रोटोकॉल है?",
+            answer = "किसी भी आस-पास के स्टाफ को अलर्ट करें या इमरजेंसी कॉल बटन दबाएं - हमारी टीम तत्काल परिवर्तनों पर जल्दी प्रतिक्रिया करने के लिए प्रशिक्षित है। रिसेप्शन भी तत्काल एस्केलेशन में मदद कर सकता है।",
+            keywords = listOf("रोगी", "स्थिति", "बिगड़ना", "इमरजेंसी", "स्टाफ", "एस्केलेशन"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_106_hi",
+            question = "क्या आप जेनेटिक टेस्टिंग या एडवांस्ड मॉलिक्यूलर डायग्नोस्टिक्स ऑफर करते हैं?",
+            answer = "जबकि हम ऑन-साइट जेनेटिक या एडवांस्ड मॉलिक्यूलर टेस्ट नहीं करते हैं, हम आपको विश्वसनीय पार्टनर लैब्स को रेफर कर सकते हैं। वे टेस्ट करेंगे और आपके डॉक्टर द्वारा रिव्यू के लिए रिपोर्ट हमारे माध्यम से शेयर करेंगे।",
+            keywords = listOf("जेनेटिक", "टेस्टिंग", "मॉलिक्यूलर", "डायग्नोस्टिक्स", "लैब"),
+            category = "diagnostics",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_107_hi",
+            question = "क्या मैं बिना प्रिस्क्रिप्शन विटामिन D, B12, या हार्मोन टेस्ट करा सकता हूं?",
+            answer = "अधिकांश रूटीन टेस्ट - विटामिन D, B12, और हार्मोन पैनल सहित - बिना प्रिस्क्रिप्शन किए जा सकते हैं। एकमात्र अपवाद गर्भावस्था टेस्टिंग है, जिसके लिए डॉक्टर की प्रिस्क्रिप्शन आवश्यक है।",
+            keywords = listOf("विटामिन", "B12", "हार्मोन", "टेस्ट", "प्रिस्क्रिप्शन"),
+            category = "diagnostics",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_108_hi",
+            question = "क्या रोगी के कमरों में टीवी या एंटरटेनमेंट विकल्प हैं?",
+            answer = "कमरा सुविधाओं जैसे टीवी कैटेगरी (जनरल, सिल्वर, डायमंड, या प्लेटिनम) के अनुसार भिन्न होते हैं। कृपया आपके चयनित कमरे में क्या शामिल है इसके लिए रिसेप्शन से जांचें।",
+            keywords = listOf("टीवी", "एंटरटेनमेंट", "कमरा", "कैटेगरी", "जनरल", "डायमंड"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_109_hi",
+            question = "क्या कमरे में रेफ्रिजरेटर या माइक्रोवेव है?",
+            answer = "ये सुविधाएं आपके कमरे के प्रकार पर निर्भर करती हैं। रिसेप्शन आपकी बुकिंग के आधार पर उपलब्धता की पुष्टि कर सकता है।",
+            keywords = listOf("रेफ्रिजरेटर", "माइक्रोवेव", "कमरा", "उपलब्धता", "बुकिंग"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_110_hi",
+            question = "क्या आप रोगियों के लिए लॉन्ड्री सेवाएं प्रदान करते हैं?",
+            answer = "लॉन्ड्री सेवाओं के बारे में पूछताछ के लिए, कृपया रिसेप्शन से जांचें - वे उपलब्धता पर सबसे अप-टू-डेट जानकारी प्रदान कर सकते हैं।",
+            keywords = listOf("लॉन्ड्री", "सेवा", "रोगी", "उपलब्धता", "रिसेप्शन"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_111_hi",
+            question = "क्या रोगी के कमरों और प्रतीक्षा क्षेत्रों में मुफ्त वाईफाई उपलब्ध है?",
+            answer = "वाईफाई उपलब्धता कमरे के प्रकारों और सामान्य क्षेत्रों में भिन्न होती है। एक्सेस विवरण के लिए, कृपया चेक-इन पर रिसेप्शन से पूछें।",
+            keywords = listOf("वाईफाई", "मुफ्त", "कमरा", "प्रतीक्षा", "एक्सेस"),
+            category = "diagnostics",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_112_hi",
+            question = "क्या आप अपॉइंटमेंट और रिपोर्ट के लिए मोबाइल ऐप ऑफर करते हैं?",
+            answer = "आप हमारी वेबसाइट या व्हाट्सएप के माध्यम से अपॉइंटमेंट बुक कर सकते हैं, टोकन जनरेट कर सकते हैं और रिपोर्ट एक्सेस कर सकते हैं। रिसेप्शन भी किसी भी समय बुकिंग में मदद करने के लिए खुश है।",
+            keywords = listOf("मोबाइल", "ऐप", "अपॉइंटमेंट", "रिपोर्ट", "वेबसाइट", "व्हाट्सएप"),
+            category = "appointments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_113_hi",
+            question = "क्या आप जन्म/मृत्यु प्रमाणपत्र जारी करते हैं?",
+            answer = "हाँ, अस्पताल जन्म और मृत्यु प्रमाणपत्रों के लिए एप्लिकेशन प्रोसेस करता है। क्वेरी या सहायता के लिए, कृपया MRD (मेडिकल रिकॉर्ड डिपार्टमेंट) से संपर्क करें या दिशा निर्देश के लिए रिसेप्शन से जांचें।",
+            keywords = listOf("जन्म", "मृत्यु", "प्रमाणपत्र", "MRD", "रिकॉर्ड"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_114_hi",
+            question = "क्या आप आस-पास के गांवों में मुफ्त स्वास्थ्य शिविर करते हैं?",
+            answer = "हाँ, हम नियमित रूप से आस-पास के गांवों में मुफ्त स्वास्थ्य शिविर करते हैं। शेड्यूल या भागीदारी विवरण के लिए, कृपया रिसेप्शन पर पूछें।",
+            keywords = listOf("मुफ्त", "स्वास्थ्य शिविर", "गांव", "नियमित", "रिसेप्शन"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_115_hi",
+            question = "क्या मैं अस्पताल में वॉलंटियर या इंटर्न कर सकता हूं?",
+            answer = "हाँ, हम हमारे विशेषज्ञों के तहत काम करने वाले वॉलंटियर और इंटर्न का स्वागत करते हैं। कृपया अवसरों और एप्लिकेशन प्रोसेस के बारे में जानने के लिए रिसेप्शन से बात करें।",
+            keywords = listOf("वॉलंटियर", "इंटर्न", "अस्पताल", "विशेषज्ञ", "एप्लिकेशन"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_116_hi",
+            question = "क्या आप चिकित्सा प्रशिक्षण या प्रमाणन कोर्सेज ऑफर करते हैं?",
+            answer = "हाँ, हम पूर्ण होने पर प्रमाणन के साथ चिकित्सा प्रशिक्षण प्रोग्राम ऑफर करते हैं।",
+            keywords = listOf("प्रशिक्षण", "प्रमाणन", "कोर्सेज", "चिकित्सा"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_117_hi",
+            question = "एक समय में कितने आगंतुकों को अनुमति है?",
+            answer = "जनरल वार्ड के लिए, एक समय में एक आगंतुक को रोगी पास के साथ अनुमति है। ICU विजिट निर्दिष्ट घंटों (सुबह 11 बजे-दोपहर 12 बजे और शाम 6 बजे-7 बजे) के दौरान 1-2 करीबी रिश्तेदारों तक सीमित हैं।",
+            keywords = listOf("आगंतुक", "वार्ड", "ICU", "पास", "समय", "रिश्तेदार"),
+            category = "hospital_info",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_118_hi",
+            question = "क्या बच्चे ICU में रोगियों से मिल सकते हैं?",
+            answer = "रोगी सुरक्षा और संक्रमण नियंत्रण सुनिश्चित करने के लिए 12 वर्ष से कम उम्र के बच्चों को आमतौर पर ICU में अनुमति नहीं है। कृपया किसी भी अपवाद के लिए नर्सिंग स्टेशन से परामर्श करें।",
+            keywords = listOf("बच्चे", "ICU", "रोगी", "सुरक्षा", "संक्रमण", "नर्सिंग"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_119_hi",
+            question = "मैं रोगी के लिए कौन सी चीजें ला सकता हूं?",
+            answer = "आप आवश्यक व्यक्तिगत वस्तुएं, निर्धारित दवाइयां और हल्के स्नैक्स ला सकते हैं। विशेष रूप से ICU रोगियों के लिए, बाहरी भोजन या उपहार लाने से पहले हमेशा नर्सिंग स्टाफ से जांचें।",
+            keywords = listOf("व्यक्तिगत", "दवाई", "स्नैक्स", "रोगी", "नर्सिंग"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_120_hi",
+            question = "क्या रोगी के कमरों में फूल या बाहरी भोजन की अनुमति है?",
+            answer = "ICU/क्रिटिकल केयर क्षेत्रों में फूल और बाहरी भोजन की अनुमति नहीं है। जनरल वार्ड के लिए, कृपया ऐसी वस्तुएं लाने से पहले नर्सिंग टीम से पुष्टि करें।",
+            keywords = listOf("फूल", "भोजन", "ICU", "कमरा", "वार्ड", "नर्सिंग"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_121_hi",
+            question = "क्या मैं रोगी के साथ रात भर रह सकता हूं?",
+            answer = "हाँ, एक सेवक प्राइवेट कमरों या निर्दिष्ट गेस्ट कमरों (102, 103, 221, 222) में उपलब्धता और अस्पताल नीति के अनुसार रात भर रह सकता है।",
+            keywords = listOf("रात", "कमरा", "सेवक", "प्राइवेट", "उपलब्धता"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_122_hi",
+            question = "अगर मैं शारीरिक रूप से विजिट नहीं कर सकता तो क्या मैं रोगी से वीडियो कॉल कर सकता हूं?",
+            answer = "हाँ, रोगी की सहमति और नर्सिंग स्टाफ कोऑर्डिनेशन के साथ वीडियो कॉल की अनुमति है, विशेष रूप से ICU रोगियों के लिए या जब शारीरिक विजिट संभव नहीं हों।",
+            keywords = listOf("वीडियो", "कॉल", "रोगी", "ICU", "सहमति", "नर्सिंग"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_123_hi",
+            question = "क्या मैं एक ट्रिप में कई रोगियों से मिल सकता हूं?",
+            answer = "हाँ, आप विजिटिंग घंटों के दौरान कई रोगियों से मिल सकते हैं। कृपया रिसेप्शन डेस्क पर प्रत्येक रोगी के लिए अलग विजिटर पास लें।",
+            keywords = listOf("रोगी", "विजिटर", "पास", "रिसेप्शन", "ट्रिप"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_124_hi",
+            question = "रोगी के कमरों या ICU में कौन सी चीजें निषिद्ध हैं?",
+            answer = "निषिद्ध वस्तुओं में बाहरी भोजन (ICU में), फूल, तेज वस्तुएं, शराब, तंबाकू और बड़े इलेक्ट्रॉनिक्स शामिल हैं। कृपया पूर्ण, अपडेटेड सूची के लिए स्टाफ से जांचें।",
+            keywords = listOf("निषिद्ध", "भोजन", "फूल", "शराब", "तंबाकू", "ICU"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_126_hi",
+            question = "मैं कैसे पुष्टि करूं कि मेरी अपॉइंटमेंट बुक है?",
+            answer = "बुकिंग के बाद, आपको पुष्टि के रूप में SMS/व्हाट्सएप के माध्यम से टोकन नंबर प्राप्त होगा। आप +91 76977 44444 या +91 70890 99888 पर कॉल करके या रिसेप्शन से जांचकर अपनी अपॉइंटमेंट स्टेटस वेरिफाई भी कर सकते हैं।",
+            keywords = listOf("अपॉइंटमेंट", "बुक", "टोकन", "SMS", "व्हाट्सएप", "पुष्टि"),
+            category = "appointments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_127_hi",
+            question = "अगर मैं अपना अपॉइंटमेंट स्लॉट मिस करूं तो क्या होगा?",
+            answer = "अगर आप अपना स्लॉट मिस करते हैं तो कृपया रीशेड्यूल के लिए +91 76977 44444 या +91 70890 99888 पर रिसेप्शन से संपर्क करें। डॉक्टर की उपलब्धता के आधार पर वॉक-इन कंसल्टेशन उपलब्ध हो सकते हैं, हालांकि प्रतीक्षा समय लागू हो सकता है।",
+            keywords = listOf("स्लॉट", "मिस", "रीशेड्यूल", "वॉक-इन", "डॉक्टर", "उपलब्धता"),
+            category = "appointments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_128_hi",
+            question = "क्या मैं सम-दिन या तत्काल अपॉइंटमेंट प्राप्त कर सकता हूं?",
+            answer = "हाँ, जनरल OPD के लिए सम-दिन वॉक-इन कंसल्टेशन पहले-आओ, पहले-पाओ के आधार पर उपलब्ध हैं। तत्काल चिकित्सा आवश्यकताओं के लिए, हमारी 24/7 इमरजेंसी सेवाएं हमेशा एक्सेसिबल हैं।",
+            keywords = listOf("सम-दिन", "तत्काल", "अपॉइंटमेंट", "वॉक-इन", "OPD", "इमरजेंसी"),
+            category = "appointments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_129_hi",
+            question = "मैं अपनी अपॉइंटमेंट कैसे रीशेड्यूल या कैंसल करूं?",
+            answer = "आप +91 76977 44444 या +91 70890 99888 पर कॉल करके, व्हाट्सएप के माध्यम से मैसेज करके, या अपनी ऑनलाइन बुकिंग में लॉग इन करके रीशेड्यूल या कैंसल कर सकते हैं। कृपया अन्य रोगियों के लिए स्लॉट खाली करने के लिए पहले सूचना दें।",
+            keywords = listOf("रीशेड्यूल", "कैंसल", "अपॉइंटमेंट", "कॉल", "व्हाट्सएप", "ऑनलाइन"),
+            category = "appointments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_130_hi",
+            question = "क्या वरिष्ठ नागरिकों या गर्भवती महिलाओं के लिए अलग काउंटर है?",
+            answer = "जबकि कोई समर्पित काउंटर नहीं है, वरिष्ठ नागरिकों और गर्भवती महिलाओं को रिसेप्शन पर प्राथमिकता सहायता मिलती है। कृपया तेज़ सपोर्ट के लिए आगमन पर स्टाफ को सूचित करें।",
+            keywords = listOf("वरिष्ठ", "गर्भवती", "काउंटर", "रिसेप्शन", "प्राथमिकता"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_131_hi",
+            question = "क्या कंसल्टेशन के लिए मुझे पिछले मेडिकल रिपोर्ट ले जाने की जरूरत है?",
+            answer = "हाँ, पिछले मेडिकल रिपोर्ट, प्रिस्क्रिप्शन और टेस्ट रिजल्ट्स ले जाने से आपके डॉक्टर को सटीक निर्णय लेने में मदद मिलती है। कृपया लागू होने पर एक वैध आईडी और बीमा दस्तावेज भी लाएं।",
+            keywords = listOf("रिपोर्ट", "प्रिस्क्रिप्शन", "टेस्ट", "कंसल्टेशन", "डॉक्टर", "आईडी"),
+            category = "departments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_132_hi",
+            question = "क्या मैं फोन या वीडियो कॉल पर डॉक्टर से परामर्श कर सकता हूं?",
+            answer = "हाँ, दूरस्थ रोगियों के लिए वीडियो/फोन के माध्यम से टेली-कंसल्टेशन उपलब्ध है। वर्चुअल कंसल्टेशन शेड्यूल करने के लिए +91 76977 44444 पर संपर्क करें या हमारी वेबसाइट पर व्हाट्सएप फीचर का उपयोग करें।",
+            keywords = listOf("फोन", "वीडियो", "कॉल", "टेली-कंसल्टेशन", "डॉक्टर", "वर्चुअल"),
+            category = "departments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_133_hi",
+            question = "मुझे अपने अपॉइंटमेंट समय से कितना पहले आना चाहिए?",
+            answer = "हम रजिस्ट्रेशन और टोकन कलेक्शन के लिए अपने निर्धारित समय से 15-20 मिनट पहले आने की सलाह देते हैं। पहली बार की विजिट के लिए, कृपया डॉक्यूमेंटेशन के लिए अतिरिक्त 10 मिनट की अनुमति दें।",
+            keywords = listOf("पहले", "समय", "अपॉइंटमेंट", "रजिस्ट्रेशन", "टोकन"),
+            category = "appointments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_134_hi",
+            question = "क्या मैं UPI, गूगल पे, या फोनपे का उपयोग करके भुगतान कर सकता हूं?",
+            answer = "हाँ, हम सभी बिलिंग काउंटरों पर गूगल पे, फोनपे और पेटीएम सहित UPI पेमेंट स्वीकार करते हैं, साथ ही नकद, कार्ड और नेट बैंकिंग भी।",
+            keywords = listOf("UPI", "गूगल पे", "फोनपे", "पेटीएम", "भुगतान", "बिलिंग"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_135_hi",
+            question = "क्या आप आइटमाइज्ड/विस्तृत बिल प्रदान करते हैं?",
+            answer = "हाँ, आप भुगतान के दौरान या बाद में बिलिंग काउंटर पर कंसल्टेशन फीस, टेस्ट, दवाइयां और कमरा चार्ज दिखाने वाला आइटमाइज्ड बिल रिक्वेस्ट कर सकते हैं।",
+            keywords = listOf("बिल", "आइटमाइज्ड", "विस्तृत", "फीस", "टेस्ट", "दवाई"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_136_hi",
+            question = "क्या मैं अपना भुगतान रिसीप्ट ईमेल या व्हाट्सएप पर प्राप्त कर सकता हूं?",
+            answer = "हाँ, भुगतान रिसीप्ट आपके रजिस्टर्ड व्हाट्सएप नंबर या ईमेल पर बिलिंग डेस्क पर रिक्वेस्ट पर शेयर किए जा सकते हैं।",
+            keywords = listOf("रिसीप्ट", "ईमेल", "व्हाट्सएप", "भुगतान", "बिलिंग"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_137_hi",
+            question = "अगर मेरे बिल में त्रुटि है तो मुझे क्या करना चाहिए?",
+            answer = "कृपया तुरंत बिलिंग काउंटर स्टाफ को सूचित करें या +91 76977 44444 पर कॉल करें; हमारी टीम किसी भी विसंगति को जल्दी से वेरिफाई और करेक्ट करेगी。",
+            keywords = listOf("बिल", "त्रुटि", "बिलिंग", "विसंगति", "करेक्ट"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_138_hi",
+            question = "क्या आप अंतर्राष्ट्रीय स्वास्थ्य बीमा स्वीकार करते हैं?",
+            answer = "वर्तमान में, हम मुख्य रूप से भारतीय स्वास्थ्य बीमा प्रदाताओं और आयुष्मान भारत जैसी सरकारी योजनाओं को स्वीकार करते हैं; अंतर्राष्ट्रीय पॉलिसी के लिए, कृपया केस-बाय-केस सहायता के लिए हमारे बिलिंग डेस्क से संपर्क करें।",
+            keywords = listOf("अंतर्राष्ट्रीय", "बीमा", "भारतीय", "आयुष्मान भारत", "बिलिंग"),
+            category = "insurance",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_139_hi",
+            question = "क्या इलाज शुरू होने से पहले मैं अनुमानित लागत अनुमान प्राप्त कर सकता हूं?",
+            answer = "हाँ, संक्षिप्त परामर्श के बाद, हमारा फ्रंट डेस्क प्रक्रियाओं, टेस्ट या एडमिशन के लिए अनुमानित लागत अनुमान प्रदान कर सकता है।",
+            keywords = listOf("लागत", "अनुमान", "इलाज", "फ्रंट डेस्क", "प्रक्रिया"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_140_hi",
+            question = "क्या बीमा रोगियों के लिए अलग बिलिंग काउंटर है?",
+            answer = "जबकि कोई समर्पित काउंटर नहीं है, हमारी बिलिंग टीम में कैशलेस प्री-अथॉराइजेशन और डॉक्यूमेंटेशन में बीमा रोगियों की सहायता के लिए विशेष स्टाफ है।",
+            keywords = listOf("बीमा", "बिलिंग", "काउंटर", "कैशलेस", "डॉक्यूमेंटेशन"),
+            category = "insurance",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_141_hi",
+            question = "अगर इलाज कैंसल हो तो मैं रिफंड कैसे क्लेम करूं?",
+            answer = "रिफंड रिक्वेस्ट डॉक्टर अप्रूवल और ओरिजिनल पेमेंट प्रूफ के साथ बिलिंग डेस्क पर प्रोसेस किए जाते हैं; कृपया अपने विशिष्ट केस पर गाइडेंस के लिए +91 76977 44444 पर संपर्क करें।",
+            keywords = listOf("रिफंड", "कैंसल", "इलाज", "बिलिंग", "डॉक्टर"),
+            category = "insurance",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_142_hi",
+            question = "क्या मैं किस्तों या EMI में अपना बिल भुगतान कर सकता हूं?",
+            answer = "पात्र उपचारों और एडमिशन के लिए, पार्टनर बैंकों के माध्यम से EMI विकल्प उपलब्ध हो सकते हैं; कृपया एडमिशन के समय हमारे बिलिंग डेस्क से चर्चा करें।",
+            keywords = listOf("EMI", "किस्त", "भुगतान", "बिल", "एडमिशन", "बैंक"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_143_hi",
+            question = "क्या नकद भुगतान या जल्दी भुगतान के लिए छूट है?",
+            answer = "हमारे स्वास्थ्य चेक-अप पैकेज पर छूट दरें उपलब्ध हैं; अन्य सेवाओं के लिए, कृपया कोई भी चल रहे ऑफर या छूट के लिए बिलिंग काउंटर पर पूछें।",
+            keywords = listOf("छूट", "नकद", "भुगतान", "पैकेज", "ऑफर", "बिलिंग"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_144_hi",
+            question = "अगर मैं ओरिजिनल खो दूं तो मैं डुप्लीकेट बिल कैसे प्राप्त करूं?",
+            answer = "डुप्लीकेट बिल रिक्वेस्ट करने के लिए एक वैध आईडी और रोगी विवरण के साथ बिलिंग काउंटर पर जाएं; नॉमिनल प्रोसेसिंग फीस लागू हो सकती है, और कॉपी को आधिकारिक उपयोग के लिए स्टैम्प किया जाएगा।",
+            keywords = listOf("डुप्लीकेट", "बिल", "खोना", "आईडी", "रोगी", "फीस"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_145_hi",
+            question = "क्या वरिष्ठ नागरिकों या BPL कार्ड धारकों के लिए छूट है?",
+            answer = "पात्र रोगियों के लिए छूट उपलब्ध हो सकती है। लागू लाभों के विवरण के लिए, कृपया इंश्योरेंस डिपार्टमेंट से संपर्क करें या रिसेप्शन से जांचें।",
+            keywords = listOf("छूट", "वरिष्ठ", "BPL", "कार्ड", "लाभ", "इंश्योरेंस"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_146_hi",
+            question = "क्या यहां आयुष्मान भारत / PM-JAY कार्ड स्वीकार किया जाता है?",
+            answer = "हाँ, हम आयुष्मान भारत / PM-JAY कार्ड स्वीकार करते हैं। पात्रता, कवरेज और क्लेम सहायता के लिए, कृपया इंश्योरेंस डिपार्टमेंट से बात करें।",
+            keywords = listOf("आयुष्मान भारत", "PM-JAY", "कार्ड", "पात्रता", "कवरेज"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_147_hi",
+            question = "अस्पताल में बीमा-संबंधित क्वेरी के लिए मुझे किससे संपर्क करना चाहिए?",
+            answer = "आप सभी बीमा क्वेरी के लिए आशीष रावले से संपर्क कर सकते हैं।",
+            keywords = listOf("बीमा", "क्वेरी", "संपर्क", "आशीष", "रावले"),
+            category = "insurance",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_148_hi",
+            question = "अगर मुझे इमरजेंसी सर्जरी चाहिए लेकिन बीमा नहीं है तो क्या होगा?",
+            answer = "इमरजेंसी केयर बीमा स्टेटस की परवाह किए बिना चिकित्सा आवश्यकता के आधार पर प्रदान किया जाता है। फाइनेंशियल सपोर्ट विकल्पों या बिलिंग गाइडेंस के लिए, कृपया स्टेबिलाइजेशन के बाद इंश्योरेंस डिपार्टमेंट से संपर्क करें।",
+            keywords = listOf("इमरजेंसी", "सर्जरी", "बीमा", "केयर", "फाइनेंशियल", "सपोर्ट"),
+            category = "insurance",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_149_hi",
+            question = "अगर मैं अस्पताल में कोई व्यक्तिगत वस्तु खो दूं तो मुझे क्या करना चाहिए?",
+            answer = "कृपया तुरंत रिसेप्शन डेस्क को सूचित करें या +91 76977 44444 पर कॉल करें; हमारा स्टाफ आपको खोजने और रिकवरी के लिए सिक्योरिटी के साथ कोऑर्डिनेट करने में मदद करेगा।",
+            keywords = listOf("खोना", "व्यक्तिगत", "वस्तु", "रिसेप्शन", "सिक्योरिटी", "रिकवरी"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_150_hi",
+            question = "क्या कोई लॉस्ट एंड फाउंड डेस्क या संपर्क है?",
+            answer = "लॉस्ट आइटम्स मुख्य प्रवेश द्वार के पास रिसेप्शन/सिक्योरिटी डेस्क पर मैनेज किए जाते हैं - कृपया सहायता के लिए उनसे सीधे संपर्क करें या +91 76977 44444 पर कॉल करें।",
+            keywords = listOf("लॉस्ट", "फाउंड", "डेस्क", "सिक्योरिटी", "संपर्क"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_151_hi",
+            question = "क्या अस्पताल टैक्सी, ऑटो, या कैब बुक करने में मदद कर सकता है?",
+            answer = "हाँ, हमारी रिसेप्शन टीम लोकल ट्रांसपोर्ट व्यवस्थित करने में आपकी सहायता कर सकती है, या आप सीधे हमारे ऑनलाइन ऑटो बुकिंग ऐप के माध्यम से ऑटो ट्रांसपोर्ट बुक कर सकते हैं।",
+            keywords = listOf("टैक्सी", "ऑटो", "कैब", "बुकिंग", "ट्रांसपोर्ट", "रिसेप्शन"),
+            category = "appointments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_152_hi",
+            question = "क्या मैं अपने नियोक्ता या स्कूल के लिए विजिट सारांश पत्र प्राप्त कर सकता हूं?",
+            answer = "हाँ, आप कंसल्टेशन के बाद रिसेप्शन या बिलिंग डेस्क पर विजिट सारांश या मेडिकल सर्टिफिकेट रिक्वेस्ट कर सकते हैं; कृपया वेरिफिकेशन के लिए वैध आईडी लाएं।",
+            keywords = listOf("विजिट", "सारांश", "पत्र", "नियोक्ता", "स्कूल", "सर्टिफिकेट"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_153_hi",
+            question = "मैं रोगी के लिए टॉयलेट्रीज, ब्लैंकेट, या आवश्यक वस्तुएं कहां खरीद सकता हूं?",
+            answer = "हमारा इन-हाउस फार्मेसी और नजदीकी कैफेटेरिया बेसिक आवश्यक वस्तुओं का स्टॉक रखते हैं; विशेष आइटम्स के लिए, कृपया रिसेप्शन से पूछें - वे प्रोक्योरमेंट या लोकल वेंडर गाइडेंस में मदद कर सकते हैं।",
+            keywords = listOf("टॉयलेट्रीज", "ब्लैंकेट", "फार्मेसी", "कैफेटेरिया", "रिसेप्शन"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_154_hi",
+            question = "क्या कोई क्लोकरूम या लॉकर सुविधा उपलब्ध है?",
+            answer = "जबकि समर्पित लॉकर उपलब्ध नहीं हैं, रिसेप्शन छोटे कीमती सामान को अस्थायी रूप से स्टोर करने में मदद कर सकता है; हम सुरक्षा के लिए महत्वपूर्ण आइटम्स अपने पास रखने की सलाह देते हैं।",
+            keywords = listOf("क्लोकरूम", "लॉकर", "सुविधा", "रिसेप्शन", "सुरक्षा"),
+            category = "diagnostics",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_155_hi",
+            question = "क्या आपके पास दृष्टिबाधित या सुनवाईबाधित रोगियों के लिए सुविधाएं हैं?",
+            answer = "हाँ, अस्पताल रैम्प और लिफ्ट के साथ व्हीलचेयर-एक्सेसिबल है; कृपया व्यक्तिगत सहायता और कम्युनिकेशन सपोर्ट के लिए आगमन पर रिसेप्शन को सूचित करें।",
+            keywords = listOf("दृष्टिबाधित", "सुनवाईबाधित", "व्हीलचेयर", "रैम्प", "रिसेप्शन"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_156_hi",
+            question = "क्या वृद्ध या विकलांग रोगियों को प्राथमिकता सेवा मिल सकती है?",
+            answer = "हाँ, वरिष्ठ नागरिकों और विकलांग रोगियों को रिसेप्शन और OPD में प्राथमिकता सहायता मिलती है - आगमन पर तेज़ सपोर्ट के लिए बस स्टाफ को सूचित करें।",
+            keywords = listOf("वृद्ध", "विकलांग", "प्राथमिकता", "रिसेप्शन", "OPD", "स्टाफ"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_157_hi",
+            question = "क्या माताओं के लिए प्राइवेट लैक्टेशन या नर्सिंग रूम है?",
+            answer = "जबकि समर्पित लैक्टेशन रूम निर्दिष्ट नहीं है, रिसेप्शन पर रिक्वेस्ट पर नर्सिंग माताओं के लिए प्राइवेट कमरे और गेस्ट एरिया व्यवस्थित किए जा सकते हैं।",
+            keywords = listOf("लैक्टेशन", "नर्सिंग", "माताएं", "प्राइवेट", "कमरा"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_158_hi",
+            question = "एडमिशन के दौरान कई दिनों के लिए मैं अपना वाहन कहां पार्क कर सकता हूं?",
+            answer = "रोगियों और आगंतुकों के लिए मुख्य प्रवेश द्वार के पास मुफ्त पार्किंग उपलब्ध है; एडमिशन के दौरान मल्टी-डे पार्किंग के लिए, कृपया सिक्योरिटी कोऑर्डिनेशन के लिए रिसेप्शन पर अपना वाहन रजिस्टर करें।",
+            keywords = listOf("पार्किंग", "वाहन", "एडमिशन", "मल्टी-डे", "रिसेप्शन"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_159_hi",
+            question = "क्या लैब टेस्ट के लिए डॉक्टर की प्रिस्क्रिप्शन की जरूरत है?",
+            answer = "हाँ, अधिकांश डायग्नोस्टिक टेस्ट के लिए वैध डॉक्टर की प्रिस्क्रिप्शन आवश्यक है ताकि उचित टेस्टिंग और रिजल्ट्स की सटीक इंटरप्रिटेशन सुनिश्चित हो सके।",
+            keywords = listOf("लैब", "टेस्ट", "प्रिस्क्रिप्शन", "डॉक्टर", "डायग्नोस्टिक"),
+            category = "departments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_160_hi",
+            question = "क्या मैं बिना अपॉइंटमेंट के ब्लड टेस्ट के लिए वॉक-इन कर सकता हूं?",
+            answer = "हाँ, हमारी 24/7 लैब ब्लड टेस्ट के लिए वॉक-इन रोगियों को स्वीकार करती है; बस अपनी प्रिस्क्रिप्शन के साथ लैब काउंटर पर रजिस्टर करें या इसे बिना प्रिस्क्रिप्शन भी कराया जा सकता है।",
+            keywords = listOf("ब्लड", "टेस्ट", "वॉक-इन", "लैब", "काउंटर", "प्रिस्क्रिप्शन"),
+            category = "appointments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_161_hi",
+            question = "मैं मूत्र या मल का नमूना कैसे दूं?",
+            answer = "क्लीन कलेक्शन कंटेनर और निर्देश लैब काउंटर पर दिए जाते हैं; कृपया सटीक रिजल्ट्स के लिए हमारे स्टाफ द्वारा शेयर किए गए हाइजीन दिशानिर्देशों का पालन करें।",
+            keywords = listOf("मूत्र", "मल", "नमूना", "लैब", "कंटेनर", "हाइजीन"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_162_hi",
+            question = "क्या होम सैंपल कलेक्शन सेवा उपलब्ध है?",
+            answer = "चयनित टेस्ट और क्षेत्रों के लिए होम सैंपल कलेक्शन उपलब्ध हो सकता है; कृपया एलिजिबिलिटी चेक करने और शेड्यूल करने के लिए +91 76977 44444 पर कॉल करें या व्हाट्सएप करें।",
+            keywords = listOf("होम", "सैंपल", "कलेक्शन", "टेस्ट", "व्हाट्सएप"),
+            category = "diagnostics",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_163_hi",
+            question = "लैब रिपोर्ट कितने समय तक मान्य मानी जाती हैं?",
+            answer = "रिपोर्ट वैलिडिटी टेस्ट और क्लिनिकल कंटेक्स्ट पर निर्भर करती है; आमतौर पर रूटीन रिपोर्ट 3-6 महीने तक मान्य होती हैं, लेकिन आपका डॉक्टर आपकी स्थिति के आधार पर सलाह देगा।",
+            keywords = listOf("रिपोर्ट", "मान्य", "वैलिडिटी", "टेस्ट", "डॉक्टर", "महीने"),
+            category = "diagnostics",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_164_hi",
+            question = "क्या आप रिपोर्ट का हार्ड कॉपी और डिजिटल सॉफ्ट कॉपी दोनों प्रदान करते हैं?",
+            answer = "हाँ, लैब रिपोर्ट आपके रजिस्टर्ड व्हाट्सएप नंबर पर डिजिटली शेयर की जाती हैं और रिपोर्ट काउंटर से प्रिंटेड कॉपी के रूप में भी कलेक्ट की जा सकती हैं।",
+            keywords = listOf("रिपोर्ट", "हार्ड कॉपी", "डिजिटल", "व्हाट्सएप", "प्रिंटेड"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_165_hi",
+            question = "अगर मुझे रिजल्ट पर शक हो तो क्या मैं टेस्ट दोबारा करा सकता हूं?",
+            answer = "हाँ, डॉक्टर से परामर्श के बाद आप रिपीट टेस्ट रिक्वेस्ट कर सकते हैं; कृपया गाइडेंस के लिए लैब स्टाफ या ट्रीटिंग फिजिशियन से अपनी चिंताओं पर चर्चा करें।",
+            keywords = listOf("टेस्ट", "दोबारा", "रिजल्ट", "शक", "डॉक्टर", "लैब"),
+            category = "diagnostics",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_166_hi",
+            question = "अगर मुझे यहां उपलब्ध नहीं वाला विशेष टेस्ट चाहिए तो क्या होगा?",
+            answer = "ऑन-साइट उपलब्ध नहीं वाले विशेष टेस्ट के लिए, हमारी टीम एक्रेडिटेड एक्सटर्नल लैब्स के साथ कोऑर्डिनेट कर सकती है; कृपया सहायता के लिए अपने डॉक्टर या लैब डेस्क से परामर्श करें।",
+            keywords = listOf("विशेष", "टेस्ट", "लैब", "डॉक्टर", "एक्सटर्नल"),
+            category = "diagnostics",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_167_hi",
+            question = "क्या मैं ऑनलाइन पेशेंट पोर्टल के माध्यम से अपनी रिपोर्ट एक्सेस कर सकता हूं?",
+            answer = "डिजिटल रिपोर्ट व्हाट्सएप या ईमेल के माध्यम से शेयर की जाती हैं - कृपया लेटेस्ट अपडेट के लिए रिसेप्शन से जांचें।",
+            keywords = listOf("ऑनलाइन", "रिपोर्ट", "पोर्टल", "व्हाट्सएप", "ईमेल"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_168_hi",
+            question = "क्या फार्मेसी मुख्य भवन के अंदर या बाहर है?",
+            answer = "हमारी इन-हाउस फार्मेसी आसान पहुंच के लिए मुख्य अस्पताल भवन के ग्राउंड फ्लोर पर अंदर स्थित है।",
+            keywords = listOf("फार्मेसी", "भवन", "ग्राउंड फ्लोर", "अंदर", "पहुंच"),
+            category = "pharmacy",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_169_hi",
+            question = "क्या आपके पास सभी प्रिस्क्राइब्ड दवाइयां स्टॉक में हैं?",
+            answer = "हम आवश्यक दवाइयों का व्यापक स्टॉक बनाए रखते हैं; अगर कोई विशिष्ट आइटम अनउपलब्ध हो तो हम 24 घंटे के भीतर प्रोक्योरमेंट की व्यवस्था कर सकते हैं।",
+            keywords = listOf("दवाई", "स्टॉक", "प्रिस्क्राइब्ड", "प्रोक्योरमेंट", "24 घंटे"),
+            category = "pharmacy",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_170_hi",
+            question = "क्या जेनेरिक/कम लागत वाली दवाई के विकल्प उपलब्ध हैं?",
+            answer = "हाँ, हम आपके डॉक्टर की प्रिस्क्रिप्शन और प्राथमिकता के अनुसार ब्रांडेड और किफायती जेनेरिक दवाई विकल्प दोनों ऑफर करते हैं।",
+            keywords = listOf("जेनेरिक", "कम लागत", "दवाई", "ब्रांडेड", "प्रिस्क्रिप्शन"),
+            category = "diagnostics",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_171_hi",
+            question = "क्या आप दवाइयों की होम डिलीवरी ऑफर करते हैं?",
+            answer = "नहीं, हमारे अस्पताल की इन-हाउस फार्मेसी दवाइयों की होम डिलीवरी ऑफर नहीं करती।",
+            keywords = listOf("होम", "डिलीवरी", "दवाई", "फार्मेसी", "नहीं"),
+            category = "pharmacy",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_172_hi",
+            question = "क्या मैं बिना प्रिस्क्रिप्शन ओवर-द-काउंटर दवाइयां खरीद सकता हूं?",
+            answer = "हाँ, पेन रिलीवर्स या विटामिन जैसी बेसिक OTC दवाइयां बिना प्रिस्क्रिप्शन उपलब्ध हैं; प्रिस्क्रिप्शन दवाइयों के लिए वैध डॉक्टर की प्रिस्क्रिप्शन आवश्यक है।",
+            keywords = listOf("ओवर-द-काउंटर", "दवाई", "प्रिस्क्रिप्शन", "विटामिन", "पेन"),
+            category = "pharmacy",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_173_hi",
+            question = "क्या फार्मेसी इमरजेंसी प्रिस्क्रिप्शन के लिए 24/7 खुली है?",
+            answer = "हाँ, हमारी फार्मेसी किसी भी समय इमरजेंसी और तत्काल प्रिस्क्रिप्शन जरूरतों को पूरा करने के लिए 24/7 ऑपरेट करती है।",
+            keywords = listOf("फार्मेसी", "24/7", "इमरजेंसी", "प्रिस्क्रिप्शन", "खुली"),
+            category = "hospital_info",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_174_hi",
+            question = "अपयोग नहीं की गई या अनओपन्ड दवाइयां लौटाने की नीति क्या है?",
+            answer = "सुरक्षा और रेगुलेटरी कारणों से, हम डिस्पेंस्ड दवाइयों पर रिटर्न स्वीकार नहीं कर सकते; कृपया खरीदारी से पहले अपनी प्रिस्क्रिप्शन डिटेल्स कन्फर्म करें।",
+            keywords = listOf("रिटर्न", "दवाई", "सुरक्षा", "रेगुलेटरी", "प्रिस्क्रिप्शन"),
+            category = "insurance",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_175_hi",
+            question = "क्या आप कस्टम दवाइयां तैयार करते हैं?",
+            answer = "कंपाउंडेड या कस्टम-प्रिपेयर्ड दवाइयों के बारे में प्रश्नों के लिए, कृपया हमारी फार्मेसी टीम या आपके ट्रीटिंग स्पेशलिस्ट से बात करें - वे उपलब्धता और विकल्पों पर सलाह दे सकते हैं।",
+            keywords = listOf("कस्टम", "दवाई", "कंपाउंडेड", "फार्मेसी", "स्पेशलिस्ट"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_176_hi",
+            question = "क्या आप मेडिकेशन काउंसलिंग या उपयोग निर्देश प्रदान करते हैं?",
+            answer = "हाँ, हम मेडिकेशन काउंसलिंग और स्पष्ट उपयोग निर्देश प्रदान करते हैं। हमारे फार्मासिस्ट डोसेज, टाइमिंग और सावधानियों के बारे में आपको गाइड करने में खुश हैं।",
+            keywords = listOf("मेडिकेशन", "काउंसलिंग", "फार्मासिस्ट", "डोसेज", "निर्देश"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_177_hi",
+            question = "क्या कोई फार्मेसरी लिस्ट है जिसे मैं उपलब्ध दवाइयों के लिए चेक कर सकता हूं?",
+            answer = "दवाई की उपलब्धता भिन्न हो सकती है। सबसे सटीक और अप-टू-डेट जानकारी के लिए, कृपया सीधे हमारे फार्मेसी स्टाफ से जांचें।",
+            keywords = listOf("फार्मेसरी", "लिस्ट", "दवाई", "उपलब्धता", "फार्मेसी"),
+            category = "diagnostics",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_178_hi",
+            question = "क्या आपके पास आयुर्वेदिक या हर्बल दवाइयां हैं?",
+            answer = "हाँ, हमारी फार्मेसी में आयुर्वेदिक और हर्बल प्रोडक्ट्स की रेंज स्टॉक है। विशिष्ट आइटम्स या सिफारिशों के लिए, कृपया फार्मेसी टीम से पूछें।",
+            keywords = listOf("आयुर्वेदिक", "हर्बल", "दवाई", "फार्मेसी", "स्टॉक"),
+            category = "pharmacy",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_179_hi",
+            question = "क्या एम्बुलेंस में वेंटिलेटर या लाइफ-सपोर्ट उपकरण हैं?",
+            answer = "हाँ, हम वेंटिलेटर, ऑक्सीजन और इमरजेंसी मॉनिटरिंग से सुसज्जित बेसिक और एडवांस्ड लाइफ-सपोर्ट एम्बुलेंस दोनों ऑफर करते हैं; कृपया +91 76977 44444 पर कॉल करते समय अपनी जरूरत बताएं।",
+            keywords = listOf("एम्बुलेंस", "वेंटिलेटर", "लाइफ-सपोर्ट", "ऑक्सीजन", "मॉनिटरिंग"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_180_hi",
+            question = "क्या मैं बुकिंग के बाद एम्बुलेंस का लोकेशन ट्रैक कर सकता हूं?",
+            answer = "रियल-टाइम ट्रैकिंग वर्तमान में उपलब्ध नहीं है; हालांकि, हमारी डिस्पैच टीम कन्फर्मेशन पर अनुमानित आगमन समय और ड्राइवर कॉन्टैक्ट डिटेल्स प्रदान करेगी।",
+            keywords = listOf("एम्बुलेंस", "ट्रैकिंग", "लोकेशन", "आगमन", "ड्राइवर"),
+            category = "appointments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_181_hi",
+            question = "क्या एम्बुलेंस सेवा का चार्ज है, और कितना है?",
+            answer = "एम्बुलेंस चार्ज दूरी, प्रकार (बेसिक/एडवांस्ड) और उपकरण के आधार पर भिन्न होते हैं; केस-स्पेसिफिक कोट के लिए कृपया +91 76977 44444 पर संपर्क करें।",
+            keywords = listOf("एम्बुलेंस", "चार्ज", "दूरी", "कीमत", "बेसिक", "एडवांस्ड"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_182_hi",
+            question = "क्या एम्बुलेंस मेरे घर या किसी अन्य स्थान से पिकअप कर सकती है?",
+            answer = "हाँ, हमारी एम्बुलेंस बुरहानपुर और आस-पास के क्षेत्रों में घर, कार्यस्थल या अन्य स्थानों से रोगियों को पिकअप कर सकती हैं - बस बुकिंग करते समय सटीक पता शेयर करें।",
+            keywords = listOf("एम्बुलेंस", "पिकअप", "घर", "बुरहानपुर", "पता"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_183_hi",
+            question = "एम्बुलेंस बुलाते समय मुझे क्या जानकारी देनी चाहिए?",
+            answer = "कृपया रोगी का नाम, उम्र, स्थिति/लक्षण, सटीक पिकअप स्थान, कॉन्टैक्ट नंबर और कोई विशेष जरूरत (जैसे वेंटिलेटर, व्हीलचेयर एक्सेस) शेयर करें।",
+            keywords = listOf("एम्बुलेंस", "रोगी", "नाम", "उम्र", "लक्षण", "पिकअप"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_184_hi",
+            question = "क्या परिवार का कोई सदस्य एम्बुलेंस में रोगी के साथ जा सकता है?",
+            answer = "हाँ, अधिकांश मामलों में एक सेवक रोगी के साथ जा सकता है; एडवांस्ड लाइफ-सपोर्ट एम्बुलेंस के लिए, जगह सीमित हो सकती है - कृपया डिस्पैच टीम से कन्फर्म करें।",
+            keywords = listOf("एम्बुलेंस", "परिवार", "सेवक", "रोगी", "एडवांस्ड"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_185_hi",
+            question = "क्या आप इंटर-हॉस्पिटल रोगी ट्रांसफर के लिए एम्बुलेंस व्यवस्थित कर सकते हैं?",
+            answer = "हाँ, हम उचित मेडिकल सपोर्ट के साथ सुरक्षित इंटर-हॉस्पिटल ट्रांसफर कोऑर्डिनेट करते हैं; कृपया व्यवस्था के लिए रोगी डिटेल्स और डेस्टिनेशन हॉस्पिटल के साथ +91 76977 44444 पर कॉल करें।",
+            keywords = listOf("एम्बुलेंस", "ट्रांसफर", "इंटर-हॉस्पिटल", "मेडिकल", "कोऑर्डिनेट"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_186_hi",
+            question = "क्या मैं एडमिशन कन्फर्म करने से पहले कमरा देख सकता हूं?",
+            answer = "हाँ, आप एडमिशन कन्फर्म करने से पहले संक्षिप्त कमरा व्यू रिक्वेस्ट कर सकते हैं; हमारा एडमिशन डेस्क स्टाफ उपलब्धता और रोगी प्राथमिकता के आधार पर इसकी व्यवस्था करेगा।",
+            keywords = listOf("कमरा", "एडमिशन", "व्यू", "उपलब्धता", "डेस्क"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_187_hi",
+            question = "क्या कमरे में सेवक बेड या रिक्लाइनर प्रदान किया जाता है?",
+            answer = "हाँ, प्राइवेट कमरों और निर्दिष्ट गेस्ट कमरों (102, 103, 221, 222) में सेवकों के लिए सीटिंग या रिक्लाइनर सुविधाएं शामिल हैं; कृपया एडमिशन पर एमेनिटीज कन्फर्म करें।",
+            keywords = listOf("सेवक", "बेड", "रिक्लाइनर", "कमरा", "प्राइवेट"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_188_hi",
+            question = "क्या रोगी के भोजन कमरे के चार्ज में शामिल हैं?",
+            answer = "बेसिक स्वच्छ भोजन कमरा चार्ज में शामिल हैं; विशेष या डायटीशियन-अप्रूव्ड डाइट रिक्वेस्ट पर व्यवस्थित की जा सकती हैं, बिना किसी अतिरिक्त लागत का अपफ्रंट कम्युनिकेट किया जाएगा।",
+            keywords = listOf("भोजन", "कमरा", "चार्ज", "डाइट", "डायटीशियन"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_189_hi",
+            question = "क्या परिवार के लिए रोगी के कमरों में वाईफाई उपलब्ध है?",
+            answer = "कमन एरियाज में कम्प्लिमेंट्री वाईफाई उपलब्ध है; इन-रूम कनेक्टिविटी के लिए, कृपया वर्तमान उपलब्धता और एक्सेस निर्देशों के लिए रिसेप्शन से जांचें।",
+            keywords = listOf("वाईफाई", "कमरा", "रोगी", "परिवार", "एक्सेस"),
+            category = "diagnostics",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_190_hi",
+            question = "क्या मैं नर्सिंग स्टेशन के पास का कमरा रिक्वेस्ट कर सकता हूं?",
+            answer = "हाँ, आप अतिरिक्त सुविधा के लिए नर्सिंग स्टेशन के पास कमरा रिक्वेस्ट कर सकते हैं; हम उपलब्धता और मेडिकल प्राथमिकता के आधार पर एकॉमोडेट करेंगे।",
+            keywords = listOf("कमरा", "नर्सिंग", "स्टेशन", "पास", "उपलब्धता"),
+            category = "hospital_info",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_191_hi",
+            question = "क्या प्राइवेट कमरों में अटैच्ड बाथरूम हैं?",
+            answer = "हाँ, सभी प्राइवेट कमरा कैटेगरी (डायमंड, प्लेटिनम, गोल्डन, सिल्वर, रूबी सूट) में रोगी की सुविधा और हाइजीन के लिए आवश्यक एमेनिटीज के साथ अटैच्ड बाथरूम शामिल हैं।",
+            keywords = listOf("प्राइवेट", "कमरा", "बाथरूम", "डायमंड", "प्लेटिनम", "सिल्वर"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_192_hi",
+            question = "क्या एडमिशन के बाद मैं अलग कमरा कैटेगरी में बदल सकता हूं?",
+            answer = "हाँ, उपलब्धता के अधीन कमरा परिवर्तन या अपग्रेड संभव है, कृपया विकल्पों और किसी भी अतिरिक्त चार्ज के लिए एडमिशन या बिलिंग डेस्क से चर्चा करें।",
+            keywords = listOf("कमरा", "बदलना", "अपग्रेड", "एडमिशन", "बिलिंग"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_193_hi",
+            question = "क्या संक्रामक रोग के रोगियों के लिए आइसोलेशन कमरे हैं?",
+            answer = "हाँ, हमारे पास संक्रामक रोग के रोगियों के लिए नामित आइसोलेशन कमरे और सख्त संक्रमण नियंत्रण प्रोटोकॉल हैं ताकि सभी की सुरक्षा सुनिश्चित हो सके, कृपया एडमिशन पर स्टाफ को सूचित करें।",
+            keywords = listOf("आइसोलेशन", "संक्रामक", "रोग", "संक्रमण", "सुरक्षा"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_194_hi",
+            question = "क्या आप बेड लिनेन, तौलिए और बेसिक टॉयलेट्रीज प्रदान करते हैं?",
+            answer = "हाँ, सभी कमरों में साफ बेड लिनेन, तौलिए और बेसिक टॉयलेट्रीज प्रदान किए जाते हैं; अतिरिक्त आइटम्स आवश्यकतानुसार नर्सिंग स्टाफ से रिक्वेस्ट किए जा सकते हैं।",
+            keywords = listOf("लिनेन", "तौलिया", "टॉयलेट्रीज", "बेड", "कमरा"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_195_hi",
+            question = "नजदीकी शौचालय या वॉशरूम कहां है?",
+            answer = "शौचालय हर फ्लोर पर लिफ्ट लॉबी और प्रतीक्षा क्षेत्रों के पास उपलब्ध हैं; कृपया साइनेज फॉलो करें या सबसे नजदीकी वाले के लिए किसी भी स्टाफ मेंबर से पूछें।",
+            keywords = listOf("शौचालय", "वॉशरूम", "फ्लोर", "लिफ्ट", "प्रतीक्षा"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_196_hi",
+            question = "क्या अंदर कैफेटेरिया, कैंटीन या फूड कोर्ट है?",
+            answer = "हाँ, हमारा कैफेटेरिया मेन लॉबी के पास ग्राउंड फ्लोर पर स्थित है, जो सुबह 7 बजे से रात 9 बजे तक स्वच्छ शाकाहारी और नॉन-वेज भोजन परोसता है।",
+            keywords = listOf("कैफेटेरिया", "कैंटीन", "भोजन", "शाकाहारी", "ग्राउंड फ्लोर"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_197_hi",
+            question = "मुझे सुरक्षित पीने का पानी कहां मिलेगा?",
+            answer = "सुरक्षित, फ़िल्टर किया हुआ पीने का पानी सभी फ्लोर पर प्रतीक्षा क्षेत्रों और नर्सिंग स्टेशनों के पास उपलब्ध है।",
+            keywords = listOf("पानी", "पीने", "फ़िल्टर", "सुरक्षित", "फ्लोर"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_198_hi",
+            question = "क्या कैंपस पर ATM या कैश विड्रॉल सुविधा है?",
+            answer = "हाँ, आसान कैश विड्रॉल के लिए ATM उपलब्ध है, अतिरिक्त डिजिटल पेमेंट विकल्प पूरे अस्पताल में स्वीकार किए जाते हैं।",
+            keywords = listOf("ATM", "कैश", "विड्रॉल", "डिजिटल", "पेमेंट"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_199_hi",
+            question = "मुझे व्हीलचेयर या स्ट्रेचर सहायता कहां मिलेगी?",
+            answer = "व्हीलचेयर और स्ट्रेचर रिसेप्शन डेस्क पर मुफ्त में उपलब्ध हैं, बस सहायता रिक्वेस्ट करें और हमारा सपोर्ट स्टाफ तुरंत आपकी मदद करेगा。",
+            keywords = listOf("व्हीलचेयर", "स्ट्रेचर", "रिसेप्शन", "मुफ्त", "सहायता"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_200_hi",
+            question = "मुझे मास्क, ग्लव्स, या सैनिटाइज़र जैसी पेशेंट केयर चीजें कहां खरीदनी चाहिए?",
+            answer = "हमारी 24/7 इन-हाउस फार्मेसी ग्राउंड फ्लोर पर मास्क, ग्लव्स, सैनिटाइज़र और अन्य आवश्यक पेशेंट केयर आइटम्स स्टॉक करती है।",
+            keywords = listOf("मास्क", "ग्लव्स", "सैनिटाइज़र", "फार्मेसी", "ग्राउंड फ्लोर"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_201_hi",
+            question = "क्या कोई पेशेंट केयर कोऑर्डिनेटर या हेल्पडेस्क है जिससे मैं संपर्क कर सकूं?",
+            answer = "हाँ, रिसेप्शन पर हमारा पेशेंट केयर डेस्क और फ्रंट डेस्क टीम (+91 76977 44444) आपके अस्पताल विजिट के दौरान कोऑर्डिनेशन, क्वेरी और सपोर्ट में मदद के लिए उपलब्ध है।",
+            keywords = listOf("पेशेंट केयर", "हेल्पडेस्क", "रिसेप्शन", "कोऑर्डिनेशन", "सपोर्ट"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_202_hi",
+            question = "मैं स्टाफ व्यवहार या सेवा गुणवत्ता के बारे में चिंता कैसे रिपोर्ट करूं?",
+            answer = "आप रिसेप्शन डेस्क के साथ सीधे, +91 76977 44444 पर कॉल करके, या हमारी वेबसाइट पर 'हमसे संपर्क करें' फॉर्म का उपयोग करके फीडबैक या चिंता शेयर कर सकते हैं; सभी फीडबैक हमारी पेशेंट केयर टीम द्वारा जल्दी से रिव्यू किया जाता है।",
+            keywords = listOf("फीडबैक", "शिकायत", "स्टाफ", "सेवा", "गुणवत्ता", "रिपोर्ट"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_203_hi",
+            question = "क्या मैं अस्पताल में किसी अन्य विशेषज्ञ से द्वितीय राय ले सकता हूं?",
+            answer = "हाँ, आप एक अन्य इन-हाउस विशेषज्ञ से द्वितीय राय रिक्वेस्ट कर सकते हैं; कृपया अपने ट्रीटिंग डॉक्टर से चर्चा करें या कंसल्टेशन कोऑर्डिनेट करने के लिए रिसेप्शन से संपर्क करें।",
+            keywords = listOf("द्वितीय राय", "विशेषज्ञ", "डॉक्टर", "कंसल्टेशन", "रिसेप्शन"),
+            category = "departments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_204_hi",
+            question = "बिना बेडसाइड पर होते हुए मैं अपने रोगी की स्थिति के नियमित अपडेट कैसे प्राप्त कर सकता हूं?",
+            answer = "आप नर्सिंग स्टेशन पर अपने कॉन्टैक्ट डिटेल्स देकर फोन या व्हाट्सएप के माध्यम से नियमित अपडेट रिक्वेस्ट कर सकते हैं; ICU रोगियों के लिए, अपडेट निर्दिष्ट विजिटिंग घंटों के दौरान या क्लिनिकली उचित होने पर शेयर किए जाते हैं।",
+            keywords = listOf("रोगी", "अपडेट", "नर्सिंग", "फोन", "व्हाट्सएप", "ICU"),
+            category = "general",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_205_hi",
+            question = "क्या सीटिंग, चार्जिंग पॉइंट, या रीडिंग मटीरियल वाला प्रतीक्षा लॉन्ज है?",
+            answer = "हाँ, हमारे पास OPD और मेन लॉबी के पास आरामदायक प्रतीक्षा क्षेत्र हैं जिनमें सीटिंग, पीने का पानी और बेसिक एमेनिटीज हैं; चार्जिंग पॉइंट और रीडिंग मटीरियल की उपलब्धता भिन्न हो सकती है - कृपया वर्तमान सुविधाओं के लिए रिसेप्शन से पूछें।",
+            keywords = listOf("प्रतीक्षा", "लॉन्ज", "सीटिंग", "चार्जिंग", "पानी"),
+            category = "general",
+            language = "hi"
+        ),
+        // ==================== LOCATION HINDI Q&A PAIRS ====================
+        KnowledgeBaseQA(
+            id = "qa_206_hi",
+            question = "फार्मेसी कहां है?",
+            answer = "फार्मेसी ग्राउंड फ्लोर पर, रिसेप्शन डेस्क के सामने सीधे स्थित है।",
+            keywords = listOf("फार्मेसी", "ग्राउंड", "रिसेप्शन", "सामने", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_207_hi",
+            question = "पैथोलॉजी लैब कहां है?",
+            answer = "पैथोलॉजी डिपार्टमेंट रिसेप्शन डेस्क के बाईं ओर स्थित है - बस वहां से साइन फॉलो करें।",
+            keywords = listOf("पैथोलॉजी", "लैब", "बाईं", "रिसेप्शन", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_208_hi",
+            question = "ब्लड कलेक्शन सेंटर कहां है?",
+            answer = "ब्लड कलेक्शन सेंटर अस्पताल के बेसमेंट में स्थित है।",
+            keywords = listOf("ब्लड", "कलेक्शन", "बेसमेंट", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_209_hi",
+            question = "एक्स-रे रूम कहां है?",
+            answer = "एक्स-रे रूम और अधिकांश स्कैन ग्राउंड फ्लोर पर हैं। MRI और CT स्कैन के लिए, कृपया बेसमेंट फ्लोर पर जाएं।",
+            keywords = listOf("एक्स-रे", "ग्राउंड", "बेसमेंट", "MRI", "CT", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_210_hi",
+            question = "MRI स्कैन सेंटर कहां है?",
+            answer = "MRI स्कैन सेंटर बेसमेंट फ्लोर पर स्थित है।",
+            keywords = listOf("MRI", "स्कैन", "बेसमेंट", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_211_hi",
+            question = "CT स्कैन रूम कहां है?",
+            answer = "CT स्कैन रूम भी बेसमेंट फ्लोर पर है, अन्य एडवांस्ड इमेजिंग सेवाओं के साथ।",
+            keywords = listOf("CT", "स्कैन", "बेसमेंट", "इमेजिंग", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_212_hi",
+            question = "अल्ट्रासाउंड डिपार्टमेंट कहां है?",
+            answer = "अल्ट्रासाउंड सेवाएं आमतौर पर ग्राउंड फ्लोर पर उपलब्ध हैं। सटीक स्थान के लिए, कृपया रिसेप्शन से जांचें या दिशात्मक साइन फॉलो करें।",
+            keywords = listOf("अल्ट्रासाउंड", "ग्राउंड", "रिसेप्शन", "कहां"),
+            category = "departments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_213_hi",
+            question = "रेडियोलॉजी डिपार्टमेंट कहां है?",
+            answer = "अधिकांश रेडियोलॉजी सेवाएं, जिसमें एक्स-रे शामिल है, ग्राउंड फ्लोर पर हैं; एडवांस्ड इमेजिंग जैसे MRI/CT बेसमेंट पर हैं। रिसेप्शन आपको सही काउंटर तक गाइड कर सकता है।",
+            keywords = listOf("रेडियोलॉजी", "एक्स-रे", "ग्राउंड", "बेसमेंट", "कहां"),
+            category = "departments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_214_hi",
+            question = "डायग्नोस्टिक सेंटर कहां है?",
+            answer = "हमारी मुख्य डायग्नोस्टिक सेवाएं ग्राउंड और बेसमेंट फ्लोर पर फैली हैं। विशिष्ट टेस्ट या डिपार्टमेंट के लिए, रिसेप्शन त्वरित दिशाएं प्रदान कर सकता है।",
+            keywords = listOf("डायग्नोस्टिक", "ग्राउंड", "बेसमेंट", "रिसेप्शन", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_215_hi",
+            question = "इमरजेंसी रूम कहां है?",
+            answer = "इमरजेंसी रूम मुख्य अस्पताल प्रवेश द्वार से स्पष्ट रूप से साइनपोस्टेड है। अगर आप अनिश्चित हैं, तो कृपया रिसेप्शन या किसी भी स्टाफ से पूछें - वे तुरंत आपको गाइड करेंगे।",
+            keywords = listOf("इमरजेंसी", "रूम", "प्रवेश", "रिसेप्शन", "कहां"),
+            category = "hospital_info",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_216_hi",
+            question = "ICU कहां है?",
+            answer = "ICU (KICU, MICU और NICU सहित) ऊपरी फ्लोर पर स्थित हैं। रोगी की जरूरत के आधार पर सटीक स्थान के लिए, कृपया रिसेप्शन से जांचें या इमरजेंसी साइनेज फॉलो करें।",
+            keywords = listOf("ICU", "KICU", "MICU", "NICU", "ऊपरी", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_217_hi",
+            question = "कार्डियोलॉजी डिपार्टमेंट कहां है?",
+            answer = "कार्डियोलॉजी सेवाएं ग्राउंड फ्लोर पर उपलब्ध हैं। रिसेप्शन आपको सही काउंटर या कंसल्टेशन रूम तक गाइड कर सकता है।",
+            keywords = listOf("कार्डियोलॉजी", "ग्राउंड", "रिसेप्शन", "कहां"),
+            category = "departments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_218_hi",
+            question = "पीडियाट्रिक्स वार्ड कहां है?",
+            answer = "पीडियाट्रिक केयर ग्राउंड फ्लोर पर प्रदान किया जाता है। वार्ड-विशिष्ट दिशाओं के लिए, कृपया रिसेप्शन से पूछें या पीडियाट्रिक साइनेज देखें।",
+            keywords = listOf("पीडियाट्रिक्स", "बाल", "वार्ड", "ग्राउंड", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_219_hi",
+            question = "मैटरनिटी वार्ड कहां है?",
+            answer = "मैटरनिटी वार्ड ग्राउंड फ्लोर पर स्थित है। रिसेप्शन विजिटेशन गाइडलाइन और कमरा दिशाओं में सहायता कर सकता है।",
+            keywords = listOf("मैटरनिटी", "वार्ड", "ग्राउंड", "रिसेप्शन", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_220_hi",
+            question = "लेबर रूम कहां है?",
+            answer = "लेबर और डिलीवरी सेवाएं ऑपरेशन थिएटर (OT) एरिया के माध्यम से कोऑर्डिनेट की जाती हैं। तत्काल सहायता के लिए, कृपया रिसेप्शन या किसी नर्सिंग स्टाफ को अलर्ट करें।",
+            keywords = listOf("लेबर", "डिलीवरी", "OT", "नर्सिंग", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_221_hi",
+            question = "NICU कहां है?",
+            answer = "नियोनेटल ICU (NICU) तीसरे फ्लोर पर स्थित है। एक्सेस मेडिकल स्टाफ के माध्यम से कोऑर्डिनेट किया जाता है - कृपया विजिटर प्रोटोकॉल और दिशाओं के लिए रिसेप्शन से जांचें।",
+            keywords = listOf("NICU", "नियोनेटल", "तीसरा", "फ्लोर", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_222_hi",
+            question = "न्यूरोलॉजी डिपार्टमेंट कहां है?",
+            answer = "न्यूरोलॉजी सेवाएं ग्राउंड फ्लोर पर स्थित हैं। अपॉइंटमेंट चेक-इन या दिशाओं के लिए, कृपया रिसेप्शन से पूछें।",
+            keywords = listOf("न्यूरोलॉजी", "ग्राउंड", "रिसेप्शन", "कहां"),
+            category = "departments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_223_hi",
+            question = "डेंटल डिपार्टमेंट कहां है?",
+            answer = "डेंटल केयर ग्राउंड फ्लोर पर प्रदान किया जाता है। रिसेप्शन आपको डेंटल क्लिनिक लोकेट करने और डॉक्टर की उपलब्धता कन्फर्म करने में मदद कर सकता है।",
+            keywords = listOf("डेंटल", "दांत", "ग्राउंड", "रिसेप्शन", "कहां"),
+            category = "departments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_224_hi",
+            question = "सर्जरी डिपार्टमेंट कहां है?",
+            answer = "सर्जिकल कंसल्टेशन और प्री-ऑप केयर ग्राउंड फ्लोर पर कोऑर्डिनेट किए जाते हैं। सर्जन की उपलब्धता या अपॉइंटमेंट चेक-इन के लिए, कृपया रिसेप्शन से जांचें।",
+            keywords = listOf("सर्जरी", "ग्राउंड", "सर्जन", "रिसेप्शन", "कहां"),
+            category = "departments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_225_hi",
+            question = "ऑपरेशन थिएटर कहां है?",
+            answer = "हमारे अस्पताल में विभिन्न फ्लोर पर 6 ऑपरेशन थिएटर हैं। चूंकि सर्जरी तत्कालता और स्पेशलिटी के आधार पर शेड्यूल की जाती हैं, रिसेप्शन आपको सही OT तक गाइड कर सकता है या आपकी प्रक्रिया के स्थान पर अपडेट प्रदान कर सकता है।",
+            keywords = listOf("ऑपरेशन", "थिएटर", "OT", "फ्लोर", "रिसेप्शन", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_226_hi",
+            question = "कैफेटेरिया कहां है?",
+            answer = "सभी डाइनिंग विकल्प अस्पताल के बैक गेट के पास स्थित हैं। जरूरत हो तो रिसेप्शन त्वरित दिशाएं प्रदान कर सकता है।",
+            keywords = listOf("कैफेटेरिया", "डाइनिंग", "बैक गेट", "रिसेप्शन", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_227_hi",
+            question = "वेंडिंग मशीन कहां है?",
+            answer = "हमारे कैंपस पर वेंडिंग मशीन नहीं हैं, लेकिन बैक गेट के पास कैंटीन में स्नैक्स और भोजन उपलब्ध हैं।",
+            keywords = listOf("वेंडिंग", "मशीन", "कैंटीन", "बैक गेट", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_228_hi",
+            question = "रेस्टोरेंट कहां है?",
+            answer = "सभी डाइनिंग विकल्प अस्पताल के बैक गेट के पास स्थित हैं। जरूरत हो तो रिसेप्शन त्वरित दिशाएं प्रदान कर सकता है।",
+            keywords = listOf("रेस्टोरेंट", "डाइनिंग", "बैक गेट", "रिसेप्शन", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_229_hi",
+            question = "शौचालय कहां है?",
+            answer = "शौचालय हर फ्लोर पर, आमतौर पर प्रतीक्षा क्षेत्रों और लिफ्ट के पास उपलब्ध हैं। अगर आप नजदीकी वाले का दिशा-निर्देश चाहते हैं तो कृपया रिसेप्शन या किसी स्टाफ से पूछें।",
+            keywords = listOf("शौचालय", "वॉशरूम", "फ्लोर", "लिफ्ट", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_230_hi",
+            question = "प्रतीक्षा क्षेत्र कहां है?",
+            answer = "आरामदायक सीटिंग एरिया ग्राउंड फ्लोर पर, मुख्य प्रवेश द्वार और डिपार्टमेंट केबिन के पास उपलब्ध हैं।",
+            keywords = listOf("प्रतीक्षा", "ग्राउंड", "प्रवेश", "सीटिंग", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_231_hi",
+            question = "रिसेप्शन कहां है?",
+            answer = "मुख्य रिसेप्शन डेस्क ग्राउंड फ्लोर पर, अस्पताल के प्रवेश द्वार पर सीधे स्थित है - किसी भी सहायता के लिए आपकी पहली पड़ाव।",
+            keywords = listOf("रिसेप्शन", "ग्राउंड", "प्रवेश", "पहली", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_232_hi",
+            question = "हेल्प डेस्क कहां है?",
+            answer = "एक समर्पित हेल्प डेस्क ग्राउंड फ्लोर पर विजिटरों को गाइड करने, क्वेरी का उत्तर देने और सपोर्ट प्रदान करने के लिए उपलब्ध है।",
+            keywords = listOf("हेल्प डेस्क", "ग्राउंड", "विजिटर", "सपोर्ट", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_233_hi",
+            question = "रजिस्ट्रेशन काउंटर कहां है?",
+            answer = "रोगी रजिस्ट्रेशन ग्राउंड फ्लोर पर, मुख्य रिसेप्शन एरिया से सटे काउंटर पर हैंडल किया जाता है।",
+            keywords = listOf("रजिस्ट्रेशन", "काउंटर", "ग्राउंड", "रिसेप्शन", "कहां"),
+            category = "appointments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_234_hi",
+            question = "बिलिंग काउंटर कहां है?",
+            answer = "बिलिंग और पेमेंट सेवाएं ग्राउंड फ्लोर पर, मुख्य रिसेप्शन के पास समर्पित काउंटर पर उपलब्ध हैं।",
+            keywords = listOf("बिलिंग", "काउंटर", "ग्राउंड", "पेमेंट", "रिसेप्शन", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_235_hi",
+            question = "इंश्योरेंस डेस्क कहां है?",
+            answer = "इंश्योरेंस डेस्क ग्राउंड फ्लोर पर स्थित है। क्लेम सहायता, डॉक्यूमेंटेशन या पॉलिसी क्वेरी के लिए, कृपया डेस्क पर सीधे जाएं या सटीक दिशाओं के लिए रिसेप्शन से जांचें।",
+            keywords = listOf("इंश्योरेंस", "डेस्क", "ग्राउंड", "क्लेम", "कहां"),
+            category = "insurance",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_236_hi",
+            question = "अपॉइंटमेंट काउंटर कहां है?",
+            answer = "अपॉइंटमेंट ग्राउंड फ्लोर पर रिसेप्शन डेस्क पर सीधे बुक किए जा सकते हैं - या सुविधा के लिए हमारी वेबसाइट/व्हाट्सएप के माध्यम से।",
+            keywords = listOf("अपॉइंटमेंट", "काउंटर", "ग्राउंड", "रिसेप्शन", "वेबसाइट", "कहां"),
+            category = "appointments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_237_hi",
+            question = "पार्किंग लॉट कहां है?",
+            answer = "जनरल पार्किंग मुख्य प्रवेश द्वार के सामने और बैक गेट के पास दोनों जगह उपलब्ध है। साइनेज फॉलो करें या गाइडेंस के लिए सिक्योरिटी से पूछें।",
+            keywords = listOf("पार्किंग", "लॉट", "प्रवेश", "बैक गेट", "सिक्योरिटी", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_238_hi",
+            question = "विजिटर पार्किंग कहां है?",
+            answer = "समर्पित विजिटर पार्किंग ग्राउंड लेवल पर फ्रंट (मुख्य प्रवेश) और बैक गेट एरिया दोनों जगह प्रदान की जाती है।",
+            keywords = listOf("विजिटर", "पार्किंग", "ग्राउंड", "प्रवेश", "बैक गेट", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_239_hi",
+            question = "एम्बुलेंस बे कहां है?",
+            answer = "एम्बुलेंस बे तेज़ इमरजेंसी एक्सेस के लिए मुख्य प्रवेश द्वार के सामने सीधे स्थित है। आगमन पर स्टाफ हमेशा सहायता के लिए तैयार है।",
+            keywords = listOf("एम्बुलेंस", "बे", "प्रवेश", "इमरजेंसी", "स्टाफ", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_240_hi",
+            question = "लिफ्ट कहां है?",
+            answer = "लिफ्ट ग्राउंड फ्लोर पर, सीढ़ी के पास, रिसेप्शन डेस्क के बगल में स्थित हैं।",
+            keywords = listOf("लिफ्ट", "सीढ़ी", "रिसेप्शन", "ग्राउंड", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_241_hi",
+            question = "सीढ़ी कहां है?",
+            answer = "सीढ़ियां ग्राउंड फ्लोर पर रिसेप्शन डेस्क के पास सभी फ्लोर तक आसान पहुंच के लिए सुविधाजनक रूप से स्थित हैं।",
+            keywords = listOf("सीढ़ी", "ग्राउंड", "रिसेप्शन", "फ्लोर", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_242_hi",
+            question = "व्हीलचेयर एक्सेस कहां है?",
+            answer = "व्हीलचेयर मुख्य प्रवेश द्वार पर सीधे उपलब्ध हैं - बस किसी भी स्टाफ मेंबर या सिक्योरिटी को सूचित करें ताकि तत्काल सहायता मिल सके।",
+            keywords = listOf("व्हीलचेयर", "एक्सेस", "प्रवेश", "सिक्योरिटी", "सहायता", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_243_hi",
+            question = "रैम्प कहां है?",
+            answer = "आसान एक्सेस के लिए रैम्प उपलब्ध है। कृपया इस्तेमाल करते समय किसी भी स्टाफ से गाइडेंस या सपोर्ट के लिए पूछें।",
+            keywords = listOf("रैम्प", "एक्सेस", "स्टाफ", "सपोर्ट", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_244_hi",
+            question = "ATM कहां है?",
+            answer = "ATM बैक एंट्रेंस के सामने, नाकल रेस्टोरेंट के बगल में उपलब्ध है।",
+            keywords = listOf("ATM", "बैक", "एंट्रेंस", "नाकल", "रेस्टोरेंट", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_245_hi",
+            question = "लॉकर रूम कहां है?",
+            answer = "लॉकर सुविधाएं बेसमेंट में उपलब्ध हैं। एक्सेस निर्देशों के लिए कृपया रिसेप्शन से जांचें।",
+            keywords = listOf("लॉकर", "रूम", "बेसमेंट", "एक्सेस", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_246_hi",
+            question = "बच्चों का खेल का मैदान कहां है?",
+            answer = "बच्चों के लिए एक छोटा खेल का क्षेत्र ग्राउंड फ्लोर पर OPD एरिया के भीतर स्थित है।",
+            keywords = listOf("बच्चे", "खेल", "ग्राउंड", "OPD", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_247_hi",
+            question = "फैमिली लॉन्ज कहां है?",
+            answer = "जबकि हमारे पास समर्पित फैमिली लॉन्ज नहीं है, हम अतिरिक्त आराम के लिए VIP लॉन्ज ऑफर करते हैं। कृपया एक्सेस डिटेल के लिए रिसेप्शन से पूछें।",
+            keywords = listOf("फैमिली", "लॉन्ज", "VIP", "एक्सेस", "रिसेप्शन", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_248_hi",
+            question = "स्मोकिंग एरिया कहां है?",
+            answer = "अस्पताल परिसर में कहीं भी धूम्रपान की अनुमति नहीं है - और अच्छे कारण से: धूम्रपान आपके स्वास्थ्य के लिए हानिकारक है और ठीक होने, सांस लेने और समग्र कल्याण को प्रभावित कर सकता है। हम सभी की रिकवरी और भलाई का समर्थन करने के लिए धूम्रपान-मुक्त वातावरण को प्रोत्साहित करते हैं।",
+            keywords = listOf("स्मोकिंग", "धूम्रपान", "एरिया", "परिसर", "निषिद्ध", "स्वास्थ्य"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_249_hi",
+            question = "एडमिन ऑफिस कहां है?",
+            answer = "एडमिनिस्ट्रेटिव पूछताछ के लिए, कृपया रिसेप्शन से जांचें - वे आपको उचित ऑफिस या स्टाफ मेंबर तक डायरेक्ट करेंगे।",
+            keywords = listOf("एडमिन", "ऑफिस", "रिसेप्शन", "स्टाफ", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_250_hi",
+            question = "HR डिपार्टमेंट कहां है?",
+            answer = "HR-संबंधित मामले इंटरनली हैंडल किए जाते हैं। विजिटर एक्सेस या क्वेरी के लिए, कृपया रिसेप्शन के माध्यम से कोऑर्डिनेट करें।",
+            keywords = listOf("HR", "डिपार्टमेंट", "विजिटर", "रिसेप्शन", "कहां"),
+            category = "departments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_251_hi",
+            question = "मेडिकल रिकॉर्ड डिपार्टमेंट कहां है?",
+            answer = "MRD बेसमेंट में स्थित है। रिकॉर्ड रिक्वेस्ट या सहायता के लिए, कृपया वर्किंग घंटों के दौरान विजिट करें या पहले रिसेप्शन से जांचें।",
+            keywords = listOf("मेडिकल", "रिकॉर्ड", "MRD", "बेसमेंट", "कहां"),
+            category = "departments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_252_hi",
+            question = "डिस्चार्ज काउंटर कहां है?",
+            answer = "डिस्चार्ज के लिए, कृपया ग्राउंड फ्लोर पर बिलिंग काउंटर पर जाएं। आपके डॉक्टर मेडिकल क्लियरेंस कोऑर्डिनेट करेंगे, और रिसेप्शन आपको अंतिम चरणों से गाइड कर सकता है।",
+            keywords = listOf("डिस्चार्ज", "काउंटर", "बिलिंग", "ग्राउंड", "क्लियरेंस", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_285_hi",
+            question = "डॉक्टर का कंसल्टेशन रूम कहां है?",
+            answer = "कंसल्टेशन रूम स्पेशलिटी और शेड्यूल के अनुसार असाइन किए जाते हैं। अपने डॉक्टर के सटीक स्थान के लिए, कृपया रिसेप्शन से जांचें - वे तुरंत आपको गाइड करेंगे।",
+            keywords = listOf("डॉक्टर", "कंसल्टेशन", "रूम", "रिसेप्शन", "स्पेशलिटी", "कहां"),
+            category = "departments",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_286_hi",
+            question = "नर्स स्टेशन कहां है?",
+            answer = "नर्स स्टेशन हर फ्लोर पर, प्रत्येक वार्ड और डिपार्टमेंट के भीतर उपलब्ध हैं। अपने रोगी के कमरे के पास नर्सिंग डेस्क देखें या किसी भी स्टाफ से पूछें।",
+            keywords = listOf("नर्स", "स्टेशन", "फ्लोर", "वार्ड", "डिपार्टमेंट", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_287_hi",
+            question = "स्टाफ रूम कहां है?",
+            answer = "स्टाफ रूम दूसरे फ्लोर पर स्थित है। यह एरिया केवल अस्पताल पर्सनल के लिए है - विजिटर कृपया सहायता के लिए रिसेप्शन से जांचें।",
+            keywords = listOf("स्टाफ", "रूम", "दूसरा", "फ्लोर", "पर्सनल", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_288_hi",
+            question = "ग्राउंड फ्लोर फार्मेसी कहां है?",
+            answer = "ग्राउंड फ्लोर पर फार्मेसी बिलिंग/रिसेप्शन डेस्क के सामने सीधे तेज़ एक्सेस के लिए स्थित है।",
+            keywords = listOf("फार्मेसी", "ग्राउंड", "बिलिंग", "रिसेप्शन", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_289_hi",
+            question = "पहले फ्लोर का OPD कहां है?",
+            answer = "OPD सेवाएं कई फ्लोर पर फैली हैं। अपने विशेषज्ञ के OPD के सटीक स्थान के लिए, कृपया चेक-इन पर रिसेप्शन से कन्फर्म करें।",
+            keywords = listOf("OPD", "पहला", "फ्लोर", "विशेषज्ञ", "रिसेप्शन", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_290_hi",
+            question = "दूसरे फ्लोर का ICU कहां है?",
+            answer = "स्पेशलाइज्ड ICU (KICU सहित) दूसरे फ्लोर पर स्थित हैं। एक्सेस मेडिकल स्टाफ के माध्यम से कोऑर्डिनेट किया जाता है - कृपया विजिटर गाइडलाइन के लिए रिसेप्शन से जांचें।",
+            keywords = listOf("ICU", "दूसरा", "फ्लोर", "KICU", "विजिटर", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_291_hi",
+            question = "ब्लड बैंक कहां है?",
+            answer = "ब्लड बैंक बेसमेंट में स्थित है। डोनेशन, रिक्वेस्ट या इमरजेंसी के लिए, कृपया तत्काल कोऑर्डिनेशन के लिए रिसेप्शन से संपर्क करें।",
+            keywords = listOf("ब्लड", "बैंक", "बेसमेंट", "डोनेशन", "इमरजेंसी", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_292_hi",
+            question = "सिक्योरिटी डेस्क कहां है?",
+            answer = "सिक्योरिटी पर्सनल पूरे कैंपस में तैनात हैं। अगर आपको सहायता चाहिए तो किसी भी स्टाफ से पूछें - वे जल्दी से आपको सिक्योरिटी से कनेक्ट करेंगे।",
+            keywords = listOf("सिक्योरिटी", "डेस्क", "कैंपस", "स्टाफ", "सहायता", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_293_hi",
+            question = "टैक्सी स्टैंड या कैब पिकअप पॉइंट कहां है?",
+            answer = "कैब पिकअप और ड्रॉप-ऑफ आसान एक्सेस के लिए मुख्य प्रवेश द्वार के पास सुविधाजनक रूप से स्थित है।",
+            keywords = listOf("टैक्सी", "कैब", "पिकअप", "प्रवेश", "एक्सेस", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+        KnowledgeBaseQA(
+            id = "qa_294_hi",
+            question = "विजिटर लॉकर सुविधा कहां है?",
+            answer = "विजिटर लॉकर बेसमेंट में उपलब्ध हैं। एक्सेस निर्देशों और उपयोग गाइडलाइन के लिए कृपया रिसेप्शन से जांचें।",
+            keywords = listOf("विजिटर", "लॉकर", "बेसमेंट", "एक्सेस", "गाइडलाइन", "कहां"),
+            category = "facilities",
+            language = "hi"
+        ),
+    )
 
-    /**
-     * Inject doctor Q&As from Strapi into the knowledge base
-     * Called whenever doctors are fetched or updated
-     */
-    fun injectDoctorQAs(doctors: List<Doctor>) {
-        android.util.Log.d("HospitalKnowledgeBase", "Starting injection of ${doctors.size} doctors")
+     // Dynamic doctor Q&As injected from Strapi
+     private val dynamicDoctorQAs = mutableListOf<KnowledgeBaseQA>()
+
+     /**
+      * Get English specialist noun form for a department
+      * E.g., "Cardiology" -> "cardiologist", "Gynecology" -> "gynecologist"
+      */
+     private fun getSpecialistNoun(department: String): String {
+         return when (department.lowercase()) {
+             "cardiology" -> "cardiologist"
+             "gynecology" -> "gynecologist"
+             "orthopedics" -> "orthopedist"
+             "dermatology" -> "dermatologist"
+             "neurology" -> "neurologist"
+             "pediatrics" -> "pediatrician"
+             "ophthalmology" -> "ophthalmologist"
+             "pathology" -> "pathologist"
+             "radiology" -> "radiologist"
+             "psychiatry" -> "psychiatrist"
+             "anesthesiology" -> "anesthesiologist"
+             "urology" -> "urologist"
+             "internal medicine" -> "internist"
+             "oncology" -> "oncologist"
+             "nephrology" -> "nephrologist"
+             "emergency medicine" -> "emergency expert"
+             "pulmonology" -> "pulmonologist"
+             "nutrition & dietetics" -> "nutritionist"
+             "medical director" -> "director"
+             else -> ""
+         }
+     }
+
+     /**
+      * Get Hindi specialist noun form for a department
+      * E.g., "Gynecology" -> "गायनेकोलॉजिस्ट", "Cardiology" -> "कार्डियोलॉजिस्ट"
+      */
+     private fun getHindiSpecialistNoun(department: String): String {
+         return when (department.lowercase()) {
+             "cardiology" -> "कार्डियोलॉजिस्ट"
+             "gynecology" -> "गायनेकोलॉजिस्ट"
+             "orthopedics" -> "ऑर्थोपेडिक्स विशेषज्ञ"
+             "dermatology" -> "त्वचा विशेषज्ञ"
+             "neurology" -> "न्यूरोलॉजिस्ट"
+             "pediatrics" -> "बाल चिकित्सक"
+             "ophthalmology" -> "नेत्र विशेषज्ञ"
+             "pathology" -> "पैथोलॉजिस्ट"
+             "radiology" -> "रेडियोलॉजिस्ट"
+             "psychiatry" -> "मनोचिकित्सक"
+             "anesthesiology" -> "एनेस्थेसियोलॉजिस्ट"
+             "urology" -> "यूरोलॉजिस्ट"
+             "oncology" -> "ऑन्कोलॉजिस्ट"
+             "nephrology" -> "नेफ्रोलॉजिस्ट"
+             "internal medicine" -> "आंतरिक चिकित्सा विशेषज्ञ"
+             "emergency medicine" -> "आपातकालीन चिकित्सा विशेषज्ञ"
+             "pulmonology" -> "पल्मोनोलॉजिस्ट"
+             "nutrition & dietetics" -> "पोषण विशेषज्ञ"
+             "medical director" -> "चिकित्सा निदेशक"
+             else -> ""
+         }
+     }
+
+     /**
+      * Inject doctor Q&As from Strapi into the knowledge base
+      * Called whenever doctors are fetched or updated
+      */
+     fun injectDoctorQAs(doctors: List<Doctor>) {
+         android.util.Log.d("HospitalKnowledgeBase", "Starting injection of ${doctors.size} doctors")
 
         // Clear previous dynamic doctor QAs
         dynamicDoctorQAs.clear()
@@ -2329,7 +4052,7 @@ object HospitalKnowledgeBase {
             val doctorName = if (doctor.name.startsWith("Dr", ignoreCase = true)) 
                 doctor.name else "Dr. ${doctor.name}"
             
-            android.util.Log.d("HospitalKnowledgeBase", "Injecting doctor: $doctorName (${doctor.department})")
+            android.util.Log.d("HospitalKnowledgeBase", "🏥 Injecting: $doctorName | dept='${doctor.department}' | dept_hi='${doctor.departmentHi}' | specialization='${doctor.specialization}'")
 
             // Extract keywords from name (first name, last name, full name)
             val nameKeywords = mutableListOf<String>()
@@ -2352,152 +4075,253 @@ object HospitalKnowledgeBase {
                 doctor.department
             }
 
-            dynamicDoctorQAs.add(
-                KnowledgeBaseQA(
-                    id = "dynamic_doc_${doctor.id}_name",
-                    question = "Who is $doctorName?",
-                    answer = "$doctorName is a $primarySpecialty. " +
-                            "PRIMARY SPECIALTY: $primarySpecialty. " +
-                            "Department: ${doctor.department}. " +
-                            "Experience: ${doctor.yearsOfExperience} years. " +
-                            "Cabin: ${doctor.cabin}. " +
-                            "Details: ${doctor.aboutBio}",
-                    keywords = listOf(
-                        doctor.name.lowercase(),
-                        doctor.specialization?.lowercase() ?: "",
-                        doctor.department.lowercase(),
-                        "doctor",
-                        "specialist",
-                        "cabin",
-                        doctor.cabin.lowercase(),
-                        doctor.department.lowercase() // Added as primary keyword
-                    ).plus(nameKeywords).plus(bioKeywords).filter { it.isNotEmpty() }.distinct(),
-                    category = "departments",
-                    language = "en"
-                )
-            )
+             dynamicDoctorQAs.add(
+                 KnowledgeBaseQA(
+                     id = "dynamic_doc_${doctor.id}_name",
+                     question = "Who is $doctorName?",
+                     answer = "$doctorName is a $primarySpecialty. " +
+                             "PRIMARY SPECIALTY: $primarySpecialty. " +
+                             "Department: ${doctor.department}. " +
+                             "Cabin: ${doctor.cabin}. " +
+                             "Details: ${doctor.aboutBio}",
+                     keywords = listOf(
+                         doctor.name.lowercase(),
+                         doctor.specialization?.lowercase() ?: "",
+                         doctor.department.lowercase(),
+                         "doctor",
+                         "specialist",
+                         "cabin",
+                         doctor.cabin.lowercase(),
+                         doctor.department.lowercase()
+                     ).plus(nameKeywords).plus(bioKeywords).filter { it.isNotEmpty() }.distinct(),
+                     category = "departments",
+                     language = "en"
+                 )
+             )
 
-            // Q&A 1 (Hindi): Direct doctor name query - HINDI VERSION
-            dynamicDoctorQAs.add(
-                KnowledgeBaseQA(
-                    id = "dynamic_doc_${doctor.id}_name_hi",
-                    question = "$doctorName कौन हैं?",
-                    answer = "$doctorName एक $primarySpecialty हैं। " +
-                            "प्राथमिक विशेषता: $primarySpecialty। " +
-                            "विभाग: ${doctor.department}। " +
-                            "अनुभव: ${doctor.yearsOfExperience} वर्ष। " +
-                            "केबिन: ${doctor.cabin}। " +
-                            "विवरण: ${doctor.aboutBio}",
-                    keywords = listOf(
-                        doctor.name.lowercase(),
-                        doctor.specialization?.lowercase() ?: "",
-                        doctor.department.lowercase(),
-                        "डॉक्टर",
-                        "विशेषज्ञ",
-                        "केबिन",
-                        doctor.cabin.lowercase()
-                    ).plus(nameKeywords).plus(bioKeywords).filter { it.isNotEmpty() }.distinct(),
-                    category = "departments",
-                    language = "hi"
-                )
-            )
+             // Q&A 1 (Hindi): Direct doctor name query - HINDI VERSION
+             dynamicDoctorQAs.add(
+                 KnowledgeBaseQA(
+                     id = "dynamic_doc_${doctor.id}_name_hi",
+                     question = "$doctorName कौन हैं?",
+                     answer = "$doctorName एक $primarySpecialty हैं। " +
+                             "प्राथमिक विशेषता: $primarySpecialty। " +
+                             "विभाग: ${doctor.department}। " +
+                             "केबिन: ${doctor.cabin}। " +
+                             "विवरण: ${doctor.aboutBio}",
+                     keywords = listOf(
+                         doctor.name.lowercase(),
+                         doctor.specialization?.lowercase() ?: "",
+                         doctor.department.lowercase(),
+                         "डॉक्टर",
+                         "विशेषज्ञ",
+                         "केबिन",
+                         doctor.cabin.lowercase()
+                     ).plus(nameKeywords).plus(bioKeywords).filter { it.isNotEmpty() }.distinct(),
+                     category = "departments",
+                     language = "hi"
+                 )
+             )
 
-            // Q&A 2: Department query with COMPLETE details - SPECIALTY FIRST
-            dynamicDoctorQAs.add(
-                KnowledgeBaseQA(
-                    id = "dynamic_doc_${doctor.id}_dept",
-                    question = "Is there a ${doctor.department} specialist?",
-                    answer = "$doctorName - PRIMARY SPECIALTY: $primarySpecialty. " +
-                            "Department: ${doctor.department}. " +
-                            "Experience: ${doctor.yearsOfExperience} years. " +
-                            "Cabin: ${doctor.cabin}. " +
-                            "About: ${doctor.aboutBio}",
-                    keywords = listOf(
-                        doctor.department.lowercase(),
-                        "specialist",
-                        "doctor",
-                        "department",
-                        doctor.specialization?.lowercase() ?: "",
-                        "experience",
-                        doctor.cabin.lowercase()
-                    ).plus(nameKeywords).filter { it.isNotEmpty() }.distinct(),
-                    category = "departments",
-                    language = "en"
-                )
-            )
+              // Q&A 2: Department query with COMPLETE details - SPECIALTY FIRST
+              dynamicDoctorQAs.add(
+                  KnowledgeBaseQA(
+                      id = "dynamic_doc_${doctor.id}_dept",
+                      question = "Is there a ${doctor.department} specialist?",
+                      answer = "$doctorName - PRIMARY SPECIALTY: $primarySpecialty. " +
+                              "Department: ${doctor.department}. " +
+                              "Cabin: ${doctor.cabin}. " +
+                              "About: ${doctor.aboutBio}",
+                      keywords = listOf(
+                          doctor.department.lowercase(),
+                          "specialist",
+                          "doctor",
+                          "department",
+                          doctor.specialization?.lowercase() ?: "",
+                          doctor.cabin.lowercase()
+                      ).plus(nameKeywords).filter { it.isNotEmpty() }.distinct(),
+                      category = "departments",
+                      language = "en"
+                  )
+              )
 
-            // Q&A 2 (Hindi): Department query - HINDI VERSION
-            dynamicDoctorQAs.add(
-                KnowledgeBaseQA(
-                    id = "dynamic_doc_${doctor.id}_dept_hi",
-                    question = "क्या कोई ${doctor.department} विशेषज्ञ है?",
-                    answer = "$doctorName - प्राथमिक विशेषता: $primarySpecialty। " +
-                            "विभाग: ${doctor.department}। " +
-                            "अनुभव: ${doctor.yearsOfExperience} वर्ष। " +
-                            "केबिन: ${doctor.cabin}। " +
-                            "विवरण: ${doctor.aboutBio}",
-                    keywords = listOf(
-                        doctor.department.lowercase(),
-                        "विशेषज्ञ",
-                        "डॉक्टर",
-                        "विभाग",
-                        doctor.specialization?.lowercase() ?: "",
-                        "अनुभव",
-                        doctor.cabin.lowercase()
-                    ).plus(nameKeywords).filter { it.isNotEmpty() }.distinct(),
-                    category = "departments",
-                    language = "hi"
-                )
-            )
+              // Q&A 2 (Hindi): Department query - HINDI VERSION
+              dynamicDoctorQAs.add(
+                  KnowledgeBaseQA(
+                      id = "dynamic_doc_${doctor.id}_dept_hi",
+                      question = "क्या कोई ${doctor.department} विशेषज्ञ है?",
+                      answer = "$doctorName - प्राथमिक विशेषता: $primarySpecialty। " +
+                              "विभाग: ${doctor.department}। " +
+                              "केबिन: ${doctor.cabin}। " +
+                              "विवरण: ${doctor.aboutBio}",
+                      keywords = listOf(
+                          doctor.department.lowercase(),
+                          "विशेषज्ञ",
+                          "डॉक्टर",
+                          "विभाग",
+                          doctor.specialization?.lowercase() ?: "",
+                          doctor.cabin.lowercase()
+                      ).plus(nameKeywords).filter { it.isNotEmpty() }.distinct(),
+                      category = "departments",
+                      language = "hi"
+                  )
+              )
 
             // Q&A 3: Specialization query (if different from department) - SPECIALTY FIRST
-            if (doctor.specialization.isNotBlank() && !doctor.specialization.equals(doctor.department, ignoreCase = true)) {
-                dynamicDoctorQAs.add(
-                    KnowledgeBaseQA(
-                        id = "dynamic_doc_${doctor.id}_spec",
-                        question = "Who specializes in ${doctor.specialization}?",
-                        answer = "$doctorName - PRIMARY SPECIALTY: ${doctor.specialization}. " +
-                                "Department: ${doctor.department}. " +
-                                "Experience: ${doctor.yearsOfExperience} years. " +
-                                "Cabin: ${doctor.cabin}. " +
-                                "Details: ${doctor.aboutBio}",
-                        keywords = listOf(
-                            doctor.specialization.lowercase(),
-                            doctor.department.lowercase(),
-                            "specialist",
-                            "specialization",
-                            doctor.name.lowercase()
-                        ).plus(nameKeywords).filter { it.isNotEmpty() }.distinct(),
-                        category = "departments",
-                        language = "en"
-                    )
-                )
+             if (doctor.specialization.isNotBlank() && !doctor.specialization.equals(doctor.department, ignoreCase = true)) {
+                 dynamicDoctorQAs.add(
+                     KnowledgeBaseQA(
+                         id = "dynamic_doc_${doctor.id}_spec",
+                         question = "Who specializes in ${doctor.specialization}?",
+                         answer = "$doctorName - PRIMARY SPECIALTY: ${doctor.specialization}. " +
+                                 "Department: ${doctor.department}. " +
+                                 "Experience: ${doctor.yearsOfExperience} years. " +
+                                 "Cabin: ${doctor.cabin}. " +
+                                 "Details: ${doctor.aboutBio}",
+                         keywords = listOf(
+                             doctor.specialization.lowercase(),
+                             doctor.department.lowercase(),
+                             "specialist",
+                             "specialization",
+                             doctor.name.lowercase()
+                         ).plus(nameKeywords).filter { it.isNotEmpty() }.distinct(),
+                         category = "departments",
+                         language = "en"
+                     )
+                 )
 
-                // Q&A 3 (Hindi): Specialization query - HINDI VERSION
-                dynamicDoctorQAs.add(
-                    KnowledgeBaseQA(
-                        id = "dynamic_doc_${doctor.id}_spec_hi",
-                        question = "कौन ${doctor.specialization} में विशेषज्ञ है?",
-                        answer = "$doctorName - प्राथमिक विशेषता: ${doctor.specialization}। " +
-                                "विभाग: ${doctor.department}। " +
-                                "अनुभव: ${doctor.yearsOfExperience} वर्ष। " +
-                                "केबिन: ${doctor.cabin}। " +
-                                "विवरण: ${doctor.aboutBio}",
-                        keywords = listOf(
-                            doctor.specialization.lowercase(),
-                            doctor.department.lowercase(),
-                            "विशेषज्ञ",
-                            "विशेषता",
-                            doctor.name.lowercase()
-                        ).plus(nameKeywords).filter { it.isNotEmpty() }.distinct(),
-                        category = "departments",
-                        language = "hi"
-                    )
-                )
-            }
+                 // Q&A 3 (Hindi): Specialization query - HINDI VERSION
+                 dynamicDoctorQAs.add(
+                     KnowledgeBaseQA(
+                         id = "dynamic_doc_${doctor.id}_spec_hi",
+                         question = "कौन ${doctor.specialization} में विशेषज्ञ है?",
+                         answer = "$doctorName - प्राथमिक विशेषता: ${doctor.specialization}। " +
+                                 "विभाग: ${doctor.department}। " +
+                                 "अनुभव: ${doctor.yearsOfExperience} वर्ष। " +
+                                 "केबिन: ${doctor.cabin}। " +
+                                 "विवरण: ${doctor.aboutBio}",
+                         keywords = listOf(
+                             doctor.specialization.lowercase(),
+                             doctor.department.lowercase(),
+                             "विशेषज्ञ",
+                             "विशेषता",
+                             doctor.name.lowercase()
+                         ).plus(nameKeywords).filter { it.isNotEmpty() }.distinct(),
+                         category = "departments",
+                         language = "hi"
+                     )
+                 )
+             }
+
+             // Q&A 4: "Who is the [Department] specialist?" pattern - BRAND NEW
+             dynamicDoctorQAs.add(
+                 KnowledgeBaseQA(
+                     id = "dynamic_doc_${doctor.id}_who_is_dept",
+                     question = "Who is the ${doctor.department} specialist?",
+                     answer = "$doctorName is a ${doctor.department} specialist. " +
+                             "Department: ${doctor.department}. " +
+                             "Cabin: ${doctor.cabin}. " +
+                             "Details: ${doctor.aboutBio}",
+                     keywords = listOf(
+                         doctor.department.lowercase(),
+                         "specialist",
+                         "who is",
+                         "doctor",
+                         doctor.name.lowercase(),
+                         doctor.specialization?.lowercase() ?: "",
+                         // Add specialist noun forms (e.g., "cardiologist", "gynecologist")
+                         getSpecialistNoun(doctor.department)
+                     ).plus(nameKeywords).filter { it.isNotEmpty() }.distinct(),
+                     category = "departments",
+                     language = "en"
+                 )
+             )
+
+            // Q&A 4 (Hindi): "Who is the [Department] specialist?" - HINDI VERSION
+             dynamicDoctorQAs.add(
+                 KnowledgeBaseQA(
+                     id = "dynamic_doc_${doctor.id}_who_is_dept_hi",
+                     question = "कौन ${doctor.department} विशेषज्ञ है?",
+                     answer = "$doctorName एक ${doctor.department} विशेषज्ञ हैं। " +
+                             "विभाग: ${doctor.department}। " +
+                             "केबिन: ${doctor.cabin}। " +
+                             "विवरण: ${doctor.aboutBio}",
+                     keywords = listOf(
+                         doctor.department.lowercase(),
+                         "विशेषज्ञ",
+                         "कौन है",
+                         "कौन हैं",
+                         "डॉक्टर",
+                         doctor.name.lowercase(),
+                         doctor.specialization?.lowercase() ?: "",
+                         // Add specialist noun forms
+                         getHindiSpecialistNoun(doctor.department)
+                     ).plus(nameKeywords).filter { it.isNotEmpty() }.distinct(),
+                     category = "departments",
+                     language = "hi"
+                 )
+             )
+
+             // Q&A 5: Combined doctor name + department query (e.g., "Dr. Sharma Cardiology" or "Cardiology Dr. Sharma")
+              dynamicDoctorQAs.add(
+                  KnowledgeBaseQA(
+                      id = "dynamic_doc_${doctor.id}_name_dept",
+                      question = "$doctorName ${doctor.department}",
+                      answer = "$doctorName is a ${doctor.department} specialist. " +
+                              "Department: ${doctor.department}. " +
+                              "Cabin: ${doctor.cabin}. " +
+                              "Details: ${doctor.aboutBio}",
+                      keywords = listOf(
+                          doctor.name.lowercase(),
+                          doctor.department.lowercase(),
+                          "specialist",
+                          "doctor",
+                          doctor.specialization?.lowercase() ?: "",
+                          doctor.cabin.lowercase(),
+                          "${doctor.name.replace("Dr.", "").lowercase().trim()} ${doctor.department.lowercase()}",
+                          "${doctor.department.lowercase()} ${doctor.name.replace("Dr.", "").lowercase().trim()}"
+                      ).plus(nameKeywords).filter { it.isNotEmpty() }.distinct(),
+                      category = "departments",
+                      language = "en"
+                  )
+              )
+
+             // Q&A 5 (Hindi): Combined doctor name + department query - HINDI VERSION
+              dynamicDoctorQAs.add(
+                  KnowledgeBaseQA(
+                      id = "dynamic_doc_${doctor.id}_name_dept_hi",
+                      question = "$doctorName ${doctor.department}",
+                      answer = "$doctorName एक ${doctor.department} विशेषज्ञ हैं। " +
+                              "विभाग: ${doctor.department}। " +
+                              "केबिन: ${doctor.cabin}। " +
+                              "विवरण: ${doctor.aboutBio}",
+                      keywords = listOf(
+                          doctor.name.lowercase(),
+                          doctor.department.lowercase(),
+                          "विशेषज्ञ",
+                          "डॉक्टर",
+                          doctor.specialization?.lowercase() ?: "",
+                          doctor.cabin.lowercase(),
+                          "${doctor.name.replace("डॉ.", "").replace("Dr.", "").lowercase().trim()} ${doctor.department.lowercase()}",
+                          "${doctor.department.lowercase()} ${doctor.name.replace("डॉ.", "").replace("Dr.", "").lowercase().trim()}"
+                      ).plus(nameKeywords).filter { it.isNotEmpty() }.distinct(),
+                      category = "departments",
+                      language = "hi"
+                  )
+              )
         }
-        
-        android.util.Log.d("HospitalKnowledgeBase", "Successfully injected ${dynamicDoctorQAs.size} dynamic doctor Q&As from ${doctors.size} doctors")
+
+        android.util.Log.d("HospitalKnowledgeBase", "✅ Successfully injected ${dynamicDoctorQAs.size} dynamic doctor Q&As from ${doctors.size} doctors (avg ${dynamicDoctorQAs.size / maxOf(doctors.size, 1)} Q&As per doctor)")
+
+        // Log sample of departments injected
+        val uniqueDepts = doctors.map { it.department }.distinct()
+        android.util.Log.d("HospitalKnowledgeBase", "📋 Departments found: $uniqueDepts")
+
+        // Log doctors by department for debugging
+        uniqueDepts.forEach { dept ->
+            val doctorsInDept = doctors.filter { it.department.equals(dept, ignoreCase = true) }
+            android.util.Log.d("HospitalKnowledgeBase", "  📍 $dept: ${doctorsInDept.map { it.name }.joinToString(", ")}")
+        }
     }
 
     /**
@@ -2684,13 +4508,35 @@ object HospitalKnowledgeBase {
         "surgery" to "surgery",
         "सर्जरी" to "surgery",
         "शल्यचिकित्सा" to "surgery",
-        "स्त्री" to "gynecology",
-        "gynecology" to "gynecology",
-        "गायनेकोलॉजी" to "gynecology",
-        "मनोरोग" to "psychiatry",
-        "psychiatry" to "psychiatry",
-        "साइकियाट्री" to "psychiatry",
-        
+         "स्त्री" to "gynecology",
+         "gynecology" to "gynecology",
+         "गायनेकोलॉजी" to "gynecology",
+         "gynecologist" to "gynecology",
+         "गायनेकोलॉजिस्ट" to "gynecology",
+         "गाइनेकोलॉजिस्ट" to "gynecology",  // Alternative Hindi spelling (Devnagari variant)
+         "गाइनेकोलॉजी" to "gynecology",      // Alternative Hindi spelling
+         "मनोरोग" to "psychiatry",
+         "psychiatry" to "psychiatry",
+         "साइकियाट्री" to "psychiatry",
+         "psychiatrist" to "psychiatry",
+         "साइकियाट्रिस्ट" to "psychiatry",
+
+         // === SPECIALIST NOUNS (map to department names) ===
+         "cardiologist" to "cardiology",
+         "नेत्र चिकित्सक" to "ophthalmology",
+         "ophthalmologist" to "ophthalmology",
+         "आंखों का डॉक्टर" to "ophthalmology",
+         "pediatrician" to "pediatrics",
+         "बाल चिकित्सक" to "pediatrics",
+         "orthopedist" to "orthopedics",
+         "हड्डी विशेषज्ञ" to "orthopedics",
+         "dermatologist" to "dermatology",
+         "त्वचा विशेषज्ञ" to "dermatology",
+         "neurosurgeon" to "neurology",
+         "न्यूरो सर्जन" to "neurology",
+         "neurologist" to "neurology",
+         "नेत्र विशेषज्ञ" to "neurology",
+
         // === COMMON MEDICAL TERMS ===
         "अस्पताल" to "hospital",
         "hospital" to "hospital",

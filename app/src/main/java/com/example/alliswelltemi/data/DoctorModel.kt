@@ -39,78 +39,8 @@ data class TimeSlot(
  * Doctors include bilingual department support for voice recognition
  */
 object DoctorData {
-    val DOCTORS = listOf(
-        Doctor(
-            id = "doc_001",
-            name = "Dr. Rajesh Sharma",
-            department = "Cardiology",
-            departmentHi = "कार्डियोलॉजी",
-            yearsOfExperience = 15,
-            aboutBio = "Experienced cardiologist with specialization in interventional cardiology and cardiac surgery.",
-            cabin = "3A",
-            gender = "male"
-        ),
-        Doctor(
-            id = "doc_002",
-            name = "Dr. Priya Verma",
-            department = "Neurology",
-            departmentHi = "न्यूरोलॉजी",
-            yearsOfExperience = 12,
-            aboutBio = "Specialist in neurological disorders with expertise in stroke management and epilepsy.",
-            cabin = "4B",
-            gender = "female"
-        ),
-        Doctor(
-            id = "doc_003",
-            name = "Dr. Amit Patel",
-            department = "Orthopedics",
-            departmentHi = "ऑर्थोपेडिक्स",
-            yearsOfExperience = 18,
-            aboutBio = "Orthopedic surgeon specializing in joint replacement and sports medicine.",
-            cabin = "2C",
-            gender = "male"
-        ),
-        Doctor(
-            id = "doc_004",
-            name = "Dr. Sneha Gupta",
-            department = "Dermatology",
-            departmentHi = "त्वचा विज्ञान",
-            yearsOfExperience = 10,
-            aboutBio = "Dermatologist with expertise in cosmetic and clinical dermatology.",
-            cabin = "5D",
-            gender = "female"
-        ),
-        Doctor(
-            id = "doc_005",
-            name = "Dr. Vikram Singh",
-            department = "General Surgery",
-            departmentHi = "सामान्य सर्जरी",
-            yearsOfExperience = 20,
-            aboutBio = "Senior surgeon with extensive experience in general and laparoscopic surgery.",
-            cabin = "1E",
-            gender = "male"
-        ),
-        Doctor(
-            id = "doc_006",
-            name = "Dr. Anjali Nair",
-            department = "Pediatrics",
-            departmentHi = "बाल चिकित्सा",
-            yearsOfExperience = 14,
-            aboutBio = "Pediatrician specializing in neonatal care and child development.",
-            cabin = "6F",
-            gender = "female"
-        ),
-        Doctor(
-            id = "doc_007",
-            name = "Dr. Apurva Yadav",
-            department = "Ophthalmology",
-            departmentHi = "नेत्र विज्ञान",
-            yearsOfExperience = 9,
-            aboutBio = "Consultant Ophthalmologist & Cataract Surgeon.",
-            cabin = "",
-            gender = "female"
-        )
-    )
+    // Fallback doctors removed - all doctors should be fetched from Strapi/Knowledge Base only
+    val DOCTORS = emptyList<Doctor>()
 
     /**
      * Departments in both English and Hindi with normalized keys for matching
@@ -127,21 +57,36 @@ object DoctorData {
         "Orthopedics",
         "Dermatology",
         "General Surgery",
-        "Pediatrics"
+        "Pediatrics",
+        "Ophthalmology",
+        "Gynecology"
     )
 
-    /**
-     * Bilingual department mapping for voice recognition and filtering
-     */
-    val DEPARTMENT_TRANSLATIONS = listOf(
-        DepartmentPair("Cardiology", "कार्डियोलॉजी"),
-        DepartmentPair("Neurology", "न्यूरोलॉजी"),
-        DepartmentPair("Orthopedics", "ऑर्थोपेडिक्स"),
-        DepartmentPair("Dermatology", "त्वचा विज्ञान"),
-        DepartmentPair("General Surgery", "सामान्य सर्जरी"),
-        DepartmentPair("Pediatrics", "बाल चिकित्सा"),
-        DepartmentPair("Ophthalmology", "नेत्र विज्ञान")
-    )
+     /**
+      * Bilingual department mapping for voice recognition and filtering
+      */
+     val DEPARTMENT_TRANSLATIONS = listOf(
+         DepartmentPair("Cardiology", "कार्डियोलॉजी"),
+         DepartmentPair("Neurology", "न्यूरोलॉजी"),
+         DepartmentPair("Orthopedics", "ऑर्थोपेडिक्स"),
+         DepartmentPair("Dermatology", "त्वचा विज्ञान"),
+         DepartmentPair("General Surgery", "सामान्य सर्जरी"),
+         DepartmentPair("Pediatrics", "बाल चिकित्सा"),
+         DepartmentPair("Ophthalmology", "नेत्र विज्ञान"),
+         DepartmentPair("Gynecology", "स्त्री रोग विज्ञान"),
+         DepartmentPair("Anesthesiology", "एनेस्थेसियोलॉजी"),
+         DepartmentPair("Radiology", "रेडियोलॉजी"),
+         DepartmentPair("Oncology", "ऑन्कोलॉजी"),
+         DepartmentPair("Pathology", "पैथोलॉजी"),
+         DepartmentPair("Internal Medicine", "आंतरिक चिकित्सा"),
+         DepartmentPair("Nephrology", "नेफ्रोलॉजी"),
+         DepartmentPair("Urology", "यूरोलॉजी"),
+         DepartmentPair("Emergency Medicine", "आपातकालीन चिकित्सा"),
+         DepartmentPair("Pulmonology", "पल्मोनोलॉजी"),
+         DepartmentPair("Psychiatry", "मनोचिकित्सा"),
+         DepartmentPair("Nutrition & Dietetics", "पोषण और आहार विज्ञान"),
+         DepartmentPair("Medical Director", "चिकित्सा निदेशक")
+     )
 
     /**
      * Find English department name from either English or Hindi input
@@ -209,6 +154,3 @@ object DoctorData {
         )
     }
 }
-
-
-

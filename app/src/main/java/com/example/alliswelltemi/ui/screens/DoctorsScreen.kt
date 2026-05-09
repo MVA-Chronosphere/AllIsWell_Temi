@@ -79,7 +79,7 @@ fun DoctorsScreen(
             try {
                 robot?.speak(
                     TtsRequest.create(
-                        speech = "Taking you to ${doctor.name} at ${doctor.cabin}",
+                        speech = "Taking you to ${doctor.name}, ${doctor.department}, at cabin ${doctor.cabin}",
                         isShowOnConversationLayer = false
                     )
                 )

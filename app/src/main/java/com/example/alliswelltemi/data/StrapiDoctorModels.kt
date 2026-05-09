@@ -77,7 +77,11 @@ data class DoctorDocument(
             return null
         }
 
-        val docSpecialty = (specialty ?: attributes?.specialty ?: attributes?.specialization ?: "").trim()
+        val rawSpecialty = (specialty ?: attributes?.specialty ?: attributes?.specialization ?: "").trim()
+        
+        // Extract actual department from descriptive specialty (e.g., "Consultant Obstetrician & Gynaecologist" → "Gynecology")
+        val docSpecialty = extractDepartmentFromSpecialty(rawSpecialty)
+        
         val docAbout = (about ?: attributes?.about ?: attributes?.aboutBio ?: "").trim()
         val docExpYears = experienceYears ?: attributes?.experienceYears ?: attributes?.yearsOfExperience ?: 0
         val docLocation = (location ?: attributes?.location ?: attributes?.cabin ?: "").trim()
@@ -92,16 +96,79 @@ data class DoctorDocument(
             else -> ""
         }
 
+        // Get Hindi translation for department
+        val departmentHi = DoctorData.DEPARTMENT_TRANSLATIONS
+            .find { it.english.equals(docSpecialty, ignoreCase = true) }
+            ?.hindi ?: ""
+
+        android.util.Log.d("DoctorDocument", "✅ Parsed doctor: name='$doctorName', raw_specialty='$rawSpecialty', extracted_dept='$docSpecialty', dept_hi='$departmentHi', cabin='$docLocation'")
+
         return Doctor(
             id = id?.toString() ?: documentId ?: "",
             name = doctorName,  // Already trimmed above
-            department = docSpecialty, // Mapping specialty to department for now
+            department = docSpecialty, // Using extracted department
+            departmentHi = departmentHi,  // Add Hindi translation
             yearsOfExperience = docExpYears,
             aboutBio = docAbout,
             cabin = docLocation,
             specialization = docSpecialty,
             profileImageUrl = if (imageUrl.startsWith("/")) "https://aiwcms.chronosphere.in$imageUrl" else imageUrl
         )
+    }
+
+    /**
+     * Extract actual department from descriptive specialty titles
+     * E.g., "Consultant Obstetrician & Gynaecologist" → "Gynecology"
+     *       "Consultant Cardiologist" → "Cardiology"
+     */
+    private fun extractDepartmentFromSpecialty(specialty: String): String {
+        if (specialty.isBlank()) return ""
+        
+        val lowerSpec = specialty.lowercase()
+        
+        // Map specialty keywords to standardized departments
+        val departmentMappings = mapOf(
+            "gynaecolog" to "Gynecology",  // Gynecologist, Gynaecologist, Obstetrician & Gynaecologist
+            "obstetrician" to "Gynecology",  // Obstetrician (includes gynecology)
+            "cardiolog" to "Cardiology",
+            "cardio" to "Cardiology",
+            "neurolog" to "Neurology",
+            "neuro" to "Neurology",
+            "orthopae" to "Orthopedics",  // Orthopaedic
+            "orthoped" to "Orthopedics",
+            "dermatolog" to "Dermatology",
+            "dermatolo" to "Dermatology",
+            "patholog" to "Pathology",
+            "pediatrician" to "Pediatrics",
+            "pediatri" to "Pediatrics",
+            "ophthalmolog" to "Ophthalmology",
+            "opthalm" to "Ophthalmology",
+            "surgeon" to "General Surgery",
+            "surgery" to "General Surgery",
+            "anesthesiolog" to "Anesthesiology",
+            "anaesthesiolog" to "Anesthesiology",
+            "radiolog" to "Radiology",
+            "radio" to "Radiology",
+            "oncolog" to "Oncology",
+            "psychiatr" to "Psychiatry",
+            "urologis" to "Urology",
+            "nephrol" to "Nephrology",
+            "pulmon" to "Pulmonology",
+            "gastro" to "Gastroenterology",
+            "dental" to "Dentistry",
+            "emergency" to "Emergency Medicine",
+            "medicine" to "Internal Medicine",
+            "nutrition" to "Nutrition & Dietetics"
+        )
+        
+        for ((keyword, department) in departmentMappings) {
+            if (lowerSpec.contains(keyword)) {
+                return department
+            }
+        }
+        
+        // If no match found, return the original specialty (it might be a valid department name)
+        return specialty
     }
 
     private fun extractImageUrlFromMap(imageData: Map<String, Any>?): String {

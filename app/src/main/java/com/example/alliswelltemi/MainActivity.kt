@@ -600,9 +600,9 @@ class MainActivity : ComponentActivity(),
                                     try {
                                         val detectedLanguage = if (isHindi(text)) "hi" else "en"
                                         val confirmationText = if (detectedLanguage == "hi") {
-                                            "${doctor.name} के कैबिन ${doctor.cabin} में ले जा रहे हैं।"
+                                            "${doctor.name}, ${doctor.departmentHi} के कैबिन ${doctor.cabin} में ले जा रहे हैं।"
                                         } else {
-                                            "Taking you to ${doctor.name}'s cabin ${doctor.cabin}."
+                                            "Taking you to ${doctor.name}, ${doctor.department}, cabin ${doctor.cabin}."
                                         }
 
                                         safeSpeak(confirmationText)
